@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="הצטרפות למאגר הספקים של WDI - אדריכלים, קונסטרוקטורים, יועצים">
+  
+  <title>הצטרפות למאגר הספקים | WDI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header scrolled">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <img src="images/wdi-logo.png" alt="WDI">
+        </a>
+        
+        <nav class="nav">
+          <div class="nav-dropdown">
+            <a href="about.html" class="nav-link">אודות <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="about.html" class="nav-dropdown-link">אודות החברה</a>
+              <a href="team.html" class="nav-dropdown-link">הצוות שלנו</a>
+              <a href="clients.html" class="nav-dropdown-link">לקוחות</a>
+            </div>
+          </div>
+          
+          <div class="nav-dropdown">
+            <a href="services.html" class="nav-link">שירותים <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="services/design-management.html" class="nav-dropdown-link">ניהול תכנון</a>
+              <a href="services/spec.html" class="nav-dropdown-link">מסמכי דרישות ואפיון</a>
+              <a href="services/supervision.html" class="nav-dropdown-link">ניהול ביצוע ופיקוח</a>
+              <a href="services/client-rep.html" class="nav-dropdown-link">ייצוג בעלי עניין</a>
+              <a href="services/pmo.html" class="nav-dropdown-link">שירותי PMO</a>
+              <a href="services/qa.html" class="nav-dropdown-link">ניהול והבטחת איכות</a>
+              <a href="services/doc-control.html" class="nav-dropdown-link">ניהול הידע</a>
+              <a href="services/permits.html" class="nav-dropdown-link">ניהול תב"ע והיתרים</a>
+            </div>
+          </div>
+          
+          <a href="projects.html" class="nav-link">פרויקטים</a>
+          <a href="content-library.html" class="nav-link">מאגר מידע</a>
+          
+          <div class="nav-dropdown">
+            <a href="contact.html" class="nav-link">צור קשר <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="contact.html" class="nav-dropdown-link">השאר פרטים</a>
+              <a href="join-us.html" class="nav-dropdown-link">הצטרפות למאגר הספקים</a>
+              <a href="jobs.html" class="nav-dropdown-link">משרות</a>
+            </div>
+          </div>
+        </nav>
+        
+        <button class="mobile-toggle" aria-label="תפריט">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/">ראשי</a>
+        <span>/</span>
+        <span>הצטרפות למאגר הספקים</span>
+      </nav>
+      <h1>הצטרפות למאגר הספקים</h1>
+      <p>אנו מזמינים ספקים ויועצים מקצועיים להירשם למאגר הספקים שלנו</p>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="section">
+    <div class="container">
+      <div style="max-width: 700px; margin: 0 auto;">
+        <div style="background: var(--gray-50); border-radius: 16px; padding: 30px; margin-bottom: 40px;" data-animate>
+          <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-info-circle" style="margin-left: 10px;"></i>למי מיועד המאגר?</h3>
+          <p style="color: var(--gray-600); line-height: 1.8;">
+            מאגר הספקים של WDI מיועד לאדריכלים, קונסטרוקטורים, מהנדסי חשמל ומיזוג, אינסטלטורים, יועצי בטיחות, יועצי נגישות, יועצי תנועה, שמאים, מודדים, ויועצים נוספים בתחום הבנייה והתשתיות. אנו שמחים לשתף פעולה עם ספקים מקצועיים ואמינים.
+          </p>
+        </div>
+        
+        <form class="contact-form" name="suppliers" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" data-animate style="box-shadow: var(--shadow-xl);">
+          <input type="hidden" name="form-name" value="suppliers">
+          <p style="display: none;">
+            <label>Don't fill this out: <input name="bot-field"></label>
+          </p>
+          
+          <h3 style="margin-bottom: 30px; color: var(--gray-900);">פרטי הספק / היועץ</h3>
+          
+          <!-- Company Details -->
+          <div class="form-group">
+            <label class="form-label" for="company-name">שם החברה / העסק *</label>
+            <input type="text" id="company-name" name="company-name" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="company-id">ח.פ / ע.מ</label>
+            <input type="text" id="company-id" name="company-id" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="specialty">תחום התמחות *</label>
+            <select id="specialty" name="specialty" class="form-select" required>
+              <option value="">בחר תחום...</option>
+              <option value="architecture">אדריכלות</option>
+              <option value="structural">קונסטרוקציה</option>
+              <option value="electrical">חשמל</option>
+              <option value="hvac">מיזוג אוויר</option>
+              <option value="plumbing">אינסטלציה</option>
+              <option value="fire-safety">בטיחות אש</option>
+              <option value="accessibility">נגישות</option>
+              <option value="traffic">תנועה וכבישים</option>
+              <option value="surveying">מדידות</option>
+              <option value="appraisal">שמאות</option>
+              <option value="landscape">אדריכלות נוף</option>
+              <option value="interior">עיצוב פנים</option>
+              <option value="acoustics">אקוסטיקה</option>
+              <option value="environmental">איכות הסביבה</option>
+              <option value="geotechnical">גיאוטכניקה</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="other-specialty">תחום אחר (אם נבחר "אחר")</label>
+            <input type="text" id="other-specialty" name="other-specialty" class="form-input">
+          </div>
+          
+          <h3 style="margin: 40px 0 30px; color: var(--gray-900);">פרטי איש קשר</h3>
+          
+          <div class="form-group">
+            <label class="form-label" for="contact-name">שם איש קשר *</label>
+            <input type="text" id="contact-name" name="contact-name" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="position">תפקיד</label>
+            <input type="text" id="position" name="position" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="email">דוא"ל *</label>
+            <input type="email" id="email" name="email" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="phone">טלפון *</label>
+            <input type="tel" id="phone" name="phone" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="mobile">נייד</label>
+            <input type="tel" id="mobile" name="mobile" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="address">כתובת</label>
+            <input type="text" id="address" name="address" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="website">אתר אינטרנט</label>
+            <input type="url" id="website" name="website" class="form-input" placeholder="https://...">
+          </div>
+          
+          <h3 style="margin: 40px 0 30px; color: var(--gray-900);">ניסיון ומידע נוסף</h3>
+          
+          <div class="form-group">
+            <label class="form-label" for="experience">שנות ניסיון בתחום</label>
+            <select id="experience" name="experience" class="form-select">
+              <option value="">בחר...</option>
+              <option value="1-3">1-3 שנים</option>
+              <option value="4-7">4-7 שנים</option>
+              <option value="8-15">8-15 שנים</option>
+              <option value="15+">מעל 15 שנים</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">אזורי פעילות</label>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="north"> צפון
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="haifa"> חיפה והקריות
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="sharon"> השרון
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="center"> מרכז
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="tel-aviv"> תל אביב וגוש דן
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="jerusalem"> ירושלים והסביבה
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="south"> דרום
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; color: var(--gray-700);">
+                <input type="checkbox" name="regions" value="all"> כל הארץ
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="portfolio">קישור לתיק עבודות / פרופיל LinkedIn</label>
+            <input type="url" id="portfolio" name="portfolio" class="form-input" placeholder="https://...">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="company-profile">פרופיל חברה (PDF)</label>
+            <input type="file" id="company-profile" name="company-profile" accept=".pdf" class="form-input" style="padding: 10px;">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="notes">הערות נוספות</label>
+            <textarea id="notes" name="notes" class="form-textarea" rows="4" placeholder="פרויקטים מרכזיים, רישיונות מיוחדים, הסמכות וכו'"></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            שלח בקשה להצטרפות
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/wdi-logo-white.png" alt="WDI" style="height: 50px;">
+          <p>חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. מובילים פרויקטים מורכבים בישראל ובעולם מאז 2013.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/WDILTD/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/company/wdi-ltd" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>החברה</h4>
+          <div class="footer-links">
+            <a href="about.html">אודות</a>
+            <a href="team.html">הצוות</a>
+            <a href="clients.html">לקוחות</a>
+            <a href="projects.html">פרויקטים</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>שירותים</h4>
+          <div class="footer-links">
+            <a href="services/design-management.html">ניהול תכנון</a>
+            <a href="services/supervision.html">ניהול ביצוע ופיקוח</a>
+            <a href="services/pmo.html">שירותי PMO</a>
+            <a href="services/qa.html">הבטחת איכות</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>צור קשר</h4>
+          <div class="footer-links">
+            <a href="mailto:info@wdi.co.il">info@wdi.co.il</a>
+            <a href="tel:+97298322911">09-8322911</a>
+            <a href="contact.html">השאר פרטים</a>
+            <a href="jobs.html">משרות</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2025 WDI בע"מ. כל הזכויות שמורות.</p>
+        <p class="footer-credit">Website by <a href="https://daflash.com" target="_blank" rel="noopener">daflash.com</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://www.duns100.co.il/WDI_%D7%91%D7%A2%D7%9E_%D7%94%D7%A0%D7%93%D7%A1%D7%94_%D7%95%D7%A0%D7%99%D7%94%D7%95%D7%9C_%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98%D7%99%D7%9D" target="_blank" rel="noopener" class="duns-badge">
+    <img src="images/duns100.webp" alt="Duns 100">
+  </a>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

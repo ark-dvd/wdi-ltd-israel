@@ -1,0 +1,153 @@
+{
+  "projects": [
+    {
+      "id": "ashdod-desal",
+      "title": "מתקן התפלה אשדוד",
+      "client": "שותפות שפיר Blugen",
+      "category": "תשתיות",
+      "image": "images/projects/ashdod-desal.jpg",
+      "description": "מתקן התפלה בהיקף של 100 מיליון מ\"ק בשנה",
+      "services": ["ניהול תכנון", "פיקוח", "ניהול ביצוע"],
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": "msc-galil",
+      "title": "מרגלית סטארט-אפ סיטי גליל",
+      "client": "MSC אראל מרגלית",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/msc-galil.jpg",
+      "description": "קמפוס הייטק בצפון הארץ",
+      "services": ["ניהול תכנון", "ייצוג בעלי עניין"],
+      "year": "2022",
+      "featured": true
+    },
+    {
+      "id": "msc-hanamal17",
+      "title": "מרגלית סטארטאפ סיטי הנמל 17 חיפה",
+      "client": "MSC אראל מרגלית",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/msc-hanamal17.jpg",
+      "description": "שיפוץ והסבה של מבנה היסטורי בנמל חיפה",
+      "services": ["ניהול תכנון", "פיקוח"],
+      "year": "2021",
+      "featured": false
+    },
+    {
+      "id": "msc-hanamal59",
+      "title": "מרגלית סטארטאפ סיטי הנמל 59 חיפה",
+      "client": "MSC אראל מרגלית",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/msc-hanamal59.jpg",
+      "description": "קמפוס חדשנות בנמל חיפה",
+      "services": ["ניהול תכנון", "ייצוג בעלי עניין"],
+      "year": "2022",
+      "featured": false
+    },
+    {
+      "id": "msc-jerusalem",
+      "title": "מרגלית סטארטאפ סיטי ירושלים",
+      "client": "MSC אראל מרגלית",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/msc-jerusalem.jpg",
+      "description": "מרכז חדשנות בירושלים",
+      "services": ["ניהול תכנון", "ייצוג בעלי עניין"],
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": "mobileye",
+      "title": "מובילאיי (מערכות)",
+      "client": "אפקון מערכות",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/mobileye.jpg",
+      "description": "קמפוס פיתוח מתקדם",
+      "services": ["ניהול ביצוע", "פיקוח"],
+      "year": "2020",
+      "featured": true
+    },
+    {
+      "id": "msc-rothschild",
+      "title": "מרגלית סטארט-אפ סיטי ת\"א",
+      "client": "MSC אראל מרגלית",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/msc-rothschild.jpg",
+      "description": "מרכז חדשנות בלב תל אביב",
+      "services": ["ניהול תכנון"],
+      "year": "2019",
+      "featured": false
+    },
+    {
+      "id": "intel-kg",
+      "title": "אינטל קרית גת FOH",
+      "client": "סולל בונה",
+      "category": "תעשייה ומסחר",
+      "image": "images/projects/intel-kg.jpg",
+      "description": "מפעל ייצור שבבים מתקדם",
+      "services": ["ניהול תכנון", "פיקוח"],
+      "year": "2022",
+      "featured": true
+    },
+    {
+      "id": "alon-tavor",
+      "title": "מיגון תחנת הכח אלון תבור",
+      "client": "אם. אר. סי תפעול בע\"מ",
+      "category": "תשתיות",
+      "image": "images/projects/alon-tavor.jpg",
+      "description": "מיגון ושדרוג תחנת כח",
+      "services": ["ניהול ביצוע", "פיקוח"],
+      "year": "2024",
+      "featured": false
+    },
+    {
+      "id": "eshkol",
+      "title": "תחנת כח אשכול",
+      "client": "דליה אנרגיות",
+      "category": "תשתיות",
+      "image": "images/projects/eshkol.jpg",
+      "description": "תחנת כח בהיקף רחב",
+      "services": ["ניהול תכנון", "ניהול ביצוע"],
+      "year": "2021",
+      "featured": false
+    },
+    {
+      "id": "ashdod-port",
+      "title": "נמל אשדוד",
+      "client": "נמלי ישראל/אפקון בניה + אפקון חשמל",
+      "category": "תשתיות",
+      "image": "images/projects/ashdod-port.jpg",
+      "description": "הרחבת נמל אשדוד",
+      "services": ["ניהול ביצוע", "פיקוח", "הבטחת איכות"],
+      "year": "2021",
+      "featured": true
+    },
+    {
+      "id": "marhas",
+      "title": "מרכז ההספקה המטכ\"לי",
+      "client": "צה\"ל/משהב\"ט/שפיר",
+      "category": "ממשלתי",
+      "image": "images/projects/marhas.jpg",
+      "description": "מרכז לוגיסטי ביטחוני",
+      "services": ["ניהול תכנון", "ניהול ביצוע", "PMO"],
+      "year": "2023",
+      "featured": false
+    },
+    {
+      "id": "campus-merkaz",
+      "title": "קמפוס מרכז",
+      "client": "משהב\"ט",
+      "category": "ממשלתי",
+      "image": "images/projects/campus-merkaz.jpg",
+      "description": "קמפוס ביטחוני מרכזי",
+      "services": ["ניהול תכנון", "PMO", "הבטחת איכות"],
+      "year": "2024",
+      "featured": true
+    }
+  ],
+  "categories": [
+    { "id": "all", "name": "הכל" },
+    { "id": "industry", "name": "תעשייה ומסחר" },
+    { "id": "infrastructure", "name": "תשתיות" },
+    { "id": "government", "name": "ממשלתי" }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "testimonials": [
+    {
+      "id": 1,
+      "quote": "WDI ויוסי אלישע רתומים במאת האחוזים לפרויקט ולתהליך ורואים בהצלחת הפרוייקט כערך עליון ובכך יתרונם וייחודם. אני ממליץ בחום על חברת WDI ככלל ויוסי אלישע בפרט כמנהל תכנון",
+      "author": "משה שקד",
+      "position": "מנהל מח' מכרזים",
+      "company": "שפיר הנדסה אזרחית וימית בע\"מ",
+      "logo": "images/clients/shapir.png",
+      "letterUrl": "/documents/recommendation-shapir.pdf"
+    },
+    {
+      "id": 2,
+      "quote": "במהלך השנתיים האחרונות עבדנו עם צוות משרד WDI בפרויקט יזמי מורכב בירושלים. הגישה המקצועית והענינית, הארגון והסדר לא עמדו מעולם בסתירה לנעם הליכות, כבוד מקצועי ויושרה. בענף שלנו נדיר למצוא את השילוב הזה.",
+      "author": "רחל וינר",
+      "position": "אדריכלות ונוף",
+      "company": "רחל וינר אדריכלות ונוף בע\"מ",
+      "logo": "images/clients/rachel-weiner.png",
+      "letterUrl": "/documents/recommendation-weiner.pdf"
+    },
+    {
+      "id": 3,
+      "quote": "עידו הינו מנהל מסור ואחראי, מתפקד מעולה במצבי לחץ, עבד לשביעות רצוננו המלאה ותרם לאווירה חיובית ונעימה בין העובדים.",
+      "author": "דוד בנד",
+      "position": "מנהל פרויקט משולב",
+      "company": "מונרה מערכות מקבוצת שיכון ובינוי",
+      "logo": "images/clients/menora.jpg",
+      "letterUrl": "/documents/recommendation-menora.pdf"
+    },
+    {
+      "id": 4,
+      "quote": "העבודה מתבצעת במקצועיות, תחת לוחות זמנים צפופים ועם רמת שירות מצוינת. אנו מרוצים מאוד מהעבודה עם עידו וממליצים בחום...",
+      "author": "בריאה אלון שמיר",
+      "position": "מנהלת מח' תכנון ורישוי",
+      "company": "שיכון ובינוי - סולל בונה תשתיות בע\"מ",
+      "logo": "images/clients/solel-bone.png",
+      "letterUrl": "/documents/recommendation-solel-bone.pdf"
+    },
+    {
+      "id": 5,
+      "quote": "היה לנו העונג לעבוד עמכם בפרויקט מורכב ומיוחד... ניהלתם את התכנון בצורה מקצועית ביותר, באדיבות, נועם הליכות, באופן עניני, בהקשבה ליועצים המלווים ובחתירה להצלחתו.",
+      "author": "אלדד לבל",
+      "position": "מנהל",
+      "company": "אמאב תחבורה ותנועה בע\"מ",
+      "logo": "images/clients/amab.jpg",
+      "letterUrl": "/documents/recommendation-amab.pdf"
+    }
+  ],
+  "clients": [
+    { "name": "שפיר", "logo": "images/clients/shapir.png" },
+    { "name": "אלקטרה", "logo": "images/clients/electra.jpg" },
+    { "name": "מנרב", "logo": "images/clients/minrav.jpg" },
+    { "name": "שברון", "logo": "images/clients/chevron.png" },
+    { "name": "משרד ראש הממשלה", "logo": "images/clients/pmo.jpg" },
+    { "name": "משרד הביטחון", "logo": "images/clients/mod.jpg" },
+    { "name": "משרד האוצר", "logo": "images/clients/mof.jpg" },
+    { "name": "חיל האוויר", "logo": "images/clients/iaf.jpg" },
+    { "name": "Studio Libeskind", "logo": "images/clients/libeskind.jpg" },
+    { "name": "Skorka", "logo": "images/clients/skorka.jpg" },
+    { "name": "אורבך הלוי", "logo": "images/clients/aurbach-halevy.jpg" },
+    { "name": "קימל אשכולות", "logo": "images/clients/kimmel.jpg" },
+    { "name": "אפקון", "logo": "images/clients/afcon.jpg" },
+    { "name": "מנולד חירות", "logo": "images/clients/menolid.jpg" },
+    { "name": "תה\"ל", "logo": "images/clients/tahal.jpg" },
+    { "name": "TMNG", "logo": "images/clients/tmng.jpg" },
+    { "name": "עיריית באר שבע", "logo": "images/clients/beer-sheva.jpg" },
+    { "name": "IDE", "logo": "images/clients/ide.jpg" }
+  ]
+}

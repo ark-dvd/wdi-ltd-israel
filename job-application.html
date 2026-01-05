@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="הגשת מועמדות למשרה ב-WDI">
+  
+  <title>הגשת מועמדות | WDI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PHVHJ62GPW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PHVHJ62GPW');
+</script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header scrolled">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <img src="images/wdi-logo.png" alt="WDI">
+        </a>
+        
+        <nav class="nav">
+          <div class="nav-dropdown">
+            <a href="about.html" class="nav-link">אודות <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="about.html" class="nav-dropdown-link">אודות החברה</a>
+              <a href="team.html" class="nav-dropdown-link">הצוות שלנו</a>
+              <a href="about.html#press" class="nav-dropdown-link">כתבו עלינו</a>
+              <a href="clients.html" class="nav-dropdown-link">לקוחות</a>
+            </div>
+          </div>
+          
+          <div class="nav-dropdown">
+            <a href="services.html" class="nav-link">שירותים <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="services/design-management.html" class="nav-dropdown-link">ניהול תכנון</a>
+              <a href="services/spec.html" class="nav-dropdown-link">מסמכי דרישות ואפיון</a>
+              <a href="services/supervision.html" class="nav-dropdown-link">ניהול ביצוע ופיקוח</a>
+              <a href="services/client-rep.html" class="nav-dropdown-link">ייצוג בעלי עניין</a>
+              <a href="services/pmo.html" class="nav-dropdown-link">שירותי PMO</a>
+              <a href="services/qa.html" class="nav-dropdown-link">ניהול והבטחת איכות</a>
+              <a href="services/doc-control.html" class="nav-dropdown-link">ניהול הידע</a>
+              <a href="services/permits.html" class="nav-dropdown-link">ניהול תב"ע והיתרים</a>
+            </div>
+          </div>
+          
+          <a href="projects.html" class="nav-link">פרויקטים</a>
+          <a href="innovation.html" class="nav-link">חדשנות וטכנולוגיה</a>
+          <a href="content-library.html" class="nav-link">מאגר מידע</a>
+          
+          <div class="nav-dropdown">
+            <a href="contact.html" class="nav-link">צור קשר <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="contact.html" class="nav-dropdown-link">השאר פרטים</a>
+              <a href="join-us.html" class="nav-dropdown-link">הצטרפות למאגר שלנו</a>
+              <a href="jobs.html" class="nav-dropdown-link">משרות</a>
+            </div>
+          </div>
+        </nav>
+        
+        <button class="mobile-toggle" aria-label="תפריט">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/">ראשי</a>
+        <span>/</span>
+        <a href="jobs.html">משרות</a>
+        <span>/</span>
+        <span>הגשת מועמדות</span>
+      </nav>
+      <h1>הגשת מועמדות</h1>
+      <p id="job-title-display">מלאו את הטופס ונחזור אליכם בהקדם</p>
+    </div>
+  </section>
+
+  <!-- Application Form Section -->
+  <section class="section">
+    <div class="container">
+      <div style="max-width: 700px; margin: 0 auto;">
+        
+        <form name="job-application" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" class="contact-form" data-animate>
+          <input type="hidden" name="form-name" value="job-application">
+          <input type="hidden" name="job-id" id="job-id">
+          <input type="hidden" name="job-title" id="job-title">
+          <p style="display: none;">
+            <label>Don't fill this out: <input name="bot-field"></label>
+          </p>
+          
+          <div style="background: var(--gray-50); border-radius: 12px; padding: 20px; margin-bottom: 32px;">
+            <p style="color: var(--gray-600); margin: 0;">
+              <i class="fas fa-briefcase" style="color: var(--primary); margin-left: 8px;"></i>
+              מגישים מועמדות למשרה: <strong id="job-title-form"></strong>
+            </p>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">שם מלא *</label>
+              <input type="text" id="name" name="name" required placeholder="הכנס/י שם מלא">
+            </div>
+          </div>
+          
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label for="email">אימייל *</label>
+              <input type="email" id="email" name="email" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">טלפון *</label>
+              <input type="tel" id="phone" name="phone" required placeholder="050-0000000">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="linkedin">פרופיל LinkedIn</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/...">
+          </div>
+          
+          <div class="form-group">
+            <label for="experience">ניסיון מקצועי רלוונטי *</label>
+            <textarea id="experience" name="experience" rows="4" required placeholder="תאר/י בקצרה את הניסיון המקצועי שלך הרלוונטי למשרה"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="cv">קורות חיים (PDF) *</label>
+            <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required style="padding: 12px; border: 2px dashed var(--gray-300); border-radius: 8px; width: 100%; cursor: pointer;">
+            <p style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">קבצים מותרים: PDF, DOC, DOCX. גודל מקסימלי: 5MB</p>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">הערות נוספות</label>
+            <textarea id="message" name="message" rows="3" placeholder="מידע נוסף שתרצה/י לשתף"></textarea>
+          </div>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+              <input type="checkbox" name="privacy" required style="margin-top: 4px;">
+              <span style="font-size: 0.9rem; color: var(--gray-600);">
+                אני מאשר/ת את שמירת הפרטים לצורך טיפול בבקשה והודעות עתידיות על משרות רלוונטיות *
+              </span>
+            </label>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px;">
+            שליחת מועמדות
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+        
+        <div style="margin-top: 40px; text-align: center;" data-animate>
+          <p style="color: var(--gray-500);">
+            <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            <a href="jobs.html" style="color: var(--primary);">חזרה לרשימת המשרות</a>
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/wdi-logo-white.png" alt="WDI" style="height: 50px;">
+          <p>חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/WDILTD/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/company/wdi-ltd" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>החברה</h4>
+          <div class="footer-links">
+            <a href="about.html">אודות</a>
+            <a href="team.html">הצוות</a>
+            <a href="clients.html">לקוחות</a>
+            <a href="projects.html">פרויקטים</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>שירותים</h4>
+          <div class="footer-links">
+            <a href="services/design-management.html">ניהול תכנון</a>
+            <a href="services/supervision.html">ניהול ביצוע ופיקוח</a>
+            <a href="services/pmo.html">שירותי PMO</a>
+            <a href="services/qa.html">הבטחת איכות</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>צור קשר</h4>
+          <div class="footer-links">
+            <a href="mailto:info@wdi.co.il">info@wdi.co.il</a>
+            <a href="tel:+97298322911">09-8322911</a>
+            <a href="contact.html">השאר פרטים</a>
+            <a href="jobs.html">משרות</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2025 WDI בע"מ. כל הזכויות שמורות.</p>
+        <p class="footer-credit">Website by <a href="https://daflash.com" target="_blank" rel="noopener">daflash.com</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://www.duns100.co.il/WDI_%D7%91%D7%A2%D7%9E_%D7%94%D7%A0%D7%93%D7%A1%D7%94_%D7%95%D7%A0%D7%99%D7%94%D7%95%D7%9C_%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98%D7%99%D7%9D" target="_blank" rel="noopener" class="duns-badge">
+    <img src="images/duns100.webp" alt="Duns 100">
+  </a>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Parse URL parameters to pre-fill job info
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const jobId = params.get('job') || '';
+      const jobTitle = params.get('title') || 'משרה כללית';
+      
+      document.getElementById('job-id').value = jobId;
+      document.getElementById('job-title').value = jobTitle;
+      document.getElementById('job-title-form').textContent = jobTitle + (jobId ? ' (מס\' ' + jobId + ')' : '');
+      document.getElementById('job-title-display').textContent = 'הגשת מועמדות למשרת ' + jobTitle;
+    });
+  </script>
+</body>
+</html>

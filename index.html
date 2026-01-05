@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WDI - חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. מאתגר להצלחה. We Make It Happen.">
+  <meta name="keywords" content="ניהול פרויקטים, פיקוח בניה, ייעוץ הנדסי, תשתיות, בניה, WDI">
+  
+  <title>WDI | מאתגר להצלחה</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PHVHJ62GPW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PHVHJ62GPW');
+</script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <img src="images/wdi-logo.png" alt="WDI">
+        </a>
+        
+        <nav class="nav">
+          <div class="nav-dropdown">
+            <a href="about.html" class="nav-link">אודות <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="about.html" class="nav-dropdown-link">אודות החברה</a>
+              <a href="team.html" class="nav-dropdown-link">הצוות שלנו</a>
+              <a href="about.html#press" class="nav-dropdown-link">כתבו עלינו</a>
+              <a href="clients.html" class="nav-dropdown-link">לקוחות</a>
+            </div>
+          </div>
+          
+          <div class="nav-dropdown">
+            <a href="services.html" class="nav-link">שירותים <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="services/design-management.html" class="nav-dropdown-link">ניהול תכנון</a>
+              <a href="services/spec.html" class="nav-dropdown-link">מסמכי דרישות ואפיון</a>
+              <a href="services/supervision.html" class="nav-dropdown-link">ניהול ביצוע ופיקוח</a>
+              <a href="services/client-rep.html" class="nav-dropdown-link">ייצוג בעלי עניין</a>
+              <a href="services/pmo.html" class="nav-dropdown-link">שירותי PMO</a>
+              <a href="services/qa.html" class="nav-dropdown-link">ניהול והבטחת איכות</a>
+              <a href="services/doc-control.html" class="nav-dropdown-link">ניהול הידע</a>
+              <a href="services/permits.html" class="nav-dropdown-link">ניהול תב"ע והיתרים</a>
+            </div>
+          </div>
+          
+          <a href="projects.html" class="nav-link">פרויקטים</a>
+          <a href="innovation.html" class="nav-link">חדשנות וטכנולוגיה</a>
+          <a href="content-library.html" class="nav-link">מאגר מידע</a>
+          
+          <div class="nav-dropdown">
+            <a href="contact.html" class="nav-link">צור קשר <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-right: 4px;"></i></a>
+            <div class="nav-dropdown-content">
+              <a href="contact.html" class="nav-dropdown-link">השאר פרטים</a>
+              <a href="join-us.html" class="nav-dropdown-link">הצטרפות למאגר שלנו</a>
+              <a href="jobs.html" class="nav-dropdown-link">משרות</a>
+            </div>
+          </div>
+        </nav>
+        
+        <button class="mobile-toggle" aria-label="תפריט">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="videos/hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    
+    <div class="container">
+      <div class="hero-content" data-animate>
+        <div class="hero-badge">
+          <i class="fas fa-award"></i>
+          דאבליו די איי, חברה לניהול פרוייקטי בניה ותשתיות
+        </div>
+        <h1>מאתגר להצלחה</h1>
+        <p>חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. מובילים פרויקטים מורכבים בישראל ובעולם מאז 2013.</p>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="services.html" class="btn btn-primary">
+            תחומי עיסוק
+            <i class="fas fa-arrow-left"></i>
+          </a>
+          <a href="#contact" class="btn btn-outline">
+            צור קשר
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <h2>הערכים שלנו</h2>
+        <p>המוניטין של החברה נבנה בזכות גישה שאימצנו עם הקמתה: We Make It Happen</p>
+      </div>
+      
+      <div class="values-grid">
+        <div class="value-card" data-animate>
+          <div class="value-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>דרך ארץ</h3>
+          <p>אנו מאמינים שתקשורת תקינה ובריאה היא מרכיב הכרחי להצלחתו של הפרוייקט. בעבודה היומיומית שלנו אנחנו משתדלים להוכיח שסביבת עבודה נעימה ותומכת יכולה להתקיים גם בעולם הבניה.</p>
+        </div>
+        
+        <div class="value-card" data-animate>
+          <div class="value-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>אמון</h3>
+          <p>אנו רואים במשרת מנהל פרויקט משרת אמון, הדומה במהותה למשרות כמו עורך דין או רואה חשבון. אמון הוא יסוד מערכת היחסים עם לקוחותינו – למדנו שרכישתו דורשת זמן ומאמץ.</p>
+        </div>
+        
+        <div class="value-card" data-animate>
+          <div class="value-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>אחריות</h3>
+          <p>אנו מציבים את האחריות במרכז העשייה שלנו. הגישה הפרואקטיבית שלנו מאפשרת לזהות אתגרים וסיכונים בשלבים מוקדמים, ולפעול במהירות וביעילות כדי לצמצם את השפעתם.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <h2>השירותים שלנו</h2>
+        <p>מעטפת שירותים מקצועית לכל שלבי הפרויקט</p>
+      </div>
+      
+      <div id="services-grid" class="services-grid" data-animate>
+        <!-- Services loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <h2>פרויקטים נבחרים</h2>
+        <p>מאתגר להצלחה - פרויקטים שאחרים החשיבו לבלתי אפשריים</p>
+      </div>
+      
+      <div id="featured-projects" class="projects-grid" data-animate>
+        <!-- Projects loaded dynamically -->
+      </div>
+      
+      <div class="text-center mt-40">
+        <a href="projects.html" class="btn btn-primary">
+          כל הפרויקטים
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <h2>מה אומרים עלינו</h2>
+        <p>לקוחות מספרים על החוויה לעבוד איתנו</p>
+      </div>
+      
+      <div id="testimonials" class="testimonials-slider" data-animate>
+        <!-- Testimonials loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Innovation Teaser Section -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;" data-animate>
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(201, 162, 39, 0.15); padding: 8px 16px; border-radius: 100px; margin-bottom: 20px;">
+            <i class="fas fa-microchip" style="color: var(--secondary);"></i>
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--primary);">חדשנות וטכנולוגיה</span>
+          </div>
+          <h2 style="margin-bottom: 20px;">טכנולוגיה חכמה לניהול פרויקטים</h2>
+          <p style="font-size: 1.15rem; line-height: 1.9; color: var(--gray-600); margin-bottom: 24px;">
+            בתעשייה מסורתית, אנחנו בוחרים בגישה שונה. שימוש מתקדם בכלי AI, מערכות מידע ופתרונות שפיתחנו בתוך הבית – לשליפת מידע מהירה, שימור ידע וניתוח מסמכים בקנה מידה חסר תקדים.
+          </p>
+          <a href="innovation.html" class="btn btn-primary">
+            למידע נוסף
+            <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+        <div style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); border-radius: 20px; padding: 40px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -30%; left: -10%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201, 162, 39, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+          <div style="position: relative; z-index: 1;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+              <i class="fas fa-robot" style="font-size: 1.5rem; color: var(--secondary);"></i>
+              <span style="font-weight: 700; font-size: 1.2rem; color: var(--white);">WDI Agent</span>
+            </div>
+            <div style="background: var(--white); border-radius: 12px; padding: 20px;">
+              <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px;">
+                <i class="fas fa-user" style="color: var(--primary); margin-left: 8px;"></i>
+                "תן לי את האירועים האחרונים בפרויקט..."
+              </p>
+              <div style="background: var(--gray-50); border-radius: 8px; padding: 12px;">
+                <p style="font-size: 0.85rem; color: var(--gray-700); margin: 0;">
+                  <i class="fas fa-robot" style="color: var(--secondary); margin-left: 8px;"></i>
+                  להלן 4 אירועים אחרונים: גבייה, סיכום פגישה, 2 החלטות...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <h2>חלק מלקוחותינו</h2>
+      </div>
+      
+      <div id="clients-grid" class="clients-grid" data-animate>
+        <!-- Clients loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info" data-animate>
+          <h2>בואו נדבר על הפרויקט שלכם</h2>
+          <p>בין אם אתם מתמודדים עם אתגר מורכב או מתכננים את היוזמה הגדולה הבאה שלכם, אנחנו כאן להקשיב.</p>
+          
+          <div class="contact-details">
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <a href="mailto:info@wdi.co.il">info@wdi.co.il</a>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <a href="tel:+97298322911">09-8322911</a>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>חוצות שפיים, ת"ד 15, מיקוד 60990</span>
+            </div>
+          </div>
+          
+          <div class="footer-social" style="margin-top: 30px;">
+            <a href="https://www.facebook.com/WDILTD/" target="_blank" rel="noopener" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/wdi-ltd" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        
+        <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-animate>
+          <input type="hidden" name="form-name" value="contact">
+          <p style="display: none;">
+            <label>Don't fill this out: <input name="bot-field"></label>
+          </p>
+          
+          <div class="form-group">
+            <label class="form-label" for="name">שם מלא</label>
+            <input type="text" id="name" name="name" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="company">חברה</label>
+            <input type="text" id="company" name="company" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="email">דוא"ל</label>
+            <input type="email" id="email" name="email" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="phone">טלפון</label>
+            <input type="tel" id="phone" name="phone" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="interest">תחום עניין</label>
+            <select id="interest" name="interest" class="form-select">
+              <option value="">בחר...</option>
+              <option value="infrastructure">פרויקטי תשתיות</option>
+              <option value="energy">אנרגיה ושירותים</option>
+              <option value="residential">פיתוח מגורים</option>
+              <option value="commercial">בנייה מסחרית</option>
+              <option value="consulting">שירותי ייעוץ</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="message">הודעה</label>
+            <textarea id="message" name="message" class="form-textarea" rows="4"></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            שלח הודעה
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/wdi-logo-white.png" alt="WDI" style="height: 50px;">
+          <p>חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. מובילים פרויקטים מורכבים בישראל ובעולם מאז 2013. We Make It Happen.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/WDILTD/" target="_blank" rel="noopener" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/wdi-ltd" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>החברה</h4>
+          <div class="footer-links">
+            <a href="about.html">אודות</a>
+            <a href="team.html">הצוות</a>
+            <a href="clients.html">לקוחות</a>
+            <a href="projects.html">פרויקטים</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>שירותים</h4>
+          <div class="footer-links">
+            <a href="services/design-management.html">ניהול תכנון</a>
+            <a href="services/supervision.html">ניהול ביצוע ופיקוח</a>
+            <a href="services/pmo.html">שירותי PMO</a>
+            <a href="services/qa.html">הבטחת איכות</a>
+          </div>
+        </div>
+        
+        <div class="footer-nav">
+          <h4>צור קשר</h4>
+          <div class="footer-links">
+            <a href="mailto:info@wdi.co.il">info@wdi.co.il</a>
+            <a href="tel:+97298322911">09-8322911</a>
+            <a href="contact.html">השאר פרטים</a>
+            <a href="jobs.html">משרות</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2025 WDI בע"מ. כל הזכויות שמורות. | חוצות שפיים, ישראל</p>
+        <p class="footer-credit">
+          Website by <a href="https://daflash.com" target="_blank" rel="noopener">daflash.com</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Duns Badge -->
+  <a href="https://www.duns100.co.il/WDI_%D7%91%D7%A2%D7%9E_%D7%94%D7%A0%D7%93%D7%A1%D7%94_%D7%95%D7%A0%D7%99%D7%94%D7%95%D7%9C_%D7%A4%D7%A8%D7%95%D7%99%D7%A7%D7%98%D7%99%D7%9D" target="_blank" rel="noopener" class="duns-badge">
+    <img src="images/duns100.webp" alt="Duns 100">
+  </a>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  
+  <!-- Netlify Identity Redirect -->
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

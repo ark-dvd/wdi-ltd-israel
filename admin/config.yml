@@ -1,0 +1,181 @@
+backend:
+  name: git-gateway
+  branch: main
+  repo: ark-dvd/wdi-ltd-israel
+
+# Language settings
+locale: 'he'
+
+# Media files
+media_folder: "images"
+public_folder: "/images"
+
+# Slug settings
+slug:
+  encoding: "unicode"
+  clean_accents: true
+
+# Collections - what can be edited
+collections:
+
+  # Team Members
+  - name: "team"
+    label: "צוות"
+    label_singular: "חבר צוות"
+    folder: "data/team"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{name}} - {{position}}"
+    fields:
+      - { label: "שם מלא", name: "name", widget: "string", required: true }
+      - { label: "תפקיד", name: "position", widget: "string", required: true }
+      - { label: "תמונה", name: "image", widget: "image", required: false, media_folder: "/images/team" }
+      - { label: "טלפון", name: "phone", widget: "string", required: false }
+      - { label: "אימייל", name: "email", widget: "string", required: false }
+      - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
+      - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
+
+  # Projects
+  - name: "projects"
+    label: "פרויקטים"
+    label_singular: "פרויקט"
+    folder: "data/projects"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{title}} - {{client}}"
+    fields:
+      - { label: "שם הפרויקט", name: "title", widget: "string", required: true }
+      - { label: "לקוח", name: "client", widget: "string", required: true }
+      - label: "קטגוריה"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "תעשייה ומסחר", value: "תעשייה ומסחר" }
+          - { label: "תשתיות", value: "תשתיות" }
+          - { label: "ממשלתי", value: "ממשלתי" }
+      - { label: "תמונה ראשית", name: "image", widget: "image", required: false, media_folder: "/images/projects" }
+      - { label: "תיאור קצר", name: "description", widget: "text", required: true }
+      - { label: "תיאור מפורט", name: "fullDescription", widget: "markdown", required: false }
+      - label: "שירותים"
+        name: "services"
+        widget: "select"
+        multiple: true
+        options: ["ניהול תכנון", "פיקוח", "ניהול ביצוע", "ייצוג בעלי עניין", "PMO", "הבטחת איכות"]
+      - { label: "שנה", name: "year", widget: "string", required: false }
+      - { label: "פרויקט מומלץ (מוצג בעמוד הראשי)", name: "featured", widget: "boolean", default: false }
+      - label: "גלריית תמונות"
+        name: "gallery"
+        widget: "list"
+        required: false
+        field: { label: "תמונה", name: "image", widget: "image" }
+
+  # Clients
+  - name: "clients"
+    label: "לקוחות"
+    label_singular: "לקוח"
+    folder: "data/clients"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    fields:
+      - { label: "שם הלקוח", name: "name", widget: "string", required: true }
+      - { label: "לוגו", name: "logo", widget: "image", required: true, media_folder: "/images/clients" }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
+
+  # Testimonials
+  - name: "testimonials"
+    label: "עדויות והמלצות"
+    label_singular: "עדות"
+    folder: "data/testimonials"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{author}}"
+    summary: "{{author}} - {{company}}"
+    fields:
+      - { label: "ציטוט", name: "quote", widget: "text", required: true }
+      - { label: "שם הממליץ", name: "author", widget: "string", required: true }
+      - { label: "תפקיד", name: "position", widget: "string", required: true }
+      - { label: "חברה", name: "company", widget: "string", required: true }
+      - { label: "לוגו חברה", name: "logo", widget: "image", required: false, media_folder: "/images/clients" }
+      - { label: "מכתב המלצה (PDF)", name: "letterUrl", widget: "file", required: false, media_folder: "/documents" }
+
+  # Jobs
+  - name: "jobs"
+    label: "משרות"
+    label_singular: "משרה"
+    folder: "data/jobs"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{title}} - {{location}}"
+    fields:
+      - { label: "כותרת המשרה", name: "title", widget: "string", required: true }
+      - { label: "מיקום", name: "location", widget: "string", required: true }
+      - label: "סוג משרה"
+        name: "type"
+        widget: "select"
+        options:
+          - { label: "משרה מלאה", value: "full-time" }
+          - { label: "משרה חלקית", value: "part-time" }
+          - { label: "פרילנס", value: "freelance" }
+      - { label: "תיאור המשרה", name: "description", widget: "markdown", required: true }
+      - { label: "דרישות", name: "requirements", widget: "markdown", required: false }
+      - { label: "משרה פעילה", name: "active", widget: "boolean", default: true }
+      - { label: "תאריך פרסום", name: "date", widget: "datetime", required: false }
+
+  # Content Library
+  - name: "content-library"
+    label: "מאגר מידע"
+    label_singular: "פריט"
+    folder: "data/content-library"
+    create: true
+    delete: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - { label: "כותרת", name: "title", widget: "string", required: true }
+      - label: "קטגוריה"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "מאמרים", value: "articles" }
+          - { label: "מצגות", value: "presentations" }
+          - { label: "טפסים", value: "forms" }
+          - { label: "מדריכים", value: "guides" }
+      - { label: "תיאור", name: "description", widget: "text", required: false }
+      - { label: "קובץ", name: "file", widget: "file", required: false, media_folder: "/documents" }
+      - { label: "קישור חיצוני", name: "externalUrl", widget: "string", required: false }
+      - { label: "תמונה", name: "image", widget: "image", required: false }
+      - { label: "תאריך", name: "date", widget: "datetime", required: false }
+
+  # Services (pages)
+  - name: "services"
+    label: "שירותים"
+    label_singular: "שירות"
+    folder: "data/services"
+    create: false
+    delete: false
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "שם השירות", name: "title", widget: "string", required: true }
+      - { label: "תיאור קצר", name: "shortDescription", widget: "text", required: true }
+      - { label: "תיאור מלא", name: "fullDescription", widget: "markdown", required: false }
+      - { label: "אייקון (Font Awesome)", name: "icon", widget: "string", required: false }
+      - { label: "תמונה", name: "image", widget: "image", required: false }
