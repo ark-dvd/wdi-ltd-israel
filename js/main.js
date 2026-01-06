@@ -192,82 +192,70 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
-// 3 sections: הנהלה (management), אדמיניסטרציה (admin), מנהלי פרויקטים (team)
-function renderTeam(container, team, options = {}) {
+// 3 sections: הנהלה (founders), אדמיניסטרציה (admin), מנהלי פרויקטים (team)
+function renderTeam(container, team) {
   if (!container || !team || !team.length) return;
 
-  // Helper function to get last name (last word in Hebrew name)
+  // Get last name for Hebrew sorting
   const getLastName = (name) => {
     const parts = name.split(' ');
     return parts.length > 1 ? parts[parts.length - 1] : name;
   };
 
-  // Helper to render a team card
+  // Render single team card
   const renderCard = (member) => `
-    <div class="team-card" data-category="${member.category || 'team'}">
+    <div class="team-card">
       <div class="team-image">
-        <img src="${member.image || '/images/placeholder-person.jpg'}" alt="${member.name}" loading="lazy"
-             onerror="this.src='/images/placeholder-person.jpg'">
+        <img src="${member.image}" alt="${member.name}">
       </div>
-      <h4>${member.name}</h4>
-      <p class="team-role">${member.position || member.role}</p>
+      <h3>${member.name}</h3>
+      <p class="team-position">${member.position}</p>
       ${member.linkedin ? `
-        <a href="${member.linkedin}" target="_blank" rel="noopener" class="team-linkedin">
+        <a href="${member.linkedin}" target="_blank" class="team-linkedin">
           <i class="fab fa-linkedin-in"></i>
         </a>
       ` : ''}
     </div>
   `;
 
-  // Separate team members by category
-  const management = team.filter(m => m.category === 'management').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const teamMembers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
+  // Filter by category
+  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const projectManagers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
 
-  const { category, limit } = options;
-
-  // If filtering by category, use simple grid
-  if (category) {
-    let filtered = team.filter(m => m.category === category);
-    if (limit) filtered = filtered.slice(0, limit);
-    container.innerHTML = filtered.map(renderCard).join('');
-    return;
-  }
-
-  // Build sections
   let html = '';
 
-  // Management section (הנהלה) - row of 3
-  if (management.length > 0) {
+  // Section 1: הנהלה (founders)
+  if (founders.length > 0) {
     html += `
       <div class="team-section">
-        <h3 class="team-section-title">הנהלה</h3>
-        <div class="team-management-grid">
-          ${management.map(renderCard).join('')}
+        <h2 class="team-section-title">הנהלה</h2>
+        <div class="team-grid team-grid-3">
+          ${founders.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Admin section (אדמיניסטרציה) - row of 2
+  // Section 2: אדמיניסטרציה (admin)
   if (admin.length > 0) {
     html += `
       <div class="team-section">
-        <h3 class="team-section-title">אדמיניסטרציה</h3>
-        <div class="team-admin-grid">
+        <h2 class="team-section-title">אדמיניסטרציה</h2>
+        <div class="team-grid team-grid-admin">
           ${admin.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Project Managers section (מנהלי פרויקטים) - responsive grid
-  if (teamMembers.length > 0) {
+  // Section 3: מנהלי פרויקטים (team)
+  if (projectManagers.length > 0) {
     html += `
       <div class="team-section">
-        <h3 class="team-section-title">מנהלי פרויקטים</h3>
-        <div class="team-members-grid">
-          ${teamMembers.map(renderCard).join('')}
+        <h2 class="team-section-title">מנהלי פרויקטים</h2>
+        <div class="team-grid team-grid-3">
+          ${projectManagers.map(renderCard).join('')}
         </div>
       </div>
     `;

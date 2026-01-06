@@ -612,12 +612,6 @@ a:hover {
 }
 
 /* ===== Team Section ===== */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 30px;
-}
-
 /* Team sections */
 .team-section {
   margin-bottom: 60px;
@@ -629,7 +623,7 @@ a:hover {
 
 .team-section-title {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--primary);
   margin-bottom: 40px;
   position: relative;
@@ -645,29 +639,22 @@ a:hover {
   border-radius: 2px;
 }
 
-/* Management grid - exactly 3 columns, centered */
-.team-management-grid {
+/* Team grid - 3 columns */
+.team-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
+}
+
+.team-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
   max-width: 900px;
   margin: 0 auto;
 }
 
-/* Admin grid - exactly 2 columns, centered */
-.team-admin-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  max-width: 600px;
+.team-grid-admin {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  max-width: 400px;
   margin: 0 auto;
-}
-
-/* Team members grid - responsive */
-.team-members-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 30px;
 }
 
 .team-card {
@@ -696,22 +683,16 @@ a:hover {
   object-fit: cover;
 }
 
-.team-card h4 {
+.team-card h3 {
   margin-bottom: 8px;
   font-size: 1.2rem;
 }
 
-.team-role {
+.team-position {
   color: var(--secondary);
   font-weight: 600;
   font-size: 0.95rem;
   margin-bottom: 12px;
-}
-
-.team-bio {
-  font-size: 0.9rem;
-  color: var(--gray-500);
-  line-height: 1.6;
 }
 
 .team-linkedin {
@@ -1241,47 +1222,30 @@ a:hover {
   .projects-grid {
     grid-template-columns: 1fr;
   }
-  
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 
-  .team-management-grid {
+  /* Team responsive - tablet */
+  .team-grid-3 {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     max-width: 100%;
   }
 
-  .team-admin-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+  .team-grid-admin {
     max-width: 100%;
-  }
-
-  .team-members-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
-  .team-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .team-management-grid {
+  /* Team responsive - mobile */
+  .team-grid-3 {
     grid-template-columns: 1fr;
     max-width: 280px;
     margin: 0 auto;
   }
 
-  .team-admin-grid {
+  .team-grid-admin {
     grid-template-columns: 1fr;
     max-width: 280px;
-    margin: 0 auto;
-  }
-
-  .team-members-grid {
-    grid-template-columns: 1fr;
   }
 
   .services-grid {

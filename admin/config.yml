@@ -38,7 +38,7 @@ collections:
         name: "category"
         widget: "select"
         options:
-          - { label: "הנהלה", value: "management" }
+          - { label: "הנהלה", value: "founders" }
           - { label: "אדמיניסטרציה", value: "admin" }
           - { label: "צוות", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }

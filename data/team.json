@@ -6,8 +6,7 @@
       "position": "מייסד, שותף",
       "image": "/images/team/arik-davidi.jpg",
       "linkedin": "https://www.linkedin.com/in/arikdavidi/",
-      "bio": "1974, צפת. מתגורר באוסטין, טקסס. מהנדס אזרחי (BSc טכניון, 2002) ומוסמך במנהל עסקים (MBA האוניברסיטה הפתוחה, 2009).",
-      "category": "management",
+      "category": "founders",
       "order": 1
     },
     {
@@ -16,8 +15,7 @@
       "position": "מנכ\"ל WDI",
       "image": "/images/team/guy-golan.jpg",
       "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
-      "bio": "1973, כפר ויתקין. מתגורר ביקנעם. מהנדס אזרחי (BSc טכניון, 2001) ומוסמך במנהל עסקים (MBA חיפה, 2015).",
-      "category": "management",
+      "category": "founders",
       "order": 2
     },
     {
@@ -26,8 +24,7 @@
       "position": "מייסד, שותף",
       "image": "/images/team/ilan-weiss.jpg",
       "linkedin": "https://www.linkedin.com/in/i-w-2a18671a/",
-      "bio": "1971, אוסטרליה. מתגורר בהושעיה. מהנדס אזרחי (BSc ו MA סידני אוסטרליה) ומוסמך במנהל עסקים (MBA חיפה, 2015).",
-      "category": "management",
+      "category": "founders",
       "order": 3
     },
     {
@@ -36,7 +33,6 @@
       "position": "אדמיניסטרציה",
       "image": "/images/team/yarden-weiss.jpg",
       "linkedin": "",
-      "bio": "2004, הושעיה.",
       "category": "admin",
       "order": 10
     },
@@ -46,7 +42,6 @@
       "position": "מנהלת תכנון ורישוי",
       "image": "/images/team/rotem-glick.jpg",
       "linkedin": "",
-      "bio": "מתגוררת בחולון. הנדסאית אדריכלות ועיצוב.",
       "category": "team",
       "order": 100
     },
@@ -56,7 +51,6 @@
       "position": "מנהל פרויקט",
       "image": "/images/team/ori-davidi.jpg",
       "linkedin": "https://www.linkedin.com/in/ori-davidi/",
-      "bio": "2000, ראשון לציון. שם מתגורר כיום. סטודנט להנדסה אזרחית, SCE.",
       "category": "team",
       "order": 101
     },
@@ -66,7 +60,6 @@
       "position": "מנהל פרויקט",
       "image": "/images/team/ido-kuri.jpg",
       "linkedin": "",
-      "bio": "1978 ערד. מתגורר בבאר שבע. מהנדס חשמל (BSc סמי שמעון, 2014).",
       "category": "team",
       "order": 102
     },
@@ -76,7 +69,6 @@
       "position": "מנהל פרויקט",
       "image": "/images/team/tamir-lederman.jpg",
       "linkedin": "https://www.linkedin.com/in/tamir-lederman-6081bb56/",
-      "bio": "1969, רעננה. מהנדס מכונות (BSc טכניון); מוסמך למדעים בהנדסת מכונות (טכניון).",
       "category": "team",
       "order": 103
     },
@@ -86,7 +78,6 @@
       "position": "מנהל פרויקט",
       "image": "/images/team/yonatan-raymond.jpg",
       "linkedin": "",
-      "bio": "",
       "category": "team",
       "order": 104
     },
@@ -96,7 +87,6 @@
       "position": "ראש תחום פרויקטים תעשייתיים",
       "image": "/images/team/eyal-nir.jpg",
       "linkedin": "",
-      "bio": "1971, קיבוץ הזורע. מתגורר בזכרון יעקב. מהנדס אזרחי (BSc טכניון, 2000).",
       "category": "team",
       "order": 105
     },
@@ -106,7 +96,6 @@
       "position": "ראש תחום פרויקטים מסחריים",
       "image": "/images/team/yossi-elisha.jpg",
       "linkedin": "",
-      "bio": "1971, מצליח. מתגורר בגבעתיים. הנדסאי חשמל ואלקטרוניקה.",
       "category": "team",
       "order": 106
     },
@@ -116,7 +105,6 @@
       "position": "ראש תחום פרויקטים ביטחוניים",
       "image": "/images/team/victor-lifshitz.jpg",
       "linkedin": "",
-      "bio": "1973, בלארוס. מתגורר בדברת. מהנדס כימיה וחומרים (BSc בר אילן, 1997) ומוסמך בבריאות בתעסוקה (MOccH תל אביב, 2006).",
       "category": "team",
       "order": 107
     }
