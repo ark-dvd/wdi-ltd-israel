@@ -1,14 +1,15 @@
 {
-  "id": "yarden-weiss",
-  "name": "ירדן וייס",
-  "position": "אדמיניסטרציה",
-  "image": "/images/team/yarden-weiss.jpg",
-  "linkedin": "",
-  "category": "admin",
-  "order": 10,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
+  "gender": "female",
   "educationType": "",
-  "degrees": []
+  "residence": "הושעיה",
+  "degrees": [],
+  "birthPlace": "",
+  "position": "מזכירה",
+  "name": "ירדן וייס",
+  "order": 10,
+  "id": "yarden-weiss",
+  "image": "/images/team/yarden-weiss.jpg",
+  "birthYear": 2004,
+  "linkedin": "",
+  "category": "admin"
 }
