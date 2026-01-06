@@ -3,7 +3,25 @@
   "position": "מייסד, שותף",
   "image": "/images/team/arik-davidi.jpg",
   "linkedin": "https://www.linkedin.com/in/arikdavidi/",
-  "bio": "1974, צפת. מתגורר באוסטין, טקסס. מהנדס אזרחי (BSc טכניון, 2002) ומוסמך במנהל עסקים (MBA האוניברסיטה הפתוחה, 2009).",
+  "bio": "מהנדס אזרחי ומנהל עסקים עם ניסיון רחב בניהול פרויקטים בינלאומיים.",
   "category": "founders",
-  "order": 1
+  "order": 1,
+  "birthYear": 1974,
+  "birthPlace": "צפת",
+  "residence": "אוסטין, טקסס",
+  "educationType": "מהנדס",
+  "degrees": [
+    {
+      "title": "הנדסה אזרחית",
+      "degree": "BSc",
+      "institution": "טכניון",
+      "year": "2002"
+    },
+    {
+      "title": "מנהל עסקים",
+      "degree": "MBA",
+      "institution": "האוניברסיטה הפתוחה",
+      "year": "2009"
+    }
+  ]
 }

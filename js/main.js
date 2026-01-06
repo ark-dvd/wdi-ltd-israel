@@ -204,14 +204,14 @@ function renderTeam(container, team) {
 
   // Render single team card
   const renderCard = (member) => `
-    <div class="team-card">
+    <div class="team-card" data-member-id="${member.id || ''}" style="cursor: pointer;">
       <div class="team-image">
         <img src="${member.image}" alt="${member.name}">
       </div>
       <h3>${member.name}</h3>
       <p class="team-position">${member.position}</p>
       ${member.linkedin ? `
-        <a href="${member.linkedin}" target="_blank" class="team-linkedin">
+        <a href="${member.linkedin}" target="_blank" class="team-linkedin" onclick="event.stopPropagation();">
           <i class="fab fa-linkedin-in"></i>
         </a>
       ` : ''}
@@ -275,6 +275,85 @@ function renderTeam(container, team) {
   }
 
   container.innerHTML = html;
+
+  // Add click handlers for bio modal
+  container.querySelectorAll('.team-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const memberId = card.dataset.memberId;
+      const member = team.find(m => m.id === memberId);
+      if (member) {
+        showTeamMemberModal(member);
+      }
+    });
+  });
+}
+
+// ===== Team Member Modal =====
+function showTeamMemberModal(member) {
+  // Remove existing modal if any
+  const existingModal = document.getElementById('team-modal');
+  if (existingModal) existingModal.remove();
+
+  // Format degrees list
+  const degreesHtml = member.degrees && member.degrees.length > 0
+    ? member.degrees.map(d => {
+        const parts = [];
+        if (d.title) parts.push(d.title);
+        if (d.degree) parts.push(`(${d.degree})`);
+        if (d.institution) parts.push(d.institution);
+        if (d.year) parts.push(d.year);
+        return `<li>${parts.join(' - ')}</li>`;
+      }).join('')
+    : '';
+
+  // Build modal HTML
+  const modalHtml = `
+    <div id="team-modal" class="team-modal" onclick="if(event.target === this) closeTeamModal()">
+      <div class="team-modal-content">
+        <button class="team-modal-close" onclick="closeTeamModal()">&times;</button>
+        <div class="team-modal-header">
+          <div class="team-modal-image">
+            <img src="${member.image}" alt="${member.name}">
+          </div>
+          <div class="team-modal-info">
+            <h2>${member.name}</h2>
+            <p class="team-modal-position">${member.position}</p>
+            ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" class="team-modal-linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a>` : ''}
+          </div>
+        </div>
+        <div class="team-modal-body">
+          ${member.bio ? `<p class="team-modal-bio">${member.bio}</p>` : ''}
+          <div class="team-modal-details">
+            ${member.birthYear ? `<p><strong>שנת לידה:</strong> ${member.birthYear}</p>` : ''}
+            ${member.birthPlace ? `<p><strong>מקום לידה:</strong> ${member.birthPlace}</p>` : ''}
+            ${member.residence ? `<p><strong>מקום מגורים:</strong> ${member.residence}</p>` : ''}
+            ${member.educationType ? `<p><strong>השכלה:</strong> ${member.educationType}</p>` : ''}
+            ${degreesHtml ? `<div class="team-modal-degrees"><strong>תארים:</strong><ul>${degreesHtml}</ul></div>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  document.body.style.overflow = 'hidden';
+
+  // Close on escape key
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+      closeTeamModal();
+      document.removeEventListener('keydown', handleEscape);
+    }
+  };
+  document.addEventListener('keydown', handleEscape);
+}
+
+function closeTeamModal() {
+  const modal = document.getElementById('team-modal');
+  if (modal) {
+    modal.remove();
+    document.body.style.overflow = '';
+  }
 }
 
 // ===== Render Services =====

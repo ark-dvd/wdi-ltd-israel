@@ -3,7 +3,12 @@
   "position": "אדמיניסטרציה",
   "image": "/images/team/yarden-weiss.jpg",
   "linkedin": "",
-  "bio": "2004, הושעיה.",
+  "bio": "אחראית על ניהול אדמיניסטרטיבי ותפעול משרדי.",
   "category": "admin",
-  "order": 11
+  "order": 11,
+  "birthYear": 2004,
+  "birthPlace": "הושעיה",
+  "residence": "הושעיה",
+  "educationType": "",
+  "degrees": []
 }

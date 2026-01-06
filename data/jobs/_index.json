@@ -1,0 +1,11 @@
+{
+  "files": [
+    "secretary.json",
+    "project-manager.json",
+    "construction-supervisor.json",
+    "design-manager.json",
+    "qa-engineer.json",
+    "document-coordinator.json",
+    "intern.json"
+  ]
+}

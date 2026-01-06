@@ -44,7 +44,20 @@ collections:
           - { label: "מנהלי פרויקטים", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
       - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, צוות: 100+" }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, ראשי תחומים: 20-29, צוות: 100+" }
+      - { label: "שנת לידה", name: "birthYear", widget: "number", required: false }
+      - { label: "מקום לידה", name: "birthPlace", widget: "string", required: false }
+      - { label: "מקום מגורים", name: "residence", widget: "string", required: false }
+      - { label: "סוג השכלה", name: "educationType", widget: "string", required: false, hint: "לדוגמה: מהנדס, הנדסאי, סטודנט" }
+      - label: "תארים"
+        name: "degrees"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "שם הלימודים", name: "title", widget: "string" }
+          - { label: "סוג תואר", name: "degree", widget: "string", hint: "לדוגמה: BSc, MSc, MBA, הנדסאי" }
+          - { label: "מוסד לימודים", name: "institution", widget: "string" }
+          - { label: "שנת סיום", name: "year", widget: "string", required: false }
 
   # Projects
   - name: "projects"

@@ -1,9 +1,21 @@
 {
   "name": "אורי דוידי",
-  "position": "מנהל פרוייקט",
+  "position": "מנהל פרויקט",
   "image": "/images/team/ori-davidi.jpg",
   "linkedin": "https://www.linkedin.com/in/ori-davidi/",
-  "bio": "2000, ראשון לציון. שם מתגורר כיום. סטודנט להנדסה אזרחית, SCE.",
+  "bio": "מנהל פרויקט. סטודנט להנדסה אזרחית.",
   "category": "team",
-  "order": 101
+  "order": 101,
+  "birthYear": 2000,
+  "birthPlace": "ראשון לציון",
+  "residence": "ראשון לציון",
+  "educationType": "סטודנט",
+  "degrees": [
+    {
+      "title": "הנדסה אזרחית",
+      "degree": "BSc (בלימודים)",
+      "institution": "SCE",
+      "year": ""
+    }
+  ]
 }

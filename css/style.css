@@ -712,6 +712,165 @@ a:hover {
   color: var(--white);
 }
 
+/* ===== Team Member Modal ===== */
+.team-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.team-modal-content {
+  background: var(--white);
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.team-modal-close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--gray-100);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 1;
+}
+
+.team-modal-close:hover {
+  background: var(--gray-200);
+}
+
+.team-modal-header {
+  display: flex;
+  gap: 24px;
+  padding: 32px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.team-modal-image {
+  flex-shrink: 0;
+}
+
+.team-modal-image img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.team-modal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.team-modal-info h2 {
+  font-size: 1.75rem;
+  margin-bottom: 8px;
+}
+
+.team-modal-position {
+  color: var(--secondary);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.team-modal-linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0077b5;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.team-modal-linkedin:hover {
+  text-decoration: underline;
+}
+
+.team-modal-body {
+  padding: 32px;
+}
+
+.team-modal-bio {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.team-modal-details p {
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.team-modal-details strong {
+  color: var(--gray-900);
+}
+
+.team-modal-degrees {
+  margin-top: 16px;
+}
+
+.team-modal-degrees ul {
+  margin-top: 8px;
+  padding-right: 24px;
+  list-style-type: disc;
+}
+
+.team-modal-degrees li {
+  margin-bottom: 6px;
+  color: var(--gray-600);
+}
+
+@media (max-width: 600px) {
+  .team-modal-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .team-modal-image img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .team-modal-body {
+    padding: 24px;
+  }
+}
+
 /* ===== Testimonials Container ===== */
 .testimonials-slider {
   /* Container for testimonials grid - no width restriction */
@@ -1297,6 +1456,7 @@ a:hover {
 
 /* ===== Duns Badge ===== */
 .duns-badge {
+  display: none; /* Hidden until proper image is provided */
   position: fixed;
   bottom: 20px;
   left: 20px;

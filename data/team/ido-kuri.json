@@ -1,9 +1,21 @@
 {
   "name": "עידו כורי",
-  "position": "מנהל פרוייקט",
+  "position": "מנהל פרויקט",
   "image": "/images/team/ido-kuri.jpg",
   "linkedin": "",
-  "bio": "1978 ערד. מתגורר בבאר שבע. מהנדס חשמל (BSc סמי שמעון, 2014).",
+  "bio": "מנהל פרויקט. מהנדס חשמל.",
   "category": "team",
-  "order": 102
+  "order": 102,
+  "birthYear": 1978,
+  "birthPlace": "ערד",
+  "residence": "באר שבע",
+  "educationType": "מהנדס",
+  "degrees": [
+    {
+      "title": "הנדסת חשמל",
+      "degree": "BSc",
+      "institution": "סמי שמעון",
+      "year": "2014"
+    }
+  ]
 }

@@ -1,9 +1,14 @@
 {
   "name": "יונתן ריימונד",
-  "position": "מנהל פרוייקט",
+  "position": "מנהל פרויקט",
   "image": "/images/team/yonatan-raymond.jpg",
   "linkedin": "",
-  "bio": "",
+  "bio": "מנהל פרויקט.",
   "category": "team",
-  "order": 105
+  "order": 105,
+  "birthYear": null,
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

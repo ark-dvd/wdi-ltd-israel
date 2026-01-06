@@ -3,7 +3,19 @@
   "position": "מנהלת תכנון ורישוי",
   "image": "/images/team/rotem-glick.jpg",
   "linkedin": "",
-  "bio": "מתגוררת בחולון. הנדסאית אדריכלות ועיצוב.",
+  "bio": "מנהלת תכנון ורישוי. הנדסאית אדריכלות ועיצוב.",
   "category": "team",
-  "order": 100
+  "order": 100,
+  "birthYear": null,
+  "birthPlace": "",
+  "residence": "חולון",
+  "educationType": "הנדסאית",
+  "degrees": [
+    {
+      "title": "אדריכלות ועיצוב",
+      "degree": "הנדסאית",
+      "institution": "",
+      "year": ""
+    }
+  ]
 }
