@@ -47,11 +47,12 @@ async function loadFolderData(folderPath) {
 
 async function initializeData() {
   // Load ALL data sources in PARALLEL
-  const [teamFolder, projectsFolder, clientsFolder, testimonialsFolder, teamJson, projectsJson, clientsJson, servicesJson] = await Promise.all([
+  const [teamFolder, projectsFolder, clientsFolder, testimonialsFolder, servicesFolder, teamJson, projectsJson, clientsJson, servicesJson] = await Promise.all([
     loadFolderData('/data/team'),
     loadFolderData('/data/projects'),
     loadFolderData('/data/clients-items'),
     loadFolderData('/data/testimonials'),
+    loadFolderData('/data/services'),
     loadJSON('/data/team.json'),
     loadJSON('/data/projects.json'),
     loadJSON('/data/clients.json'),
@@ -63,7 +64,7 @@ async function initializeData() {
   WDI.projects = projectsFolder.length ? projectsFolder : (projectsJson?.projects || []);
   WDI.clients = clientsFolder.length ? clientsFolder : (clientsJson?.clients || []);
   WDI.testimonials = testimonialsFolder.length ? testimonialsFolder : (clientsJson?.testimonials || []);
-  WDI.services = servicesJson?.services || [];
+  WDI.services = servicesFolder.length ? servicesFolder : (servicesJson?.services || []);
 
   return WDI;
 }
