@@ -23,34 +23,56 @@ async function loadJSON(path) {
   return null;
 }
 
+// Load all JSON files from a folder using file list
+async function loadFolderData(folderPath, fileList) {
+  const items = [];
+  for (const file of fileList) {
+    const data = await loadJSON(`${folderPath}/${file}`);
+    if (data) {
+      // Add id from filename if not present
+      if (!data.id) {
+        data.id = file.replace('.json', '');
+      }
+      items.push(data);
+    }
+  }
+  return items;
+}
+
 async function initializeData() {
   // Load all data files - supports both old format (single file) and new format (folder with files)
-  
-  // Load team - try old format first
+
+  // Load team - try combined file first, then individual files
   let teamData = await loadJSON('/data/team.json');
-  if (teamData && teamData.team) {
+  if (teamData && teamData.team && teamData.team.length > 0) {
     WDI.team = teamData.team;
+  } else {
+    // Try loading from individual files
+    const teamFiles = await loadJSON('/data/team/_index.json');
+    if (teamFiles && teamFiles.files) {
+      WDI.team = await loadFolderData('/data/team', teamFiles.files);
+    }
   }
-  
-  // Load projects - try old format first  
+
+  // Load projects - try combined file first
   let projectsData = await loadJSON('/data/projects.json');
-  if (projectsData && projectsData.projects) {
+  if (projectsData && projectsData.projects && projectsData.projects.length > 0) {
     WDI.projects = projectsData.projects;
   }
-  
+
   // Load services
   let servicesData = await loadJSON('/data/services.json');
   if (servicesData && servicesData.services) {
     WDI.services = servicesData.services;
   }
-  
-  // Load clients and testimonials
+
+  // Load clients and testimonials - try combined file first
   let clientsData = await loadJSON('/data/clients.json');
   if (clientsData) {
     if (clientsData.clients) WDI.clients = clientsData.clients;
     if (clientsData.testimonials) WDI.testimonials = clientsData.testimonials;
   }
-  
+
   return WDI;
 }
 
@@ -93,26 +115,24 @@ function initMobileNav() {
 // ===== Projects Filter =====
 function initProjectsFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  
+
   if (!filterBtns.length) return;
-  
+
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const filter = btn.dataset.filter;
       const projectCards = document.querySelectorAll('.project-card');
-      
+
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
+
       projectCards.forEach(card => {
         const category = card.dataset.category;
-        
+
         if (filter === 'all' || category === filter) {
-          card.style.display = 'block';
-          setTimeout(() => card.style.opacity = '1', 10);
+          card.classList.remove('hidden');
         } else {
-          card.style.opacity = '0';
-          setTimeout(() => card.style.display = 'none', 300);
+          card.classList.add('hidden');
         }
       });
     });
@@ -158,19 +178,31 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
-// Order: founders (1-3), admin (10-19), heads (20-29), team (100+ sorted by last name)
+// Order: founders (1-3), admin (10-19), heads (20-29), team (sorted by last name)
 function renderTeam(container, team, options = {}) {
   if (!container || !team || !team.length) return;
-  
-  // Sort by order field
-  let sortedTeam = [...team].sort((a, b) => (a.order || 999) - (b.order || 999));
-  
+
+  // Helper function to get last name (second word in Hebrew name)
+  const getLastName = (name) => {
+    const parts = name.split(' ');
+    return parts.length > 1 ? parts[parts.length - 1] : name;
+  };
+
+  // Separate team members by category
+  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const teamMembers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
+
+  // Combine in correct order
+  let sortedTeam = [...founders, ...admin, ...heads, ...teamMembers];
+
   const { category, limit } = options;
-  
+
   if (category) {
     sortedTeam = sortedTeam.filter(m => m.category === category);
   }
-  
+
   if (limit) {
     sortedTeam = sortedTeam.slice(0, limit);
   }
