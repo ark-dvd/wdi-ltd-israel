@@ -221,8 +221,8 @@ function renderTeam(container, team) {
       member.degrees.forEach(d => {
         const parts = [];
         if (d.institution) parts.push(d.institution);
-        if (d.title) parts.push(d.title);
         if (d.degree) parts.push(d.degree);
+        if (d.title) parts.push(d.title);
         if (d.year) parts.push(d.year);
         const degreeLine = parts.filter(p => p).join(' ');
         if (degreeLine) lines.push(degreeLine);
