@@ -1,14 +1,15 @@
 {
-  "id": "victor-lifshitz",
-  "name": "ויקטור ליפשיץ",
-  "position": "ראש תחום פרויקטים ביטחוניים",
-  "image": "/images/team/victor-lifshitz.jpg",
-  "linkedin": "",
-  "category": "heads",
-  "order": 22,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
+  "gender": "male",
   "educationType": "",
-  "degrees": []
+  "residence": "דברת",
+  "degrees": [],
+  "birthPlace": "",
+  "position": "ראש תחום פרויקטים ביטחוניים",
+  "name": "ויקטור ליפשיץ",
+  "order": 22,
+  "id": "victor-lifshitz",
+  "image": "/images/team/victor-lifshitz.jpg",
+  "birthYear": 1973,
+  "linkedin": "",
+  "category": "heads"
 }
