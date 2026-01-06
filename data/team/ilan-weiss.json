@@ -1,33 +1,14 @@
 {
+  "id": "ilan-weiss",
   "name": "אילן וייס",
   "position": "מייסד, שותף",
   "image": "/images/team/ilan-weiss.jpg",
   "linkedin": "https://www.linkedin.com/in/i-w-2a18671a/",
-  "bio": "מייסד ושותף ב-WDI. מהנדס אזרחי עם ניסיון בינלאומי בניהול פרויקטים מורכבים.",
   "category": "founders",
   "order": 3,
-  "birthYear": 1971,
-  "birthPlace": "אוסטרליה",
-  "residence": "הושעיה",
-  "educationType": "מהנדס",
-  "degrees": [
-    {
-      "title": "הנדסה אזרחית",
-      "degree": "BSc",
-      "institution": "אוניברסיטת סידני",
-      "year": ""
-    },
-    {
-      "title": "הנדסה אזרחית",
-      "degree": "MA",
-      "institution": "אוניברסיטת סידני",
-      "year": ""
-    },
-    {
-      "title": "מנהל עסקים",
-      "degree": "MBA",
-      "institution": "אוניברסיטת חיפה",
-      "year": "2015"
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

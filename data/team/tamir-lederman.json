@@ -1,27 +1,14 @@
 {
+  "id": "tamir-lederman",
   "name": "תמיר לדרמן",
   "position": "מנהל פרויקט",
   "image": "/images/team/tamir-lederman.jpg",
   "linkedin": "https://www.linkedin.com/in/tamir-lederman-6081bb56/",
-  "bio": "מנהל פרויקט. מהנדס מכונות עם תואר שני.",
   "category": "team",
-  "order": 104,
-  "birthYear": 1969,
-  "birthPlace": "רעננה",
-  "residence": "רעננה",
-  "educationType": "מהנדס",
-  "degrees": [
-    {
-      "title": "הנדסת מכונות",
-      "degree": "BSc",
-      "institution": "טכניון",
-      "year": ""
-    },
-    {
-      "title": "הנדסת מכונות",
-      "degree": "MSc",
-      "institution": "טכניון",
-      "year": ""
-    }
-  ]
+  "order": 103,
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

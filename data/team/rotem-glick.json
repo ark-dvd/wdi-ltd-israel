@@ -1,21 +1,14 @@
 {
+  "id": "rotem-glick",
   "name": "רותם גליק",
   "position": "מנהלת תכנון ורישוי",
   "image": "/images/team/rotem-glick.jpg",
   "linkedin": "",
-  "bio": "מנהלת תכנון ורישוי. הנדסאית אדריכלות ועיצוב.",
   "category": "team",
   "order": 100,
-  "birthYear": null,
+  "birthYear": "",
   "birthPlace": "",
-  "residence": "חולון",
-  "educationType": "הנדסאית",
-  "degrees": [
-    {
-      "title": "אדריכלות ועיצוב",
-      "degree": "הנדסאית",
-      "institution": "",
-      "year": ""
-    }
-  ]
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

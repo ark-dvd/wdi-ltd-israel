@@ -1,27 +1,14 @@
 {
+  "id": "guy-golan",
   "name": "גיא גולן",
   "position": "מנכ\"ל WDI",
   "image": "/images/team/guy-golan.jpg",
   "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
-  "bio": "מנכ\"ל WDI ישראל. מהנדס אזרחי ומנהל עסקים עם ניסיון עשיר בניהול פרויקטים מורכבים.",
   "category": "founders",
   "order": 2,
-  "birthYear": 1973,
-  "birthPlace": "כפר ויתקין",
-  "residence": "יקנעם",
-  "educationType": "מהנדס",
-  "degrees": [
-    {
-      "title": "הנדסה אזרחית",
-      "degree": "BSc",
-      "institution": "טכניון",
-      "year": "2001"
-    },
-    {
-      "title": "מנהל עסקים",
-      "degree": "MBA",
-      "institution": "אוניברסיטת חיפה",
-      "year": "2015"
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

@@ -1,21 +1,14 @@
 {
+  "id": "yossi-elisha",
   "name": "יוסי אלישע",
   "position": "ראש תחום פרויקטים מסחריים",
   "image": "/images/team/yossi-elisha.jpg",
   "linkedin": "",
-  "bio": "ראש תחום פרויקטים מסחריים. הנדסאי חשמל ואלקטרוניקה עם ניסיון עשיר בניהול פרויקטים.",
   "category": "heads",
   "order": 21,
-  "birthYear": 1971,
-  "birthPlace": "מצליח",
-  "residence": "גבעתיים",
-  "educationType": "הנדסאי",
-  "degrees": [
-    {
-      "title": "חשמל ואלקטרוניקה",
-      "degree": "הנדסאי",
-      "institution": "",
-      "year": ""
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

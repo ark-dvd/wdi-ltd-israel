@@ -23,51 +23,28 @@ async function loadJSON(path) {
   return null;
 }
 
-// Load all JSON files from a folder - scan all .json files directly
+// Load all JSON files from a folder using _index.json
 async function loadFolderData(folderPath) {
   const items = [];
-
-  // First try to get file list from _index.json (if exists)
   const indexData = await loadJSON(`${folderPath}/_index.json`);
-  let fileList = indexData?.files || [];
-
-  // Also try to fetch any files that might exist but aren't in index
-  // by checking the folder listing (works on some hosts)
-  try {
-    const response = await fetch(`${folderPath}/`);
-    if (response.ok) {
-      const html = await response.text();
-      // Extract .json filenames from directory listing
-      const matches = html.match(/href="([^"]+\.json)"/g);
-      if (matches) {
-        const foundFiles = matches.map(m => m.replace(/href="|"/g, '')).filter(f => f !== '_index.json');
-        // Merge with existing list (remove duplicates)
-        fileList = [...new Set([...fileList, ...foundFiles])];
+  
+  if (indexData && indexData.files && indexData.files.length > 0) {
+    for (const file of indexData.files) {
+      const data = await loadJSON(`${folderPath}/${file}`);
+      if (data) {
+        if (!data.id) {
+          data.id = file.replace('.json', '');
+        }
+        items.push(data);
       }
     }
-  } catch (e) {
-    // Directory listing not available, continue with index
   }
-
-  // Load each file
-  for (const file of fileList) {
-    const filename = file.includes('/') ? file : file;
-    const data = await loadJSON(`${folderPath}/${filename}`);
-    if (data) {
-      // Add id from filename if not present
-      if (!data.id) {
-        data.id = filename.replace('.json', '');
-      }
-      items.push(data);
-    }
-  }
+  
   return items;
 }
 
 async function initializeData() {
-  // Load all data - prefer folder collections (CMS), fallback to combined files
-
-  // Load team from folder first, fallback to combined file
+  // Load team - folder first (CMS), fallback to combined file
   WDI.team = await loadFolderData('/data/team');
   if (!WDI.team.length) {
     const teamData = await loadJSON('/data/team.json');
@@ -76,7 +53,7 @@ async function initializeData() {
     }
   }
 
-  // Load projects from folder first, fallback to combined file
+  // Load projects
   WDI.projects = await loadFolderData('/data/projects');
   if (!WDI.projects.length) {
     const projectsData = await loadJSON('/data/projects.json');
@@ -85,7 +62,7 @@ async function initializeData() {
     }
   }
 
-  // Load clients from folder first, fallback to combined file
+  // Load clients
   WDI.clients = await loadFolderData('/data/clients-items');
   if (!WDI.clients.length) {
     const clientsData = await loadJSON('/data/clients.json');
@@ -94,7 +71,7 @@ async function initializeData() {
     }
   }
 
-  // Load testimonials from folder first, fallback to combined file
+  // Load testimonials
   WDI.testimonials = await loadFolderData('/data/testimonials');
   if (!WDI.testimonials.length) {
     const clientsData = await loadJSON('/data/clients.json');
@@ -103,7 +80,7 @@ async function initializeData() {
     }
   }
 
-  // Load services (single file only)
+  // Load services
   const servicesData = await loadJSON('/data/services.json');
   if (servicesData && servicesData.services) {
     WDI.services = servicesData.services;
@@ -118,9 +95,7 @@ function initHeader() {
   if (!header) return;
   
   window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 50) {
+    if (window.pageYOffset > 50) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
@@ -151,7 +126,6 @@ function initMobileNav() {
 // ===== Projects Filter =====
 function initProjectsFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-
   if (!filterBtns.length) return;
 
   filterBtns.forEach(btn => {
@@ -164,7 +138,6 @@ function initProjectsFilter() {
 
       projectCards.forEach(card => {
         const category = card.dataset.category;
-
         if (filter === 'all' || category === filter) {
           card.classList.remove('hidden');
         } else {
@@ -213,32 +186,84 @@ function getCategoryId(categoryName) {
   return map[categoryName] || 'other';
 }
 
-// ===== Render Team =====
-// 4 sections: הנהלה, אדמיניסטרציה, ראשי תחומים, מנהלי פרויקטים
+// ===== Render Team - Square images with hover overlay =====
 function renderTeam(container, team) {
   if (!container || !team || !team.length) return;
 
-  // Get last name for Hebrew sorting
   const getLastName = (name) => {
     const parts = name.split(' ');
     return parts.length > 1 ? parts[parts.length - 1] : name;
   };
 
-  // Render single team card
-  const renderCard = (member) => `
-    <div class="team-card" data-member-id="${member.id || ''}" style="cursor: pointer;">
-      <div class="team-image">
-        <img src="${member.image}" alt="${member.name}">
+  const getImagePath = (imagePath) => {
+    if (!imagePath) return '/images/placeholder-person.jpg';
+    if (imagePath.startsWith('/')) return imagePath;
+    if (imagePath.startsWith('images/')) return '/' + imagePath;
+    return imagePath;
+  };
+
+  // Build bio text for hover
+  const buildBioText = (member) => {
+    let bio = '';
+    
+    if (member.birthYear) {
+      bio += `יליד ${member.birthYear}`;
+      if (member.birthPlace) bio += `, ${member.birthPlace}`;
+      bio += '. ';
+    }
+    
+    if (member.residence) {
+      bio += `מתגורר ב${member.residence}. `;
+    }
+    
+    if (member.educationType) {
+      bio += `${member.educationType}. `;
+    }
+    
+    if (member.degrees && member.degrees.length > 0) {
+      const degreeStrings = member.degrees.map(d => {
+        const parts = [];
+        if (d.institution) parts.push(d.institution);
+        if (d.title) parts.push(d.title);
+        if (d.degree) parts.push(d.degree);
+        if (d.year) parts.push(d.year);
+        return parts.filter(p => p).join(' ');
+      }).filter(s => s);
+      if (degreeStrings.length > 0) {
+        bio += degreeStrings.join(', ') + '.';
+      }
+    }
+    
+    return bio;
+  };
+
+  // Render single team card with hover overlay
+  const renderCard = (member) => {
+    const bioText = buildBioText(member);
+    const hasDetails = bioText || member.linkedin;
+    
+    return `
+      <div class="team-card">
+        <div class="team-card-image">
+          <img src="${getImagePath(member.image)}" alt="${member.name}" onerror="this.src='/images/placeholder-person.jpg'">
+          ${hasDetails ? `
+            <div class="team-card-overlay">
+              <h4>${member.name}</h4>
+              <p class="team-card-position">${member.position}</p>
+              ${bioText ? `<p class="team-card-bio">${bioText}</p>` : ''}
+              ${member.linkedin ? `
+                <a href="${member.linkedin}" target="_blank" class="team-card-linkedin" onclick="event.stopPropagation();">
+                  <i class="fab fa-linkedin-in"></i> LinkedIn
+                </a>
+              ` : ''}
+            </div>
+          ` : ''}
+        </div>
+        <h3 class="team-card-name">${member.name}</h3>
+        <p class="team-card-role">${member.position}</p>
       </div>
-      <h3>${member.name}</h3>
-      <p class="team-position">${member.position}</p>
-      ${member.linkedin ? `
-        <a href="${member.linkedin}" target="_blank" class="team-linkedin" onclick="event.stopPropagation();">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-      ` : ''}
-    </div>
-  `;
+    `;
+  };
 
   // Filter by category
   const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -248,48 +273,44 @@ function renderTeam(container, team) {
 
   let html = '';
 
-  // Section 1: הנהלה (founders)
   if (founders.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">הנהלה</h2>
-        <div class="team-grid team-grid-3">
+        <div class="team-grid-new">
           ${founders.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Section 2: אדמיניסטרציה (admin)
   if (admin.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">אדמיניסטרציה</h2>
-        <div class="team-grid team-grid-admin">
+        <div class="team-grid-new">
           ${admin.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Section 3: ראשי תחומים (heads)
   if (heads.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">ראשי תחומים</h2>
-        <div class="team-grid team-grid-3">
+        <div class="team-grid-new">
           ${heads.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Section 4: מנהלי פרויקטים (team)
   if (projectManagers.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">מנהלי פרויקטים</h2>
-        <div class="team-grid team-grid-3">
+        <div class="team-grid-new">
           ${projectManagers.map(renderCard).join('')}
         </div>
       </div>
@@ -297,100 +318,6 @@ function renderTeam(container, team) {
   }
 
   container.innerHTML = html;
-
-  // Add click handlers for bio modal
-  container.querySelectorAll('.team-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const memberId = card.dataset.memberId;
-      const member = team.find(m => m.id === memberId);
-      if (member) {
-        showTeamMemberModal(member);
-      }
-    });
-  });
-}
-
-// ===== Team Member Modal =====
-function showTeamMemberModal(member) {
-  // Remove existing modal if any
-  const existingModal = document.getElementById('team-modal');
-  if (existingModal) existingModal.remove();
-
-  // Format bio: "יליד [year], [birthPlace]. מתגורר ב[residence]. [educationType]. [institution] [title] [year], ..."
-  let bioText = '';
-
-  // Birth info: "יליד 1974, צפת."
-  if (member.birthYear) {
-    bioText += `יליד ${member.birthYear}`;
-    if (member.birthPlace) bioText += `, ${member.birthPlace}`;
-    bioText += '. ';
-  }
-
-  // Residence: "מתגורר באוסטין, טקסס."
-  if (member.residence) {
-    bioText += `מתגורר ב${member.residence}. `;
-  }
-
-  // Education: "מהנדס. טכניון הנדסה אזרחית 2002, האוניברסיטה הפתוחה MBA 2009."
-  if (member.educationType) {
-    bioText += `${member.educationType}. `;
-  }
-
-  if (member.degrees && member.degrees.length > 0) {
-    const degreeStrings = member.degrees.map(d => {
-      const parts = [];
-      if (d.institution) parts.push(d.institution);
-      if (d.title) parts.push(d.title);
-      if (d.degree) parts.push(d.degree);
-      if (d.year) parts.push(d.year);
-      return parts.filter(p => p).join(' ');
-    }).filter(s => s);
-    if (degreeStrings.length > 0) {
-      bioText += degreeStrings.join(', ') + '.';
-    }
-  }
-
-  // Build modal HTML
-  const modalHtml = `
-    <div id="team-modal" class="team-modal" onclick="if(event.target === this) closeTeamModal()">
-      <div class="team-modal-content">
-        <button class="team-modal-close" onclick="closeTeamModal()">&times;</button>
-        <div class="team-modal-header">
-          <div class="team-modal-image">
-            <img src="${member.image}" alt="${member.name}">
-          </div>
-          <div class="team-modal-info">
-            <h2>${member.name}</h2>
-            <p class="team-modal-position">${member.position}</p>
-            ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" class="team-modal-linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a>` : ''}
-          </div>
-        </div>
-        <div class="team-modal-body">
-          ${bioText ? `<p class="team-modal-bio">${bioText}</p>` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  document.body.style.overflow = 'hidden';
-
-  // Close on escape key
-  const handleEscape = (e) => {
-    if (e.key === 'Escape') {
-      closeTeamModal();
-      document.removeEventListener('keydown', handleEscape);
-    }
-  };
-  document.addEventListener('keydown', handleEscape);
-}
-
-function closeTeamModal() {
-  const modal = document.getElementById('team-modal');
-  if (modal) {
-    modal.remove();
-    document.body.style.overflow = '';
-  }
 }
 
 // ===== Render Services =====
@@ -410,7 +337,7 @@ function renderServices(container, services) {
   `).join('');
 }
 
-// ===== Render All Testimonials (Grid, not slider) =====
+// ===== Render Testimonials =====
 function renderTestimonials(container, testimonials) {
   if (!container || !testimonials || !testimonials.length) return;
   
@@ -438,14 +365,13 @@ function renderTestimonials(container, testimonials) {
   `;
 }
 
-// ===== Render Clients Logos =====
+// ===== Render Clients =====
 function renderClients(container, clients) {
   if (!container || !clients || !clients.length) return;
   
   container.innerHTML = clients.map(client => `
     <div class="client-logo">
-      <img src="${client.logo}" alt="${client.name}" loading="lazy"
-           onerror="this.style.opacity='0.3'">
+      <img src="${client.logo}" alt="${client.name}" loading="lazy" onerror="this.style.opacity='0.3'">
     </div>
   `).join('');
 }
@@ -453,7 +379,6 @@ function renderClients(container, clients) {
 // ===== Scroll Animations =====
 function initScrollAnimations() {
   const animatedElements = document.querySelectorAll('[data-animate]');
-  
   if (!animatedElements.length) return;
   
   const observer = new IntersectionObserver((entries) => {
@@ -519,28 +444,22 @@ function initSmoothScroll() {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   });
 }
 
-// ===== Initialize Everything =====
+// ===== Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize core functionality
   initHeader();
   initMobileNav();
   initSmoothScroll();
   initScrollAnimations();
   initForms();
   
-  // Load data
   await initializeData();
   
-  // Initialize data-driven components if containers exist
   const projectsGrid = document.querySelector('#projects-grid');
   if (projectsGrid) {
     renderProjects(projectsGrid, WDI.projects);
@@ -594,7 +513,7 @@ function createShareButtons(title, url) {
   `;
 }
 
-// ===== Export for use in other scripts =====
+// ===== Exports =====
 window.WDI = WDI;
 window.renderProjects = renderProjects;
 window.renderTeam = renderTeam;

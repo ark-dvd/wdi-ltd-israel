@@ -1,21 +1,14 @@
 {
+  "id": "ori-davidi",
   "name": "אורי דוידי",
   "position": "מנהל פרויקט",
   "image": "/images/team/ori-davidi.jpg",
   "linkedin": "https://www.linkedin.com/in/ori-davidi/",
-  "bio": "מנהל פרויקט. סטודנט להנדסה אזרחית.",
   "category": "team",
   "order": 101,
-  "birthYear": 2000,
-  "birthPlace": "ראשון לציון",
-  "residence": "ראשון לציון",
-  "educationType": "סטודנט",
-  "degrees": [
-    {
-      "title": "הנדסה אזרחית",
-      "degree": "BSc (בלימודים)",
-      "institution": "SCE",
-      "year": ""
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

@@ -1,21 +1,14 @@
 {
+  "id": "eyal-nir",
   "name": "איל ניר",
   "position": "ראש תחום פרויקטים תעשייתיים",
   "image": "/images/team/eyal-nir.jpg",
   "linkedin": "",
-  "bio": "ראש תחום פרויקטים תעשייתיים. מהנדס אזרחי עם התמחות בפרויקטים תעשייתיים מורכבים.",
   "category": "heads",
   "order": 20,
-  "birthYear": 1971,
-  "birthPlace": "קיבוץ הזורע",
-  "residence": "זכרון יעקב",
-  "educationType": "מהנדס",
-  "degrees": [
-    {
-      "title": "הנדסה אזרחית",
-      "degree": "BSc",
-      "institution": "טכניון",
-      "year": "2000"
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

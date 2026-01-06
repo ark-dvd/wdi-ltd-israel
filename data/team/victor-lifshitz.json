@@ -1,27 +1,14 @@
 {
+  "id": "victor-lifshitz",
   "name": "ויקטור ליפשיץ",
   "position": "ראש תחום פרויקטים ביטחוניים",
   "image": "/images/team/victor-lifshitz.jpg",
   "linkedin": "",
-  "bio": "ראש תחום פרויקטים ביטחוניים. מהנדס כימיה וחומרים עם התמחות בבריאות תעסוקתית.",
   "category": "heads",
   "order": 22,
-  "birthYear": 1973,
-  "birthPlace": "בלארוס",
-  "residence": "דברת",
-  "educationType": "מהנדס",
-  "degrees": [
-    {
-      "title": "כימיה וחומרים",
-      "degree": "BSc",
-      "institution": "אוניברסיטת בר אילן",
-      "year": "1997"
-    },
-    {
-      "title": "בריאות תעסוקתית",
-      "degree": "MOccH",
-      "institution": "אוניברסיטת תל אביב",
-      "year": "2006"
-    }
-  ]
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
+  "educationType": "",
+  "degrees": []
 }

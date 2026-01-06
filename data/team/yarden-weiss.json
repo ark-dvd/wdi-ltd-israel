@@ -1,14 +1,14 @@
 {
+  "id": "yarden-weiss",
   "name": "ירדן וייס",
   "position": "אדמיניסטרציה",
   "image": "/images/team/yarden-weiss.jpg",
   "linkedin": "",
-  "bio": "אחראית על ניהול אדמיניסטרטיבי ותפעול משרדי.",
   "category": "admin",
-  "order": 11,
-  "birthYear": 2004,
-  "birthPlace": "הושעיה",
-  "residence": "הושעיה",
+  "order": 10,
+  "birthYear": "",
+  "birthPlace": "",
+  "residence": "",
   "educationType": "",
   "degrees": []
 }
