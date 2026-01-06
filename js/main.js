@@ -23,10 +23,13 @@ async function loadJSON(path) {
   return null;
 }
 
-// Load all JSON files from a folder using file list
-async function loadFolderData(folderPath, fileList) {
+// Load all JSON files from a folder using index file
+async function loadFolderData(folderPath) {
+  const indexData = await loadJSON(`${folderPath}/_index.json`);
+  if (!indexData || !indexData.files) return [];
+
   const items = [];
-  for (const file of fileList) {
+  for (const file of indexData.files) {
     const data = await loadJSON(`${folderPath}/${file}`);
     if (data) {
       // Add id from filename if not present
@@ -40,37 +43,48 @@ async function loadFolderData(folderPath, fileList) {
 }
 
 async function initializeData() {
-  // Load all data files - supports both old format (single file) and new format (folder with files)
+  // Load all data - prefer folder collections (CMS), fallback to combined files
 
-  // Load team - try combined file first, then individual files
-  let teamData = await loadJSON('/data/team.json');
-  if (teamData && teamData.team && teamData.team.length > 0) {
-    WDI.team = teamData.team;
-  } else {
-    // Try loading from individual files
-    const teamFiles = await loadJSON('/data/team/_index.json');
-    if (teamFiles && teamFiles.files) {
-      WDI.team = await loadFolderData('/data/team', teamFiles.files);
+  // Load team from folder first, fallback to combined file
+  WDI.team = await loadFolderData('/data/team');
+  if (!WDI.team.length) {
+    const teamData = await loadJSON('/data/team.json');
+    if (teamData && teamData.team) {
+      WDI.team = teamData.team;
     }
   }
 
-  // Load projects - try combined file first
-  let projectsData = await loadJSON('/data/projects.json');
-  if (projectsData && projectsData.projects && projectsData.projects.length > 0) {
-    WDI.projects = projectsData.projects;
+  // Load projects from folder first, fallback to combined file
+  WDI.projects = await loadFolderData('/data/projects');
+  if (!WDI.projects.length) {
+    const projectsData = await loadJSON('/data/projects.json');
+    if (projectsData && projectsData.projects) {
+      WDI.projects = projectsData.projects;
+    }
   }
 
-  // Load services
-  let servicesData = await loadJSON('/data/services.json');
+  // Load clients from folder first, fallback to combined file
+  WDI.clients = await loadFolderData('/data/clients-items');
+  if (!WDI.clients.length) {
+    const clientsData = await loadJSON('/data/clients.json');
+    if (clientsData && clientsData.clients) {
+      WDI.clients = clientsData.clients;
+    }
+  }
+
+  // Load testimonials from folder first, fallback to combined file
+  WDI.testimonials = await loadFolderData('/data/testimonials');
+  if (!WDI.testimonials.length) {
+    const clientsData = await loadJSON('/data/clients.json');
+    if (clientsData && clientsData.testimonials) {
+      WDI.testimonials = clientsData.testimonials;
+    }
+  }
+
+  // Load services (single file only)
+  const servicesData = await loadJSON('/data/services.json');
   if (servicesData && servicesData.services) {
     WDI.services = servicesData.services;
-  }
-
-  // Load clients and testimonials - try combined file first
-  let clientsData = await loadJSON('/data/clients.json');
-  if (clientsData) {
-    if (clientsData.clients) WDI.clients = clientsData.clients;
-    if (clientsData.testimonials) WDI.testimonials = clientsData.testimonials;
   }
 
   return WDI;
@@ -178,7 +192,7 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
-// Order: founders (1-3), admin (10-19), heads (20-29), team (sorted by last name)
+// Founders in separate row of 3, then admin, heads, team (sorted by last name)
 function renderTeam(container, team, options = {}) {
   if (!container || !team || !team.length) return;
 
@@ -188,26 +202,8 @@ function renderTeam(container, team, options = {}) {
     return parts.length > 1 ? parts[parts.length - 1] : name;
   };
 
-  // Separate team members by category
-  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const teamMembers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
-
-  // Combine in correct order
-  let sortedTeam = [...founders, ...admin, ...heads, ...teamMembers];
-
-  const { category, limit } = options;
-
-  if (category) {
-    sortedTeam = sortedTeam.filter(m => m.category === category);
-  }
-
-  if (limit) {
-    sortedTeam = sortedTeam.slice(0, limit);
-  }
-  
-  container.innerHTML = sortedTeam.map(member => `
+  // Helper to render a team card
+  const renderCard = (member) => `
     <div class="team-card" data-category="${member.category || 'team'}">
       <div class="team-image">
         <img src="${member.image || '/images/placeholder-person.jpg'}" alt="${member.name}" loading="lazy"
@@ -221,7 +217,54 @@ function renderTeam(container, team, options = {}) {
         </a>
       ` : ''}
     </div>
-  `).join('');
+  `;
+
+  // Separate team members by category
+  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const teamMembers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
+
+  const { category, limit } = options;
+
+  // If filtering by category, use simple grid
+  if (category) {
+    let filtered = team.filter(m => m.category === category);
+    if (limit) filtered = filtered.slice(0, limit);
+    container.innerHTML = filtered.map(renderCard).join('');
+    return;
+  }
+
+  // Build sections: founders separate, then rest of team
+  let html = '';
+
+  // Founders section (separate row of 3)
+  if (founders.length > 0) {
+    html += `
+      <div class="team-section team-founders">
+        <h3 class="team-section-title">מייסדים ושותפים</h3>
+        <div class="team-founders-grid">
+          ${founders.map(renderCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Rest of team (admin, heads, team members)
+  const restOfTeam = [...admin, ...heads, ...teamMembers];
+  if (restOfTeam.length > 0) {
+    let teamToShow = limit ? restOfTeam.slice(0, limit - founders.length) : restOfTeam;
+    html += `
+      <div class="team-section team-members">
+        <h3 class="team-section-title">הצוות</h3>
+        <div class="team-members-grid">
+          ${teamToShow.map(renderCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
 }
 
 // ===== Render Services =====
@@ -404,6 +447,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// ===== Share Buttons =====
+function createShareButtons(title, url) {
+  const encodedUrl = encodeURIComponent(url || window.location.href);
+  const encodedTitle = encodeURIComponent(title || document.title);
+
+  return `
+    <div class="share-buttons">
+      <span class="share-buttons-label">שתף:</span>
+      <a href="https://wa.me/?text=${encodedTitle}%20${encodedUrl}" target="_blank" rel="noopener" class="share-btn whatsapp" title="שתף בווטסאפ">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" rel="noopener" class="share-btn facebook" title="שתף בפייסבוק">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="mailto:?subject=${encodedTitle}&body=${encodedUrl}" class="share-btn email" title="שלח במייל">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </div>
+  `;
+}
+
 // ===== Export for use in other scripts =====
 window.WDI = WDI;
 window.renderProjects = renderProjects;
@@ -411,3 +475,4 @@ window.renderTeam = renderTeam;
 window.renderServices = renderServices;
 window.renderTestimonials = renderTestimonials;
 window.renderClients = renderClients;
+window.createShareButtons = createShareButtons;

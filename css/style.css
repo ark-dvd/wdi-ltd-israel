@@ -266,8 +266,20 @@ a:hover {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: var(--primary-dark);
+  background: linear-gradient(145deg, #0a1628 0%, var(--primary-dark) 40%, #1a3a5c 100%);
   overflow: hidden;
+}
+
+/* Decorative background pattern when video is missing */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(201, 162, 39, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(201, 162, 39, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 .hero-video {
@@ -276,13 +288,15 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.4;
+  opacity: 0.5;
+  z-index: 1;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(26, 54, 93, 0.55) 0%, rgba(15, 39, 68, 0.45) 100%);
+  z-index: 1;
 }
 
 .hero-content {
@@ -587,6 +601,49 @@ a:hover {
   gap: 30px;
 }
 
+/* Team sections */
+.team-section {
+  margin-bottom: 60px;
+}
+
+.team-section:last-child {
+  margin-bottom: 0;
+}
+
+.team-section-title {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.team-section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--secondary);
+  margin: 12px auto 0;
+  border-radius: 2px;
+}
+
+/* Founders grid - exactly 3 columns, centered */
+.team-founders-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Team members grid - responsive */
+.team-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+}
+
 .team-card {
   text-align: center;
 }
@@ -850,6 +907,64 @@ a:hover {
   color: var(--secondary);
 }
 
+.daflash-logo {
+  height: 20px;
+  width: auto;
+  vertical-align: middle;
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+.daflash-logo:hover {
+  opacity: 1;
+}
+
+/* ===== Share Buttons ===== */
+.share-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.share-buttons-label {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-left: 8px;
+}
+
+.share-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.share-btn:hover {
+  transform: scale(1.1);
+}
+
+.share-btn.whatsapp {
+  background: #25D366;
+}
+
+.share-btn.facebook {
+  background: #1877F2;
+}
+
+.share-btn.email {
+  background: var(--gray-600);
+}
+
+.share-btn.linkedin {
+  background: #0A66C2;
+}
+
 /* ===== Page Header ===== */
 .page-header {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -1104,17 +1219,37 @@ a:hover {
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .team-founders-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .team-members-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
   .team-grid {
     grid-template-columns: 1fr;
   }
-  
+
+  .team-founders-grid {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .team-members-grid {
+    grid-template-columns: 1fr;
+  }
+
   .services-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .testimonial-card {
     padding: 25px 20px;
   }
