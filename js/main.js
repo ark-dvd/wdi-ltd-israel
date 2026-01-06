@@ -23,68 +23,47 @@ async function loadJSON(path) {
   return null;
 }
 
-// Load all JSON files from a folder using _index.json
+// Load all JSON files from a folder using _index.json - PARALLEL loading
 async function loadFolderData(folderPath) {
-  const items = [];
   const indexData = await loadJSON(`${folderPath}/_index.json`);
   
   if (indexData && indexData.files && indexData.files.length > 0) {
-    for (const file of indexData.files) {
-      const data = await loadJSON(`${folderPath}/${file}`);
-      if (data) {
+    // Load all files in PARALLEL
+    const promises = indexData.files.map(file => loadJSON(`${folderPath}/${file}`));
+    const results = await Promise.all(promises);
+    
+    return results
+      .filter(data => data !== null)
+      .map((data, index) => {
         if (!data.id) {
-          data.id = file.replace('.json', '');
+          data.id = indexData.files[index].replace('.json', '');
         }
-        items.push(data);
-      }
-    }
+        return data;
+      });
   }
   
-  return items;
+  return [];
 }
 
 async function initializeData() {
-  // Load team - folder first (CMS), fallback to combined file
-  WDI.team = await loadFolderData('/data/team');
-  if (!WDI.team.length) {
-    const teamData = await loadJSON('/data/team.json');
-    if (teamData && teamData.team) {
-      WDI.team = teamData.team;
-    }
-  }
+  // Load ALL data sources in PARALLEL
+  const [teamFolder, projectsFolder, clientsFolder, testimonialsFolder, teamJson, projectsJson, clientsJson, servicesJson] = await Promise.all([
+    loadFolderData('/data/team'),
+    loadFolderData('/data/projects'),
+    loadFolderData('/data/clients-items'),
+    loadFolderData('/data/testimonials'),
+    loadJSON('/data/team.json'),
+    loadJSON('/data/projects.json'),
+    loadJSON('/data/clients.json'),
+    loadJSON('/data/services.json')
+  ]);
 
-  // Load projects
-  WDI.projects = await loadFolderData('/data/projects');
-  if (!WDI.projects.length) {
-    const projectsData = await loadJSON('/data/projects.json');
-    if (projectsData && projectsData.projects) {
-      WDI.projects = projectsData.projects;
-    }
-  }
-
-  // Load clients
-  WDI.clients = await loadFolderData('/data/clients-items');
-  if (!WDI.clients.length) {
-    const clientsData = await loadJSON('/data/clients.json');
-    if (clientsData && clientsData.clients) {
-      WDI.clients = clientsData.clients;
-    }
-  }
-
-  // Load testimonials
-  WDI.testimonials = await loadFolderData('/data/testimonials');
-  if (!WDI.testimonials.length) {
-    const clientsData = await loadJSON('/data/clients.json');
-    if (clientsData && clientsData.testimonials) {
-      WDI.testimonials = clientsData.testimonials;
-    }
-  }
-
-  // Load services
-  const servicesData = await loadJSON('/data/services.json');
-  if (servicesData && servicesData.services) {
-    WDI.services = servicesData.services;
-  }
+  // Use folder data if available, otherwise fallback to combined JSON
+  WDI.team = teamFolder.length ? teamFolder : (teamJson?.team || []);
+  WDI.projects = projectsFolder.length ? projectsFolder : (projectsJson?.projects || []);
+  WDI.clients = clientsFolder.length ? clientsFolder : (clientsJson?.clients || []);
+  WDI.testimonials = testimonialsFolder.length ? testimonialsFolder : (clientsJson?.testimonials || []);
+  WDI.services = servicesJson?.services || [];
 
   return WDI;
 }
