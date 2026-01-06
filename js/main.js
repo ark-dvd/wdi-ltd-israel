@@ -185,26 +185,29 @@ function renderTeam(container, team) {
   // Build bio text for hover - each item on separate line
   const buildBioText = (member) => {
     const lines = [];
+    const isFemale = member.gender === 'female';
     
     if (member.birthYear) {
-      let birthLine = `יליד ${member.birthYear}`;
+      const bornWord = isFemale ? 'ילידת' : 'יליד';
+      let birthLine = `${bornWord} ${member.birthYear}`;
       if (member.birthPlace) birthLine += `, ${member.birthPlace}`;
       birthLine += '.';
       lines.push(birthLine);
     }
     
     if (member.residence) {
-      lines.push(`מתגורר ב${member.residence}.`);
+      const livesWord = isFemale ? 'מתגוררת' : 'מתגורר';
+      lines.push(`${livesWord} ב${member.residence}.`);
     }
     
     if (member.degrees && member.degrees.length > 0) {
       member.degrees.forEach(d => {
-        const parts = [];
-        if (d.degree) parts.push(d.degree);
-        if (d.title) parts.push(d.title);
-        if (d.year) parts.push(d.year);
-        if (d.institution) parts.push(d.institution);
-        const degreeLine = parts.filter(p => p).join(' ');
+        // Format: [סוג תואר] [שם הלימודים], [מוסד] ([שנה])
+        let degreeLine = '';
+        if (d.degree) degreeLine += d.degree;
+        if (d.title) degreeLine += (degreeLine ? ' ' : '') + d.title;
+        if (d.institution) degreeLine += (degreeLine ? ', ' : '') + d.institution;
+        if (d.year) degreeLine += ` (${d.year})`;
         if (degreeLine) lines.push(degreeLine);
       });
     }

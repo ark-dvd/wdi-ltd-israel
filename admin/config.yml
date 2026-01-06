@@ -40,6 +40,15 @@ collections:
         widget: "string"
         required: true
 
+      - label: "מגדר"
+        name: "gender"
+        widget: "select"
+        required: true
+        default: "male"
+        options:
+          - { label: "זכר", value: "male" }
+          - { label: "נקבה", value: "female" }
+
       - label: "תמונה"
         name: "image"
         widget: "image"
