@@ -29,15 +29,22 @@ collections:
     format: "json"
     slug: "{{slug}}"
     summary: "{{name}} - {{position}}"
+    sortable_fields: ["order", "name"]
     fields:
       - { label: "שם מלא", name: "name", widget: "string", required: true }
       - { label: "תפקיד", name: "position", widget: "string", required: true }
       - { label: "תמונה", name: "image", widget: "image", required: false, media_folder: "/images/team" }
-      - { label: "טלפון", name: "phone", widget: "string", required: false }
-      - { label: "אימייל", name: "email", widget: "string", required: false }
+      - label: "קטגוריה"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "מייסדים", value: "founders" }
+          - { label: "אדמיניסטרציה", value: "admin" }
+          - { label: "ראשי תחומים", value: "heads" }
+          - { label: "צוות", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
       - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "מייסדים: 1-3, אדמין: 10-19, ראשי תחומים: 20-29, צוות: 100+" }
 
   # Projects
   - name: "projects"
@@ -80,7 +87,7 @@ collections:
   - name: "clients"
     label: "לקוחות"
     label_singular: "לקוח"
-    folder: "data/clients"
+    folder: "data/clients-items"
     create: true
     delete: true
     extension: "json"

@@ -1,0 +1,11 @@
+{
+  "id": "eshkol",
+  "title": "תחנת כח אשכול",
+  "client": "דליה אנרגיות",
+  "category": "תשתיות",
+  "image": "/images/projects/eshkol.jpg",
+  "description": "תחנת כח בהיקף רחב",
+  "services": ["ניהול תכנון", "ניהול ביצוע"],
+  "year": "2021",
+  "featured": false
+}

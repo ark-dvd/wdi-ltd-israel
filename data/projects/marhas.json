@@ -1,0 +1,11 @@
+{
+  "id": "marhas",
+  "title": "מרכז ההספקה המטכ\"לי",
+  "client": "צה\"ל/משהב\"ט/שפיר",
+  "category": "ממשלתי",
+  "image": "/images/projects/marhas.jpg",
+  "description": "מרכז לוגיסטי ביטחוני",
+  "services": ["ניהול תכנון", "ניהול ביצוע", "PMO"],
+  "year": "2023",
+  "featured": false
+}

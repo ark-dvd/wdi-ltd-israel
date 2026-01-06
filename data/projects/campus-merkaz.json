@@ -1,0 +1,11 @@
+{
+  "id": "campus-merkaz",
+  "title": "קמפוס מרכז",
+  "client": "משהב\"ט",
+  "category": "ממשלתי",
+  "image": "/images/projects/campus-merkaz.jpg",
+  "description": "קמפוס ביטחוני מרכזי",
+  "services": ["ניהול תכנון", "PMO", "הבטחת איכות"],
+  "year": "2024",
+  "featured": true
+}

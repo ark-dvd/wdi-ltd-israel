@@ -1,0 +1,11 @@
+{
+  "id": "ashdod-desal",
+  "title": "מתקן התפלה אשדוד",
+  "client": "שותפות שפיר Blugen",
+  "category": "תשתיות",
+  "image": "/images/projects/ashdod-desal.jpg",
+  "description": "מתקן התפלה בהיקף של 100 מיליון מ\"ק בשנה",
+  "services": ["ניהול תכנון", "פיקוח", "ניהול ביצוע"],
+  "year": "2023",
+  "featured": true
+}

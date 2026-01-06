@@ -1,38 +1,55 @@
 // WDI Israel - Main JavaScript
-// Data-driven site functionality
+// Data-driven site functionality with CMS support
 
 // ===== Global Data Store =====
 const WDI = {
   projects: [],
   team: [],
   services: [],
-  clients: null
+  clients: [],
+  testimonials: []
 };
 
 // ===== Data Loading =====
-async function loadData(dataFile) {
+async function loadJSON(path) {
   try {
-    const response = await fetch(`/data/${dataFile}.json`);
-    if (!response.ok) throw new Error(`Failed to load ${dataFile}`);
-    return await response.json();
-  } catch (error) {
-    console.error(`Error loading ${dataFile}:`, error);
-    return null;
+    const response = await fetch(path);
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (e) {
+    console.error(`Error loading ${path}:`, e);
   }
+  return null;
 }
 
 async function initializeData() {
-  const [projectsData, teamData, servicesData, clientsData] = await Promise.all([
-    loadData('projects'),
-    loadData('team'),
-    loadData('services'),
-    loadData('clients')
-  ]);
+  // Load all data files - supports both old format (single file) and new format (folder with files)
   
-  if (projectsData) WDI.projects = projectsData.projects;
-  if (teamData) WDI.team = teamData.team;
-  if (servicesData) WDI.services = servicesData.services;
-  if (clientsData) WDI.clients = clientsData;
+  // Load team - try old format first
+  let teamData = await loadJSON('/data/team.json');
+  if (teamData && teamData.team) {
+    WDI.team = teamData.team;
+  }
+  
+  // Load projects - try old format first  
+  let projectsData = await loadJSON('/data/projects.json');
+  if (projectsData && projectsData.projects) {
+    WDI.projects = projectsData.projects;
+  }
+  
+  // Load services
+  let servicesData = await loadJSON('/data/services.json');
+  if (servicesData && servicesData.services) {
+    WDI.services = servicesData.services;
+  }
+  
+  // Load clients and testimonials
+  let clientsData = await loadJSON('/data/clients.json');
+  if (clientsData) {
+    if (clientsData.clients) WDI.clients = clientsData.clients;
+    if (clientsData.testimonials) WDI.testimonials = clientsData.testimonials;
+  }
   
   return WDI;
 }
@@ -42,8 +59,6 @@ function initHeader() {
   const header = document.querySelector('.header');
   if (!header) return;
   
-  let lastScroll = 0;
-  
   window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
@@ -52,8 +67,6 @@ function initHeader() {
     } else {
       header.classList.remove('scrolled');
     }
-    
-    lastScroll = currentScroll;
   });
 }
 
@@ -69,7 +82,6 @@ function initMobileNav() {
     toggle.classList.toggle('active');
   });
   
-  // Close menu when clicking outside
   document.addEventListener('click', (e) => {
     if (!toggle.contains(e.target) && !nav.contains(e.target)) {
       nav.classList.remove('active');
@@ -81,19 +93,17 @@ function initMobileNav() {
 // ===== Projects Filter =====
 function initProjectsFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
   
   if (!filterBtns.length) return;
   
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const filter = btn.dataset.filter;
+      const projectCards = document.querySelectorAll('.project-card');
       
-      // Update active button
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // Filter projects
       projectCards.forEach(card => {
         const category = card.dataset.category;
         
@@ -111,13 +121,13 @@ function initProjectsFilter() {
 
 // ===== Render Projects =====
 function renderProjects(container, projects, options = {}) {
-  if (!container) return;
+  if (!container || !projects || !projects.length) return;
   
   const { limit, featured } = options;
-  let filteredProjects = projects;
+  let filteredProjects = [...projects];
   
   if (featured) {
-    filteredProjects = projects.filter(p => p.featured);
+    filteredProjects = filteredProjects.filter(p => p.featured);
   }
   
   if (limit) {
@@ -126,8 +136,8 @@ function renderProjects(container, projects, options = {}) {
   
   container.innerHTML = filteredProjects.map(project => `
     <a href="/projects/${project.id}.html" class="project-card" data-category="${getCategoryId(project.category)}">
-      <img src="${project.image}" alt="${project.title}" loading="lazy" 
-           onerror="this.src='images/placeholder-project.jpg'">
+      <img src="${project.image || '/images/placeholder-project.jpg'}" alt="${project.title}" loading="lazy" 
+           onerror="this.src='/images/placeholder-project.jpg'">
       <div class="project-overlay">
         <span class="project-category">${project.category}</span>
         <h3>${project.title}</h3>
@@ -148,29 +158,31 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
+// Order: founders (1-3), admin (10-19), heads (20-29), team (100+ sorted by last name)
 function renderTeam(container, team, options = {}) {
-  if (!container) return;
+  if (!container || !team || !team.length) return;
+  
+  // Sort by order field
+  let sortedTeam = [...team].sort((a, b) => (a.order || 999) - (b.order || 999));
   
   const { category, limit } = options;
-  let filteredTeam = team.sort((a, b) => a.order - b.order);
   
   if (category) {
-    filteredTeam = filteredTeam.filter(m => m.category === category);
+    sortedTeam = sortedTeam.filter(m => m.category === category);
   }
   
   if (limit) {
-    filteredTeam = filteredTeam.slice(0, limit);
+    sortedTeam = sortedTeam.slice(0, limit);
   }
   
-  container.innerHTML = filteredTeam.map(member => `
-    <div class="team-card" data-category="${member.category}">
+  container.innerHTML = sortedTeam.map(member => `
+    <div class="team-card" data-category="${member.category || 'team'}">
       <div class="team-image">
-        <img src="${member.image}" alt="${member.name}" loading="lazy"
-             onerror="this.src='images/placeholder-person.jpg'">
+        <img src="${member.image || '/images/placeholder-person.jpg'}" alt="${member.name}" loading="lazy"
+             onerror="this.src='/images/placeholder-person.jpg'">
       </div>
       <h4>${member.name}</h4>
-      <p class="team-role">${member.role}</p>
-      ${member.bio ? `<p class="team-bio">${member.bio}</p>` : ''}
+      <p class="team-role">${member.position || member.role}</p>
       ${member.linkedin ? `
         <a href="${member.linkedin}" target="_blank" rel="noopener" class="team-linkedin">
           <i class="fab fa-linkedin-in"></i>
@@ -181,15 +193,15 @@ function renderTeam(container, team, options = {}) {
 }
 
 // ===== Render Services =====
-function renderServices(container, services, options = {}) {
-  if (!container) return;
+function renderServices(container, services) {
+  if (!container || !services || !services.length) return;
   
-  const sortedServices = services.sort((a, b) => a.order - b.order);
+  const sortedServices = [...services].sort((a, b) => (a.order || 999) - (b.order || 999));
   
   container.innerHTML = sortedServices.map(service => `
     <a href="/services/${service.id}.html" class="service-card">
       <div class="service-icon">
-        <i class="fas fa-${service.icon}"></i>
+        <i class="fas fa-${service.icon || 'cog'}"></i>
       </div>
       <h4>${service.title}</h4>
       <p>${service.shortDescription}</p>
@@ -197,40 +209,42 @@ function renderServices(container, services, options = {}) {
   `).join('');
 }
 
-// ===== Render Testimonials =====
+// ===== Render All Testimonials (Grid, not slider) =====
 function renderTestimonials(container, testimonials) {
-  if (!container || !testimonials) return;
+  if (!container || !testimonials || !testimonials.length) return;
   
-  let currentIndex = 0;
-  
-  function showTestimonial(index) {
-    const t = testimonials[index];
-    container.innerHTML = `
-      <div class="testimonial-card">
-        <p class="testimonial-quote">${t.quote}</p>
-        <p class="testimonial-author">${t.author}</p>
-        <p class="testimonial-position">${t.position}, ${t.company}</p>
-        ${t.letterUrl ? `<a href="${t.letterUrl}" target="_blank" class="btn btn-secondary mt-20">לצפיה במכתב ההמלצה</a>` : ''}
-      </div>
-    `;
-  }
-  
-  showTestimonial(currentIndex);
-  
-  // Auto rotate
-  setInterval(() => {
-    currentIndex = (currentIndex + 1) % testimonials.length;
-    showTestimonial(currentIndex);
-  }, 8000);
+  container.innerHTML = `
+    <div class="testimonials-grid">
+      ${testimonials.map(t => `
+        <div class="testimonial-card">
+          <div class="testimonial-quote-icon">
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p class="testimonial-text">${t.quote}</p>
+          <div class="testimonial-author-info">
+            <strong>${t.author}</strong>
+            <span>${t.position}</span>
+            <span>${t.company}</span>
+          </div>
+          ${t.letterUrl ? `
+            <a href="${t.letterUrl}" target="_blank" class="testimonial-letter-btn">
+              <i class="fas fa-file-pdf"></i> צפייה במכתב ההמלצה
+            </a>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 // ===== Render Clients Logos =====
 function renderClients(container, clients) {
-  if (!container || !clients) return;
+  if (!container || !clients || !clients.length) return;
   
   container.innerHTML = clients.map(client => `
     <div class="client-logo">
-      <img src="${client.logo}" alt="${client.name}" loading="lazy">
+      <img src="${client.logo}" alt="${client.name}" loading="lazy"
+           onerror="this.style.opacity='0.3'">
     </div>
   `).join('');
 }
@@ -265,8 +279,8 @@ function initForms() {
       e.preventDefault();
       
       const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn.textContent;
-      submitBtn.textContent = 'שולח...';
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
       submitBtn.disabled = true;
       
       try {
@@ -289,7 +303,7 @@ function initForms() {
           throw new Error('Form submission failed');
         }
       } catch (error) {
-        submitBtn.textContent = originalText;
+        submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         alert('אירעה שגיאה. אנא נסה שוב.');
       }
@@ -348,13 +362,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   const testimonialsContainer = document.querySelector('#testimonials');
-  if (testimonialsContainer && WDI.clients) {
-    renderTestimonials(testimonialsContainer, WDI.clients.testimonials);
+  if (testimonialsContainer) {
+    renderTestimonials(testimonialsContainer, WDI.testimonials);
   }
   
   const clientsGrid = document.querySelector('#clients-grid');
-  if (clientsGrid && WDI.clients) {
-    renderClients(clientsGrid, WDI.clients.clients);
+  if (clientsGrid) {
+    renderClients(clientsGrid, WDI.clients);
   }
 });
 
@@ -363,3 +377,5 @@ window.WDI = WDI;
 window.renderProjects = renderProjects;
 window.renderTeam = renderTeam;
 window.renderServices = renderServices;
+window.renderTestimonials = renderTestimonials;
+window.renderClients = renderClients;

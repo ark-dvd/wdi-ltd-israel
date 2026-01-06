@@ -1,0 +1,11 @@
+{
+  "id": "mobileye",
+  "title": "מובילאיי (מערכות)",
+  "client": "אפקון מערכות",
+  "category": "תעשייה ומסחר",
+  "image": "/images/projects/mobileye.jpg",
+  "description": "קמפוס פיתוח מתקדם",
+  "services": ["ניהול ביצוע", "פיקוח"],
+  "year": "2020",
+  "featured": true
+}
