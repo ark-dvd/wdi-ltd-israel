@@ -3,24 +3,20 @@ backend:
   branch: main
   repo: ark-dvd/wdi-ltd-israel
 
-# Language settings
 locale: 'he'
 
-# Media files
 media_folder: "images"
 public_folder: "/images"
 
-# Slug settings
 slug:
   encoding: "unicode"
   clean_accents: true
 
-# Collections - what can be edited
 collections:
 
-  # =====================
-  # TEAM MEMBERS
-  # =====================
+  # ===================
+  # צוות
+  # ===================
   - name: "team"
     label: "צוות"
     label_singular: "חבר צוות"
@@ -30,13 +26,26 @@ collections:
     extension: "json"
     format: "json"
     identifier_field: "name"
-    slug: "{{name | slugify}}"
+    slug: "{{slug}}"
     summary: "{{name}} - {{position}}"
     sortable_fields: ["order", "name", "category"]
     fields:
-      - { label: "שם מלא", name: "name", widget: "string", required: true }
-      - { label: "תפקיד", name: "position", widget: "string", required: true }
-      - { label: "תמונה", name: "image", widget: "image", required: false, media_folder: "/images/team" }
+      - label: "שם מלא"
+        name: "name"
+        widget: "string"
+        required: true
+
+      - label: "תפקיד"
+        name: "position"
+        widget: "string"
+        required: true
+
+      - label: "תמונה"
+        name: "image"
+        widget: "image"
+        required: false
+        media_folder: "/images/team"
+
       - label: "קטגוריה"
         name: "category"
         widget: "select"
@@ -45,11 +54,34 @@ collections:
           - { label: "אדמיניסטרציה", value: "admin" }
           - { label: "ראשי תחומים", value: "heads" }
           - { label: "מנהלי פרויקטים", value: "team" }
-      - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, ראשי תחומים: 20-29, צוות: 100+" }
-      - { label: "שנת לידה", name: "birthYear", widget: "number", required: false }
-      - { label: "מקום לידה", name: "birthPlace", widget: "string", required: false }
-      - { label: "מקום מגורים", name: "residence", widget: "string", required: false }
+
+      - label: "LinkedIn"
+        name: "linkedin"
+        widget: "string"
+        required: false
+
+      - label: "סדר תצוגה"
+        name: "order"
+        widget: "number"
+        default: 100
+        required: true
+        hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, ראשי תחומים: 20-29, צוות: 100+"
+
+      - label: "שנת לידה"
+        name: "birthYear"
+        widget: "number"
+        required: false
+
+      - label: "מקום לידה"
+        name: "birthPlace"
+        widget: "string"
+        required: false
+
+      - label: "מקום מגורים"
+        name: "residence"
+        widget: "string"
+        required: false
+
       - label: "תארים"
         name: "degrees"
         widget: "list"
@@ -62,9 +94,9 @@ collections:
           - { label: "מוסד לימודים", name: "institution", widget: "string" }
           - { label: "שנת סיום", name: "year", widget: "string", required: false }
 
-  # =====================
-  # PROJECTS - Full ERP Fields
-  # =====================
+  # ===================
+  # פרויקטים
+  # ===================
   - name: "projects"
     label: "פרויקטים"
     label_singular: "פרויקט"
@@ -77,14 +109,36 @@ collections:
     summary: "{{title}} | {{client}} | {{status}}"
     sortable_fields: ["title", "client", "status", "phase"]
     fields:
-      # === פרטים בסיסיים ===
-      - { label: "שם הפרויקט", name: "title", widget: "string", required: true }
-      - { label: "מזהה (slug)", name: "slug", widget: "string", required: true, hint: "באנגלית, ללא רווחים" }
-      - { label: "כתובת", name: "address", widget: "string", required: false }
-      - { label: "מזמין עבודה / לקוח", name: "client", widget: "string", required: true }
-      - { label: "תאריך התחלה", name: "startDate", widget: "datetime", required: false, date_format: "DD.MM.YYYY", time_format: false }
-      
-      # === קטגוריה ===
+      # פרטים בסיסיים
+      - label: "שם הפרויקט"
+        name: "title"
+        widget: "string"
+        required: true
+
+      - label: "מזהה (slug)"
+        name: "slug"
+        widget: "string"
+        required: true
+        hint: "באנגלית, ללא רווחים, לדוגמה: intel-kiryat-gat"
+
+      - label: "כתובת"
+        name: "address"
+        widget: "string"
+        required: false
+
+      - label: "מזמין עבודה / לקוח"
+        name: "client"
+        widget: "string"
+        required: true
+
+      - label: "תאריך התחלה"
+        name: "startDate"
+        widget: "datetime"
+        required: false
+        date_format: "DD.MM.YYYY"
+        time_format: false
+
+      # קטגוריה
       - label: "קטגוריה"
         name: "category"
         widget: "select"
@@ -97,7 +151,7 @@ collections:
           - { label: "תשתיות", value: "תשתיות" }
           - { label: "ציבורי", value: "ציבורי" }
 
-      # === שלב ===
+      # שלב
       - label: "שלב"
         name: "phase"
         widget: "select"
@@ -111,7 +165,7 @@ collections:
           - { label: "מסירה", value: "מסירה" }
           - { label: "שנת בדק", value: "שנת בדק" }
 
-      # === מצב ===
+      # מצב
       - label: "מצב"
         name: "status"
         widget: "select"
@@ -122,7 +176,7 @@ collections:
           - { label: "הושלם", value: "הושלם" }
           - { label: "בוטל", value: "בוטל" }
 
-      # === צוות ניהול ===
+      # צוות ניהול
       - label: "מוביל/ת פרויקט"
         name: "projectLead"
         widget: "relation"
@@ -142,11 +196,18 @@ collections:
         multiple: true
         required: false
 
-      # === נתונים כמותיים ===
-      - { label: "שטח (מ\"ר)", name: "area", widget: "number", required: false }
-      - { label: "עלות משוערת (₪)", name: "estimatedCost", widget: "number", required: false }
+      # נתונים כמותיים
+      - label: "שטח (מ״ר)"
+        name: "area"
+        widget: "number"
+        required: false
 
-      # === שירותים ===
+      - label: "עלות משוערת (₪)"
+        name: "estimatedCost"
+        widget: "number"
+        required: false
+
+      # שירותים
       - label: "שירותים"
         name: "services"
         widget: "select"
@@ -158,12 +219,12 @@ collections:
           - { label: "ניהול ביצוע ופיקוח", value: "ניהול ביצוע ופיקוח" }
           - { label: "ייצוג בעלי עניין", value: "ייצוג בעלי עניין" }
           - { label: "ניהול והבטחת איכות", value: "ניהול והבטחת איכות" }
-          - { label: "ניהול תב\"ע והיתרים", value: "ניהול תב\"ע והיתרים" }
+          - { label: "ניהול תב״ע והיתרים", value: "ניהול תב״ע והיתרים" }
           - { label: "שירותי PMO", value: "שירותי PMO" }
           - { label: "ניהול הידע בפרויקט", value: "ניהול הידע בפרויקט" }
           - { label: "ניהול הצעה והגשה למכרז", value: "ניהול הצעה והגשה למכרז" }
 
-      # === סוגי מבנים ===
+      # סוג מבנה
       - label: "סוג מבנה"
         name: "buildingType"
         widget: "select"
@@ -215,24 +276,39 @@ collections:
           - { label: "בסיס צבאי/קמפוס ביטחוני", value: "בסיס צבאי/קמפוס ביטחוני" }
           - { label: "מבני מיגון וייעודיים", value: "מבני מיגון וייעודיים" }
 
-      # === תמונות ===
-      - { label: "תמונה ראשית", name: "image", widget: "image", required: false, media_folder: "/images/projects" }
+      # תמונות
+      - label: "תמונה ראשית"
+        name: "image"
+        widget: "image"
+        required: false
+        media_folder: "/images/projects"
+
       - label: "גלריית תמונות"
         name: "gallery"
         widget: "list"
         required: false
         field: { label: "תמונה", name: "image", widget: "image" }
 
-      # === תיאור ===
-      - { label: "תיאור קצר", name: "description", widget: "text", required: false }
-      - { label: "תיאור מפורט", name: "fullDescription", widget: "markdown", required: false }
+      # תיאור
+      - label: "תיאור קצר"
+        name: "description"
+        widget: "text"
+        required: false
 
-      # === הגדרות תצוגה ===
-      - { label: "פרויקט מומלץ (מוצג בעמוד הראשי)", name: "featured", widget: "boolean", default: false }
+      - label: "תיאור מפורט"
+        name: "fullDescription"
+        widget: "markdown"
+        required: false
 
-  # =====================
-  # CLIENTS
-  # =====================
+      # הגדרות תצוגה
+      - label: "פרויקט מומלץ (מוצג בעמוד הראשי)"
+        name: "featured"
+        widget: "boolean"
+        default: false
+
+  # ===================
+  # לקוחות
+  # ===================
   - name: "clients"
     label: "לקוחות"
     label_singular: "לקוח"
@@ -244,13 +320,26 @@ collections:
     slug: "{{slug}}"
     summary: "{{name}}"
     fields:
-      - { label: "שם הלקוח", name: "name", widget: "string", required: true }
-      - { label: "לוגו", name: "logo", widget: "image", required: true, media_folder: "/images/clients" }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
+      - label: "שם הלקוח"
+        name: "name"
+        widget: "string"
+        required: true
 
-  # =====================
-  # TESTIMONIALS
-  # =====================
+      - label: "לוגו"
+        name: "logo"
+        widget: "image"
+        required: true
+        media_folder: "/images/clients"
+
+      - label: "סדר תצוגה"
+        name: "order"
+        widget: "number"
+        default: 10
+        required: false
+
+  # ===================
+  # עדויות והמלצות
+  # ===================
   - name: "testimonials"
     label: "עדויות והמלצות"
     label_singular: "עדות"
@@ -262,16 +351,41 @@ collections:
     slug: "{{author}}"
     summary: "{{author}} - {{company}}"
     fields:
-      - { label: "ציטוט", name: "quote", widget: "text", required: true }
-      - { label: "שם הממליץ", name: "author", widget: "string", required: true }
-      - { label: "תפקיד", name: "position", widget: "string", required: true }
-      - { label: "חברה", name: "company", widget: "string", required: true }
-      - { label: "לוגו חברה", name: "logo", widget: "image", required: false, media_folder: "/images/clients" }
-      - { label: "מכתב המלצה (PDF)", name: "letterUrl", widget: "file", required: false, media_folder: "/documents" }
+      - label: "ציטוט"
+        name: "quote"
+        widget: "text"
+        required: true
 
-  # =====================
-  # JOBS
-  # =====================
+      - label: "שם הממליץ"
+        name: "author"
+        widget: "string"
+        required: true
+
+      - label: "תפקיד"
+        name: "position"
+        widget: "string"
+        required: true
+
+      - label: "חברה"
+        name: "company"
+        widget: "string"
+        required: true
+
+      - label: "לוגו חברה"
+        name: "logo"
+        widget: "image"
+        required: false
+        media_folder: "/images/clients"
+
+      - label: "מכתב המלצה (PDF)"
+        name: "letterUrl"
+        widget: "file"
+        required: false
+        media_folder: "/documents"
+
+  # ===================
+  # משרות
+  # ===================
   - name: "jobs"
     label: "משרות"
     label_singular: "משרה"
@@ -281,10 +395,18 @@ collections:
     extension: "json"
     format: "json"
     slug: "{{slug}}"
-    summary: "{{title}} - {{location}} ({{type}})"
+    summary: "{{title}} - {{location}}"
     fields:
-      - { label: "כותרת המשרה", name: "title", widget: "string", required: true }
-      - { label: "מיקום", name: "location", widget: "string", required: true }
+      - label: "כותרת המשרה"
+        name: "title"
+        widget: "string"
+        required: true
+
+      - label: "מיקום"
+        name: "location"
+        widget: "string"
+        required: true
+
       - label: "סוג משרה"
         name: "type"
         widget: "select"
@@ -292,14 +414,30 @@ collections:
           - { label: "משרה מלאה", value: "full-time" }
           - { label: "משרה חלקית", value: "part-time" }
           - { label: "פרילנס", value: "freelance" }
-      - { label: "תיאור המשרה", name: "description", widget: "markdown", required: true }
-      - { label: "דרישות", name: "requirements", widget: "markdown", required: false }
-      - { label: "משרה פעילה", name: "active", widget: "boolean", default: true }
-      - { label: "תאריך פרסום", name: "date", widget: "datetime", required: false }
 
-  # =====================
-  # CONTENT LIBRARY
-  # =====================
+      - label: "תיאור המשרה"
+        name: "description"
+        widget: "markdown"
+        required: true
+
+      - label: "דרישות"
+        name: "requirements"
+        widget: "markdown"
+        required: false
+
+      - label: "משרה פעילה"
+        name: "active"
+        widget: "boolean"
+        default: true
+
+      - label: "תאריך פרסום"
+        name: "date"
+        widget: "datetime"
+        required: false
+
+  # ===================
+  # מאגר מידע
+  # ===================
   - name: "content-library"
     label: "מאגר מידע"
     label_singular: "פריט"
@@ -309,9 +447,13 @@ collections:
     extension: "json"
     format: "json"
     slug: "{{slug}}"
-    summary: "{{title}} ({{category}})"
+    summary: "{{title}}"
     fields:
-      - { label: "כותרת", name: "title", widget: "string", required: true }
+      - label: "כותרת"
+        name: "title"
+        widget: "string"
+        required: true
+
       - label: "קטגוריה"
         name: "category"
         widget: "select"
@@ -320,15 +462,36 @@ collections:
           - { label: "מצגות", value: "presentations" }
           - { label: "טפסים", value: "forms" }
           - { label: "מדריכים", value: "guides" }
-      - { label: "תיאור", name: "description", widget: "text", required: false }
-      - { label: "קובץ", name: "file", widget: "file", required: false, media_folder: "/documents" }
-      - { label: "קישור חיצוני", name: "externalUrl", widget: "string", required: false }
-      - { label: "תמונה", name: "image", widget: "image", required: false }
-      - { label: "תאריך", name: "date", widget: "datetime", required: false }
 
-  # =====================
-  # SERVICES
-  # =====================
+      - label: "תיאור"
+        name: "description"
+        widget: "text"
+        required: false
+
+      - label: "קובץ"
+        name: "file"
+        widget: "file"
+        required: false
+        media_folder: "/documents"
+
+      - label: "קישור חיצוני"
+        name: "externalUrl"
+        widget: "string"
+        required: false
+
+      - label: "תמונה"
+        name: "image"
+        widget: "image"
+        required: false
+
+      - label: "תאריך"
+        name: "date"
+        widget: "datetime"
+        required: false
+
+  # ===================
+  # שירותים
+  # ===================
   - name: "services"
     label: "שירותים"
     label_singular: "שירות"
@@ -338,9 +501,34 @@ collections:
     extension: "json"
     format: "json"
     fields:
-      - { label: "שם השירות", name: "title", widget: "string", required: true }
-      - { label: "תיאור קצר", name: "shortDescription", widget: "text", required: true }
-      - { label: "תיאור מלא", name: "fullDescription", widget: "markdown", required: false }
-      - { label: "אייקון (Font Awesome)", name: "icon", widget: "string", required: false, hint: "שם האייקון ללא fa-, לדוגמה: clipboard-list" }
-      - { label: "תמונה", name: "image", widget: "image", required: false }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
+      - label: "שם השירות"
+        name: "title"
+        widget: "string"
+        required: true
+
+      - label: "תיאור קצר"
+        name: "shortDescription"
+        widget: "text"
+        required: true
+
+      - label: "תיאור מלא"
+        name: "fullDescription"
+        widget: "markdown"
+        required: false
+
+      - label: "אייקון (Font Awesome)"
+        name: "icon"
+        widget: "string"
+        required: false
+        hint: "שם האייקון ללא fa-, לדוגמה: clipboard-list"
+
+      - label: "תמונה"
+        name: "image"
+        widget: "image"
+        required: false
+
+      - label: "סדר תצוגה"
+        name: "order"
+        widget: "number"
+        default: 10
+        required: false
