@@ -20,27 +20,6 @@
     [data-slate-editor="true"], input, textarea {
       font-size: 16px !important;
     }
-    
-    /* RTL Layout - flip sidebar to right */
-    #nc-root {
-      direction: rtl;
-    }
-    
-    /* Keep internal components LTR to not break Decap */
-    #nc-root > div {
-      direction: ltr;
-    }
-    
-    /* But flip the main layout container */
-    #nc-root > div > div {
-      direction: rtl;
-    }
-    
-    /* Text inputs should be RTL */
-    input, textarea, [contenteditable] {
-      direction: rtl;
-      text-align: right;
-    }
   </style>
 </head>
 <body>
