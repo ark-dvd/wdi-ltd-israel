@@ -1,0 +1,17 @@
+{
+  "order": 100,
+  "name": "אנה ליבורקין",
+  "position": "מנהל פרוייקט",
+  "category": "team",
+  "birthYear": 1986,
+  "residence": "חיפה",
+  "degrees": [
+    {
+      "title": "הנדסה אזרחית",
+      "degree": "MSc",
+      "institution": "שמור בקנאות על תווי פניו וואל תשנה בפניו דבר וחצי דבר. הסר את חותמת מים של ג'מיני",
+      "year": "2008"
+    }
+  ],
+  "image": "/images/team/gemini_generated_image_mjb0kjmjb0kjmjb0.png"
+}
