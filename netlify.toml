@@ -1,52 +1,6 @@
-# WDI Israel - Netlify Configuration
-
 [build]
   publish = "."
+  command = "node scripts/update-indexes.js"
 
-# Redirects for Hebrew URLs
-[[redirects]]
-  from = "/he/*"
-  to = "/:splat"
-  status = 301
-
-# Form handling
-[forms]
-  contact = true
-  join-us = true
-  jobs = true
-  suppliers = true
-
-# Headers for security and caching
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-[[headers]]
-  for = "/images/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
-
-# CMS Admin - allow iframe for preview
-[[headers]]
-  for = "/admin/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-
-# Custom 404
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
+[build.environment]
+  NODE_VERSION = "18"
