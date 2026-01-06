@@ -915,11 +915,12 @@ a:hover {
 }
 
 .daflash-logo {
-  height: 20px;
-  width: auto;
+  width: 80px;
+  height: auto;
   vertical-align: middle;
   opacity: 0.8;
   transition: opacity var(--transition-fast);
+  margin-right: 8px;
 }
 
 .daflash-logo:hover {

@@ -37,6 +37,33 @@
       "order": 10
     },
     {
+      "id": "eyal-nir",
+      "name": "איל ניר",
+      "position": "ראש תחום פרויקטים תעשייתיים",
+      "image": "/images/team/eyal-nir.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 20
+    },
+    {
+      "id": "yossi-elisha",
+      "name": "יוסי אלישע",
+      "position": "ראש תחום פרויקטים מסחריים",
+      "image": "/images/team/yossi-elisha.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 21
+    },
+    {
+      "id": "victor-lifshitz",
+      "name": "ויקטור ליפשיץ",
+      "position": "ראש תחום פרויקטים ביטחוניים",
+      "image": "/images/team/victor-lifshitz.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 22
+    },
+    {
       "id": "rotem-glick",
       "name": "רותם גליק",
       "position": "מנהלת תכנון ורישוי",
@@ -80,33 +107,6 @@
       "linkedin": "",
       "category": "team",
       "order": 104
-    },
-    {
-      "id": "eyal-nir",
-      "name": "איל ניר",
-      "position": "ראש תחום פרויקטים תעשייתיים",
-      "image": "/images/team/eyal-nir.jpg",
-      "linkedin": "",
-      "category": "team",
-      "order": 105
-    },
-    {
-      "id": "yossi-elisha",
-      "name": "יוסי אלישע",
-      "position": "ראש תחום פרויקטים מסחריים",
-      "image": "/images/team/yossi-elisha.jpg",
-      "linkedin": "",
-      "category": "team",
-      "order": 106
-    },
-    {
-      "id": "victor-lifshitz",
-      "name": "ויקטור ליפשיץ",
-      "position": "ראש תחום פרויקטים ביטחוניים",
-      "image": "/images/team/victor-lifshitz.jpg",
-      "linkedin": "",
-      "category": "team",
-      "order": 107
     }
   ]
 }

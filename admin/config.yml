@@ -40,7 +40,8 @@ collections:
         options:
           - { label: "הנהלה", value: "founders" }
           - { label: "אדמיניסטרציה", value: "admin" }
-          - { label: "צוות", value: "team" }
+          - { label: "ראשי תחומים", value: "heads" }
+          - { label: "מנהלי פרויקטים", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
       - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
       - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, צוות: 100+" }

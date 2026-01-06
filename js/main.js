@@ -192,7 +192,7 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
-// 3 sections: הנהלה (founders), אדמיניסטרציה (admin), מנהלי פרויקטים (team)
+// 4 sections: הנהלה, אדמיניסטרציה, ראשי תחומים, מנהלי פרויקטים
 function renderTeam(container, team) {
   if (!container || !team || !team.length) return;
 
@@ -221,6 +221,7 @@ function renderTeam(container, team) {
   // Filter by category
   const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 0) - (b.order || 0));
   const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 0) - (b.order || 0));
   const projectManagers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
 
   let html = '';
@@ -249,7 +250,19 @@ function renderTeam(container, team) {
     `;
   }
 
-  // Section 3: מנהלי פרויקטים (team)
+  // Section 3: ראשי תחומים (heads)
+  if (heads.length > 0) {
+    html += `
+      <div class="team-section">
+        <h2 class="team-section-title">ראשי תחומים</h2>
+        <div class="team-grid team-grid-3">
+          ${heads.map(renderCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Section 4: מנהלי פרויקטים (team)
   if (projectManagers.length > 0) {
     html += `
       <div class="team-section">
