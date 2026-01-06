@@ -1,14 +1,21 @@
 {
-  "id": "yossi-elisha",
-  "name": "יוסי אלישע",
-  "position": "ראש תחום פרויקטים מסחריים",
-  "image": "/images/team/yossi-elisha.jpg",
-  "linkedin": "",
-  "category": "heads",
-  "order": 21,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
   "educationType": "",
-  "degrees": []
+  "residence": "",
+  "degrees": [
+    {
+      "degree": "הנדסאי",
+      "title": "חשמל ואלקטרוניקה",
+      "institution": "מכללת תל אביב",
+      "year": "2000"
+    }
+  ],
+  "birthPlace": "",
+  "position": "ראש תחום פרויקטים מסחריים",
+  "name": "יוסי אלישע",
+  "order": 21,
+  "id": "yossi-elisha",
+  "image": "/images/team/yossi-elisha.jpg",
+  "birthYear": 1971,
+  "linkedin": "",
+  "category": "heads"
 }
