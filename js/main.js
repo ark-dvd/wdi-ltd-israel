@@ -202,39 +202,34 @@ function renderTeam(container, team) {
     return imagePath;
   };
 
-  // Build bio text for hover
+  // Build bio text for hover - each item on separate line
   const buildBioText = (member) => {
-    let bio = '';
+    const lines = [];
     
     if (member.birthYear) {
-      bio += `יליד ${member.birthYear}`;
-      if (member.birthPlace) bio += `, ${member.birthPlace}`;
-      bio += '. ';
+      let birthLine = `יליד ${member.birthYear}`;
+      if (member.birthPlace) birthLine += `, ${member.birthPlace}`;
+      birthLine += '.';
+      lines.push(birthLine);
     }
     
     if (member.residence) {
-      bio += `מתגורר ב${member.residence}. `;
-    }
-    
-    if (member.educationType) {
-      bio += `${member.educationType}. `;
+      lines.push(`מתגורר ב${member.residence}.`);
     }
     
     if (member.degrees && member.degrees.length > 0) {
-      const degreeStrings = member.degrees.map(d => {
+      member.degrees.forEach(d => {
         const parts = [];
         if (d.institution) parts.push(d.institution);
         if (d.title) parts.push(d.title);
         if (d.degree) parts.push(d.degree);
         if (d.year) parts.push(d.year);
-        return parts.filter(p => p).join(' ');
-      }).filter(s => s);
-      if (degreeStrings.length > 0) {
-        bio += degreeStrings.join(', ') + '.';
-      }
+        const degreeLine = parts.filter(p => p).join(' ');
+        if (degreeLine) lines.push(degreeLine);
+      });
     }
     
-    return bio;
+    return lines.join('<br>');
   };
 
   // Render single team card with hover overlay
@@ -285,10 +280,11 @@ function renderTeam(container, team) {
   }
 
   if (admin.length > 0) {
+    const gridClass = admin.length === 1 ? 'team-grid-single' : 'team-grid-new';
     html += `
       <div class="team-section">
         <h2 class="team-section-title">אדמיניסטרציה</h2>
-        <div class="team-grid-new">
+        <div class="${gridClass}">
           ${admin.map(renderCard).join('')}
         </div>
       </div>
