@@ -18,7 +18,9 @@ slug:
 # Collections - what can be edited
 collections:
 
-  # Team Members
+  # =====================
+  # TEAM MEMBERS
+  # =====================
   - name: "team"
     label: "צוות"
     label_singular: "חבר צוות"
@@ -30,7 +32,7 @@ collections:
     identifier_field: "name"
     slug: "{{name | slugify}}"
     summary: "{{name}} - {{position}}"
-    sortable_fields: ["order", "name"]
+    sortable_fields: ["order", "name", "category"]
     fields:
       - { label: "שם מלא", name: "name", widget: "string", required: true }
       - { label: "תפקיד", name: "position", widget: "string", required: true }
@@ -44,23 +46,25 @@ collections:
           - { label: "ראשי תחומים", value: "heads" }
           - { label: "מנהלי פרויקטים", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
-      - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
       - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, ראשי תחומים: 20-29, צוות: 100+" }
       - { label: "שנת לידה", name: "birthYear", widget: "number", required: false }
       - { label: "מקום לידה", name: "birthPlace", widget: "string", required: false }
       - { label: "מקום מגורים", name: "residence", widget: "string", required: false }
-      - { label: "סוג השכלה", name: "educationType", widget: "string", required: false, hint: "לדוגמה: מהנדס, הנדסאי, סטודנט" }
       - label: "תארים"
         name: "degrees"
         widget: "list"
         required: false
+        collapsed: true
+        summary: "{{fields.degree}} {{fields.title}}"
         fields:
-          - { label: "שם הלימודים", name: "title", widget: "string" }
           - { label: "סוג תואר", name: "degree", widget: "string", hint: "לדוגמה: BSc, MSc, MBA, הנדסאי" }
+          - { label: "שם הלימודים", name: "title", widget: "string" }
           - { label: "מוסד לימודים", name: "institution", widget: "string" }
           - { label: "שנת סיום", name: "year", widget: "string", required: false }
 
-  # Projects
+  # =====================
+  # PROJECTS - Full ERP Fields
+  # =====================
   - name: "projects"
     label: "פרויקטים"
     label_singular: "פרויקט"
@@ -70,34 +74,165 @@ collections:
     extension: "json"
     format: "json"
     slug: "{{slug}}"
-    summary: "{{title}} - {{client}}"
+    summary: "{{title}} | {{client}} | {{status}}"
+    sortable_fields: ["title", "client", "status", "phase"]
     fields:
+      # === פרטים בסיסיים ===
       - { label: "שם הפרויקט", name: "title", widget: "string", required: true }
-      - { label: "לקוח", name: "client", widget: "string", required: true }
+      - { label: "מזהה (slug)", name: "slug", widget: "string", required: true, hint: "באנגלית, ללא רווחים" }
+      - { label: "כתובת", name: "address", widget: "string", required: false }
+      - { label: "מזמין עבודה / לקוח", name: "client", widget: "string", required: true }
+      - { label: "תאריך התחלה", name: "startDate", widget: "datetime", required: false, date_format: "DD.MM.YYYY", time_format: false }
+      
+      # === קטגוריה ===
       - label: "קטגוריה"
         name: "category"
         widget: "select"
+        required: true
         options:
-          - { label: "תעשייה ומסחר", value: "תעשייה ומסחר" }
+          - { label: "בטחוני", value: "בטחוני" }
+          - { label: "מסחרי", value: "מסחרי" }
+          - { label: "תעשייתי", value: "תעשייתי" }
+          - { label: "מגורים", value: "מגורים" }
           - { label: "תשתיות", value: "תשתיות" }
-          - { label: "ממשלתי", value: "ממשלתי" }
-      - { label: "תמונה ראשית", name: "image", widget: "image", required: false, media_folder: "/images/projects" }
-      - { label: "תיאור קצר", name: "description", widget: "text", required: true }
-      - { label: "תיאור מפורט", name: "fullDescription", widget: "markdown", required: false }
+          - { label: "ציבורי", value: "ציבורי" }
+
+      # === שלב ===
+      - label: "שלב"
+        name: "phase"
+        widget: "select"
+        required: false
+        options:
+          - { label: "ייזום", value: "ייזום" }
+          - { label: "תכנון מוקדם", value: "תכנון מוקדם" }
+          - { label: "תכנון מפורט", value: "תכנון מפורט" }
+          - { label: "מכרז", value: "מכרז" }
+          - { label: "ביצוע", value: "ביצוע" }
+          - { label: "מסירה", value: "מסירה" }
+          - { label: "שנת בדק", value: "שנת בדק" }
+
+      # === מצב ===
+      - label: "מצב"
+        name: "status"
+        widget: "select"
+        default: "פעיל"
+        options:
+          - { label: "פעיל", value: "פעיל" }
+          - { label: "מושהה", value: "מושהה" }
+          - { label: "הושלם", value: "הושלם" }
+          - { label: "בוטל", value: "בוטל" }
+
+      # === צוות ניהול ===
+      - label: "מוביל/ת פרויקט"
+        name: "projectLead"
+        widget: "relation"
+        collection: "team"
+        search_fields: ["name"]
+        value_field: "name"
+        display_fields: ["name", "position"]
+        required: false
+
+      - label: "מנהלים נוספים"
+        name: "additionalManagers"
+        widget: "relation"
+        collection: "team"
+        search_fields: ["name"]
+        value_field: "name"
+        display_fields: ["name", "position"]
+        multiple: true
+        required: false
+
+      # === נתונים כמותיים ===
+      - { label: "שטח (מ\"ר)", name: "area", widget: "number", required: false }
+      - { label: "עלות משוערת (₪)", name: "estimatedCost", widget: "number", required: false }
+
+      # === שירותים ===
       - label: "שירותים"
         name: "services"
         widget: "select"
         multiple: true
-        options: ["ניהול תכנון", "פיקוח", "ניהול ביצוע", "ייצוג בעלי עניין", "PMO", "הבטחת איכות"]
-      - { label: "שנה", name: "year", widget: "string", required: false }
-      - { label: "פרויקט מומלץ (מוצג בעמוד הראשי)", name: "featured", widget: "boolean", default: false }
+        required: false
+        options:
+          - { label: "ניהול תכנון", value: "ניהול תכנון" }
+          - { label: "מסמכי דרישות, אפיון ופרוגרמה", value: "מסמכי דרישות, אפיון ופרוגרמה" }
+          - { label: "ניהול ביצוע ופיקוח", value: "ניהול ביצוע ופיקוח" }
+          - { label: "ייצוג בעלי עניין", value: "ייצוג בעלי עניין" }
+          - { label: "ניהול והבטחת איכות", value: "ניהול והבטחת איכות" }
+          - { label: "ניהול תב\"ע והיתרים", value: "ניהול תב\"ע והיתרים" }
+          - { label: "שירותי PMO", value: "שירותי PMO" }
+          - { label: "ניהול הידע בפרויקט", value: "ניהול הידע בפרויקט" }
+          - { label: "ניהול הצעה והגשה למכרז", value: "ניהול הצעה והגשה למכרז" }
+
+      # === סוגי מבנים ===
+      - label: "סוג מבנה"
+        name: "buildingType"
+        widget: "select"
+        required: false
+        options:
+          # מגורים ואירוח
+          - { label: "מגורים רבי קומות", value: "מגורים רבי קומות" }
+          - { label: "מגורים צמודי קרקע", value: "מגורים צמודי קרקע" }
+          - { label: "בתי אבות/דיור מוגן", value: "בתי אבות/דיור מוגן" }
+          - { label: "מלונית/מלון", value: "מלונית/מלון" }
+          - { label: "מבני מעונות", value: "מבני מעונות" }
+          # משרדים, הייטק ותעשייה
+          - { label: "משרדים", value: "משרדים" }
+          - { label: "מרכז פיתוח והייטק", value: "מרכז פיתוח והייטק" }
+          - { label: "חדרי נתונים/חוות שרתים", value: "חדרי נתונים/חוות שרתים" }
+          - { label: "מעבדות", value: "מעבדות" }
+          - { label: "מבני תעשייה", value: "מבני תעשייה" }
+          - { label: "מפעל/מבנה ייצור", value: "מפעל/מבנה ייצור" }
+          # מסחר, בילוי ופנאי
+          - { label: "מרכז מסחרי", value: "מרכז מסחרי" }
+          - { label: "אולם קולנוע", value: "אולם קולנוע" }
+          - { label: "אולם תיאטרון", value: "אולם תיאטרון" }
+          - { label: "מרכזי ספורט ואצטדיונים", value: "מרכזי ספורט ואצטדיונים" }
+          - { label: "מוזיאון/גלריה", value: "מוזיאון/גלריה" }
+          - { label: "מסעדות ומתחמי אוכל", value: "מסעדות ומתחמי אוכל" }
+          # בריאות, חינוך ורווחה
+          - { label: "מרכז רפואי", value: "מרכז רפואי" }
+          - { label: "בית ספר / מבני חינוך", value: "בית ספר / מבני חינוך" }
+          - { label: "מרכז מחקר רפואי", value: "מרכז מחקר רפואי" }
+          - { label: "מבני ציבור ורווחה", value: "מבני ציבור ורווחה" }
+          # תשתיות, אנרגיה ותחבורה
+          - { label: "מתקני התפלה", value: "מתקני התפלה" }
+          - { label: "תחנת כח", value: "תחנת כח" }
+          - { label: "גשרים", value: "גשרים" }
+          - { label: "כבישים", value: "כבישים" }
+          - { label: "תחנת רכבת", value: "תחנת רכבת" }
+          - { label: "שדות תעופה", value: "שדות תעופה" }
+          - { label: "מתקני אנרגיה", value: "מתקני אנרגיה" }
+          - { label: "נמל ימי", value: "נמל ימי" }
+          # לוגיסטיקה, אחסון וחנייה
+          - { label: "מרכז לוגיסטי", value: "מרכז לוגיסטי" }
+          - { label: "מחסנים ממוכנים", value: "מחסנים ממוכנים" }
+          - { label: "חניון תת קרקעי", value: "חניון תת קרקעי" }
+          - { label: "חניון עילי", value: "חניון עילי" }
+          - { label: "תחנות דלק", value: "תחנות דלק" }
+          - { label: "חניון תנה וסע", value: "חניון תנה וסע" }
+          # מבנים ממשלתיים וביטחוניים
+          - { label: "מבנה ממשלתי/ציבורי", value: "מבנה ממשלתי/ציבורי" }
+          - { label: "בסיס צבאי/קמפוס ביטחוני", value: "בסיס צבאי/קמפוס ביטחוני" }
+          - { label: "מבני מיגון וייעודיים", value: "מבני מיגון וייעודיים" }
+
+      # === תמונות ===
+      - { label: "תמונה ראשית", name: "image", widget: "image", required: false, media_folder: "/images/projects" }
       - label: "גלריית תמונות"
         name: "gallery"
         widget: "list"
         required: false
         field: { label: "תמונה", name: "image", widget: "image" }
 
-  # Clients
+      # === תיאור ===
+      - { label: "תיאור קצר", name: "description", widget: "text", required: false }
+      - { label: "תיאור מפורט", name: "fullDescription", widget: "markdown", required: false }
+
+      # === הגדרות תצוגה ===
+      - { label: "פרויקט מומלץ (מוצג בעמוד הראשי)", name: "featured", widget: "boolean", default: false }
+
+  # =====================
+  # CLIENTS
+  # =====================
   - name: "clients"
     label: "לקוחות"
     label_singular: "לקוח"
@@ -113,7 +248,9 @@ collections:
       - { label: "לוגו", name: "logo", widget: "image", required: true, media_folder: "/images/clients" }
       - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
 
-  # Testimonials
+  # =====================
+  # TESTIMONIALS
+  # =====================
   - name: "testimonials"
     label: "עדויות והמלצות"
     label_singular: "עדות"
@@ -132,7 +269,9 @@ collections:
       - { label: "לוגו חברה", name: "logo", widget: "image", required: false, media_folder: "/images/clients" }
       - { label: "מכתב המלצה (PDF)", name: "letterUrl", widget: "file", required: false, media_folder: "/documents" }
 
-  # Jobs
+  # =====================
+  # JOBS
+  # =====================
   - name: "jobs"
     label: "משרות"
     label_singular: "משרה"
@@ -142,7 +281,7 @@ collections:
     extension: "json"
     format: "json"
     slug: "{{slug}}"
-    summary: "{{title}} - {{location}}"
+    summary: "{{title}} - {{location}} ({{type}})"
     fields:
       - { label: "כותרת המשרה", name: "title", widget: "string", required: true }
       - { label: "מיקום", name: "location", widget: "string", required: true }
@@ -158,7 +297,9 @@ collections:
       - { label: "משרה פעילה", name: "active", widget: "boolean", default: true }
       - { label: "תאריך פרסום", name: "date", widget: "datetime", required: false }
 
-  # Content Library
+  # =====================
+  # CONTENT LIBRARY
+  # =====================
   - name: "content-library"
     label: "מאגר מידע"
     label_singular: "פריט"
@@ -168,7 +309,7 @@ collections:
     extension: "json"
     format: "json"
     slug: "{{slug}}"
-    summary: "{{title}}"
+    summary: "{{title}} ({{category}})"
     fields:
       - { label: "כותרת", name: "title", widget: "string", required: true }
       - label: "קטגוריה"
@@ -185,7 +326,9 @@ collections:
       - { label: "תמונה", name: "image", widget: "image", required: false }
       - { label: "תאריך", name: "date", widget: "datetime", required: false }
 
-  # Services (pages)
+  # =====================
+  # SERVICES
+  # =====================
   - name: "services"
     label: "שירותים"
     label_singular: "שירות"
@@ -198,5 +341,6 @@ collections:
       - { label: "שם השירות", name: "title", widget: "string", required: true }
       - { label: "תיאור קצר", name: "shortDescription", widget: "text", required: true }
       - { label: "תיאור מלא", name: "fullDescription", widget: "markdown", required: false }
-      - { label: "אייקון (Font Awesome)", name: "icon", widget: "string", required: false }
+      - { label: "אייקון (Font Awesome)", name: "icon", widget: "string", required: false, hint: "שם האייקון ללא fa-, לדוגמה: clipboard-list" }
       - { label: "תמונה", name: "image", widget: "image", required: false }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 10, required: false }
