@@ -1,14 +1,27 @@
 {
-  "id": "guy-golan",
-  "name": "גיא גולן",
-  "position": "מנכ\"ל WDI",
-  "image": "/images/team/guy-golan.jpg",
-  "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
-  "category": "founders",
-  "order": 2,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
   "educationType": "",
-  "degrees": []
+  "residence": "יקנעם",
+  "degrees": [
+    {
+      "degree": "BSc",
+      "title": "הנדסה אזרחית",
+      "institution": "הטכניון",
+      "year": "2000"
+    },
+    {
+      "degree": "MBA",
+      "title": "מנהל עסקים",
+      "institution": "אוני' חיפה",
+      "year": "2016"
+    }
+  ],
+  "birthPlace": "",
+  "position": "מנכ\"ל WDI",
+  "name": "גיא גולן",
+  "order": 2,
+  "id": "guy-golan",
+  "image": "/images/team/guy-golan.jpg",
+  "birthYear": 1973,
+  "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
+  "category": "founders"
 }
