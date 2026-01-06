@@ -21,7 +21,11 @@
       "Bash(git pull:*)",
       "WebFetch(domain:github.com)",
       "Bash(git ls-tree:*)",
-      "Bash(git cat-file:*)"
+      "Bash(git cat-file:*)",
+      "Bash(curl:*)",
+      "Bash(git check-ignore:*)",
+      "WebFetch(domain:www.wdi-ltd.co.il)",
+      "Bash(xxd:*)"
     ]
   }
 }

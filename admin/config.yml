@@ -27,7 +27,8 @@ collections:
     delete: true
     extension: "json"
     format: "json"
-    slug: "{{slug}}"
+    identifier_field: "name"
+    slug: "{{name | slugify}}"
     summary: "{{name}} - {{position}}"
     sortable_fields: ["order", "name"]
     fields:

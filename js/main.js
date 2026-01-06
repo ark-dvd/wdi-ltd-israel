@@ -23,18 +23,40 @@ async function loadJSON(path) {
   return null;
 }
 
-// Load all JSON files from a folder using index file
+// Load all JSON files from a folder - scan all .json files directly
 async function loadFolderData(folderPath) {
-  const indexData = await loadJSON(`${folderPath}/_index.json`);
-  if (!indexData || !indexData.files) return [];
-
   const items = [];
-  for (const file of indexData.files) {
-    const data = await loadJSON(`${folderPath}/${file}`);
+
+  // First try to get file list from _index.json (if exists)
+  const indexData = await loadJSON(`${folderPath}/_index.json`);
+  let fileList = indexData?.files || [];
+
+  // Also try to fetch any files that might exist but aren't in index
+  // by checking the folder listing (works on some hosts)
+  try {
+    const response = await fetch(`${folderPath}/`);
+    if (response.ok) {
+      const html = await response.text();
+      // Extract .json filenames from directory listing
+      const matches = html.match(/href="([^"]+\.json)"/g);
+      if (matches) {
+        const foundFiles = matches.map(m => m.replace(/href="|"/g, '')).filter(f => f !== '_index.json');
+        // Merge with existing list (remove duplicates)
+        fileList = [...new Set([...fileList, ...foundFiles])];
+      }
+    }
+  } catch (e) {
+    // Directory listing not available, continue with index
+  }
+
+  // Load each file
+  for (const file of fileList) {
+    const filename = file.includes('/') ? file : file;
+    const data = await loadJSON(`${folderPath}/${filename}`);
     if (data) {
       // Add id from filename if not present
       if (!data.id) {
-        data.id = file.replace('.json', '');
+        data.id = filename.replace('.json', '');
       }
       items.push(data);
     }
@@ -294,37 +316,38 @@ function showTeamMemberModal(member) {
   const existingModal = document.getElementById('team-modal');
   if (existingModal) existingModal.remove();
 
-  // Format bio in requested format: "יליד [year], מתגורר ב[residence]. [educationType]. [degrees]."
+  // Format bio: "יליד [year], [birthPlace]. מתגורר ב[residence]. [educationType]. [institution] [title] [year], ..."
   let bioText = '';
 
-  // Birth info
+  // Birth info: "יליד 1974, צפת."
   if (member.birthYear) {
     bioText += `יליד ${member.birthYear}`;
     if (member.birthPlace) bioText += `, ${member.birthPlace}`;
     bioText += '. ';
   }
 
-  // Residence
+  // Residence: "מתגורר באוסטין, טקסס."
   if (member.residence) {
     bioText += `מתגורר ב${member.residence}. `;
   }
 
-  // Education type and degrees
+  // Education: "מהנדס. טכניון הנדסה אזרחית 2002, האוניברסיטה הפתוחה MBA 2009."
   if (member.educationType) {
-    bioText += `${member.educationType}`;
-    if (member.degrees && member.degrees.length > 0) {
-      bioText += ': ';
-      const degreeStrings = member.degrees.map(d => {
-        const parts = [];
-        if (d.institution) parts.push(d.institution);
-        if (d.title) parts.push(d.title);
-        if (d.degree) parts.push(`(${d.degree})`);
-        if (d.year) parts.push(d.year);
-        return parts.join(' ');
-      });
-      bioText += degreeStrings.join(', ');
+    bioText += `${member.educationType}. `;
+  }
+
+  if (member.degrees && member.degrees.length > 0) {
+    const degreeStrings = member.degrees.map(d => {
+      const parts = [];
+      if (d.institution) parts.push(d.institution);
+      if (d.title) parts.push(d.title);
+      if (d.degree) parts.push(d.degree);
+      if (d.year) parts.push(d.year);
+      return parts.filter(p => p).join(' ');
+    }).filter(s => s);
+    if (degreeStrings.length > 0) {
+      bioText += degreeStrings.join(', ') + '.';
     }
-    bioText += '.';
   }
 
   // Build modal HTML
