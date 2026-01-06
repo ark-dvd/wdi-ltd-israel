@@ -1,14 +1,21 @@
 {
-  "id": "ori-davidi",
-  "name": "אורי דוידי",
-  "position": "מנהל פרויקט",
-  "image": "/images/team/ori-davidi.jpg",
-  "linkedin": "https://www.linkedin.com/in/ori-davidi/",
-  "category": "team",
-  "order": 101,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
+  "gender": "male",
   "educationType": "",
-  "degrees": []
+  "residence": "ראשון לציון",
+  "degrees": [
+    {
+      "degree": "סטודנט",
+      "title": "הנדסה אזרחית",
+      "institution": "סמי שמעון"
+    }
+  ],
+  "birthPlace": "",
+  "position": "מנהל פרויקט",
+  "name": "אורי דוידי",
+  "order": 101,
+  "id": "ori-davidi",
+  "image": "/images/team/ori-davidi.jpg",
+  "birthYear": 2000,
+  "linkedin": "https://www.linkedin.com/in/ori-davidi/",
+  "category": "team"
 }
