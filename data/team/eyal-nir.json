@@ -1,14 +1,27 @@
 {
-  "id": "eyal-nir",
-  "name": "איל ניר",
-  "position": "ראש תחום פרויקטים תעשייתיים",
-  "image": "/images/team/eyal-nir.jpg",
-  "linkedin": "",
-  "category": "heads",
-  "order": 20,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
+  "gender": "male",
   "educationType": "",
-  "degrees": []
+  "residence": "זכרון יעקב",
+  "degrees": [
+    {
+      "degree": "BSc",
+      "title": "הנדסה אזרחית",
+      "institution": "הטכניון",
+      "year": "2001"
+    },
+    {
+      "degree": "MSc",
+      "title": "הנדסה אזרחית",
+      "institution": "הטכניון"
+    }
+  ],
+  "birthPlace": "",
+  "position": "ראש תחום פרויקטים תעשייתיים",
+  "name": "איל ניר",
+  "order": 20,
+  "id": "eyal-nir",
+  "image": "/images/team/eyal-nir.jpg",
+  "birthYear": 1971,
+  "linkedin": "",
+  "category": "heads"
 }
