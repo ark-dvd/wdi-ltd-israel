@@ -17,7 +17,11 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git mv:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(git ls-tree:*)",
+      "Bash(git cat-file:*)"
     ]
   }
 }

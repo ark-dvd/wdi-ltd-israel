@@ -294,17 +294,38 @@ function showTeamMemberModal(member) {
   const existingModal = document.getElementById('team-modal');
   if (existingModal) existingModal.remove();
 
-  // Format degrees list
-  const degreesHtml = member.degrees && member.degrees.length > 0
-    ? member.degrees.map(d => {
+  // Format bio in requested format: "יליד [year], מתגורר ב[residence]. [educationType]. [degrees]."
+  let bioText = '';
+
+  // Birth info
+  if (member.birthYear) {
+    bioText += `יליד ${member.birthYear}`;
+    if (member.birthPlace) bioText += `, ${member.birthPlace}`;
+    bioText += '. ';
+  }
+
+  // Residence
+  if (member.residence) {
+    bioText += `מתגורר ב${member.residence}. `;
+  }
+
+  // Education type and degrees
+  if (member.educationType) {
+    bioText += `${member.educationType}`;
+    if (member.degrees && member.degrees.length > 0) {
+      bioText += ': ';
+      const degreeStrings = member.degrees.map(d => {
         const parts = [];
+        if (d.institution) parts.push(d.institution);
         if (d.title) parts.push(d.title);
         if (d.degree) parts.push(`(${d.degree})`);
-        if (d.institution) parts.push(d.institution);
         if (d.year) parts.push(d.year);
-        return `<li>${parts.join(' - ')}</li>`;
-      }).join('')
-    : '';
+        return parts.join(' ');
+      });
+      bioText += degreeStrings.join(', ');
+    }
+    bioText += '.';
+  }
 
   // Build modal HTML
   const modalHtml = `
@@ -322,14 +343,7 @@ function showTeamMemberModal(member) {
           </div>
         </div>
         <div class="team-modal-body">
-          ${member.bio ? `<p class="team-modal-bio">${member.bio}</p>` : ''}
-          <div class="team-modal-details">
-            ${member.birthYear ? `<p><strong>שנת לידה:</strong> ${member.birthYear}</p>` : ''}
-            ${member.birthPlace ? `<p><strong>מקום לידה:</strong> ${member.birthPlace}</p>` : ''}
-            ${member.residence ? `<p><strong>מקום מגורים:</strong> ${member.residence}</p>` : ''}
-            ${member.educationType ? `<p><strong>השכלה:</strong> ${member.educationType}</p>` : ''}
-            ${degreesHtml ? `<div class="team-modal-degrees"><strong>תארים:</strong><ul>${degreesHtml}</ul></div>` : ''}
-          </div>
+          ${bioText ? `<p class="team-modal-bio">${bioText}</p>` : ''}
         </div>
       </div>
     </div>
