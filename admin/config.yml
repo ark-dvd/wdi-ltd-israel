@@ -38,13 +38,12 @@ collections:
         name: "category"
         widget: "select"
         options:
-          - { label: "מייסדים", value: "founders" }
+          - { label: "הנהלה", value: "management" }
           - { label: "אדמיניסטרציה", value: "admin" }
-          - { label: "ראשי תחומים", value: "heads" }
           - { label: "צוות", value: "team" }
       - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
       - { label: "ביוגרפיה", name: "bio", widget: "text", required: false }
-      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "מייסדים: 1-3, אדמין: 10-19, ראשי תחומים: 20-29, צוות: 100+" }
+      - { label: "סדר תצוגה", name: "order", widget: "number", default: 100, required: true, hint: "הנהלה: 1-9, אדמיניסטרציה: 10-19, צוות: 100+" }
 
   # Projects
   - name: "projects"

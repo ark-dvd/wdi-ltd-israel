@@ -192,11 +192,11 @@ function getCategoryId(categoryName) {
 }
 
 // ===== Render Team =====
-// Founders in separate row of 3, then admin, heads, team (sorted by last name)
+// 3 sections: הנהלה (management), אדמיניסטרציה (admin), מנהלי פרויקטים (team)
 function renderTeam(container, team, options = {}) {
   if (!container || !team || !team.length) return;
 
-  // Helper function to get last name (second word in Hebrew name)
+  // Helper function to get last name (last word in Hebrew name)
   const getLastName = (name) => {
     const parts = name.split(' ');
     return parts.length > 1 ? parts[parts.length - 1] : name;
@@ -220,9 +220,8 @@ function renderTeam(container, team, options = {}) {
   `;
 
   // Separate team members by category
-  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 999) - (b.order || 999));
+  const management = team.filter(m => m.category === 'management').sort((a, b) => (a.order || 999) - (b.order || 999));
   const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 999) - (b.order || 999));
-  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 999) - (b.order || 999));
   const teamMembers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
 
   const { category, limit } = options;
@@ -235,30 +234,40 @@ function renderTeam(container, team, options = {}) {
     return;
   }
 
-  // Build sections: founders separate, then rest of team
+  // Build sections
   let html = '';
 
-  // Founders section (separate row of 3)
-  if (founders.length > 0) {
+  // Management section (הנהלה) - row of 3
+  if (management.length > 0) {
     html += `
-      <div class="team-section team-founders">
-        <h3 class="team-section-title">מייסדים ושותפים</h3>
-        <div class="team-founders-grid">
-          ${founders.map(renderCard).join('')}
+      <div class="team-section">
+        <h3 class="team-section-title">הנהלה</h3>
+        <div class="team-management-grid">
+          ${management.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  // Rest of team (admin, heads, team members)
-  const restOfTeam = [...admin, ...heads, ...teamMembers];
-  if (restOfTeam.length > 0) {
-    let teamToShow = limit ? restOfTeam.slice(0, limit - founders.length) : restOfTeam;
+  // Admin section (אדמיניסטרציה) - row of 2
+  if (admin.length > 0) {
     html += `
-      <div class="team-section team-members">
-        <h3 class="team-section-title">הצוות</h3>
+      <div class="team-section">
+        <h3 class="team-section-title">אדמיניסטרציה</h3>
+        <div class="team-admin-grid">
+          ${admin.map(renderCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Project Managers section (מנהלי פרויקטים) - responsive grid
+  if (teamMembers.length > 0) {
+    html += `
+      <div class="team-section">
+        <h3 class="team-section-title">מנהלי פרויקטים</h3>
         <div class="team-members-grid">
-          ${teamToShow.map(renderCard).join('')}
+          ${teamMembers.map(renderCard).join('')}
         </div>
       </div>
     `;

@@ -170,6 +170,23 @@ a:hover {
   width: auto;
 }
 
+/* Logo switching - white on dark, dark on light */
+.logo .logo-dark {
+  display: none;
+}
+
+.logo .logo-white {
+  display: block;
+}
+
+.header.scrolled .logo .logo-dark {
+  display: block;
+}
+
+.header.scrolled .logo .logo-white {
+  display: none;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -628,12 +645,21 @@ a:hover {
   border-radius: 2px;
 }
 
-/* Founders grid - exactly 3 columns, centered */
-.team-founders-grid {
+/* Management grid - exactly 3 columns, centered */
+.team-management-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Admin grid - exactly 2 columns, centered */
+.team-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -1220,8 +1246,14 @@ a:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .team-founders-grid {
+  .team-management-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .team-admin-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     max-width: 100%;
   }
@@ -1236,7 +1268,13 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
-  .team-founders-grid {
+  .team-management-grid {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .team-admin-grid {
     grid-template-columns: 1fr;
     max-width: 280px;
     margin: 0 auto;

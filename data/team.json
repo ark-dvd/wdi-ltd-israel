@@ -3,41 +3,37 @@
     {
       "id": "arik-davidi",
       "name": "אריק דוידי",
-      "role": "מייסד, שותף",
       "position": "מייסד, שותף",
       "image": "/images/team/arik-davidi.jpg",
       "linkedin": "https://www.linkedin.com/in/arikdavidi/",
       "bio": "1974, צפת. מתגורר באוסטין, טקסס. מהנדס אזרחי (BSc טכניון, 2002) ומוסמך במנהל עסקים (MBA האוניברסיטה הפתוחה, 2009).",
-      "category": "founders",
+      "category": "management",
       "order": 1
     },
     {
       "id": "guy-golan",
       "name": "גיא גולן",
-      "role": "מנכ\"ל WDI",
       "position": "מנכ\"ל WDI",
       "image": "/images/team/guy-golan.jpg",
       "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
       "bio": "1973, כפר ויתקין. מתגורר ביקנעם. מהנדס אזרחי (BSc טכניון, 2001) ומוסמך במנהל עסקים (MBA חיפה, 2015).",
-      "category": "founders",
+      "category": "management",
       "order": 2
     },
     {
       "id": "ilan-weiss",
       "name": "אילן וייס",
-      "role": "מייסד, שותף",
       "position": "מייסד, שותף",
       "image": "/images/team/ilan-weiss.jpg",
       "linkedin": "https://www.linkedin.com/in/i-w-2a18671a/",
       "bio": "1971, אוסטרליה. מתגורר בהושעיה. מהנדס אזרחי (BSc ו MA סידני אוסטרליה) ומוסמך במנהל עסקים (MBA חיפה, 2015).",
-      "category": "founders",
+      "category": "management",
       "order": 3
     },
     {
       "id": "li-chen-koren",
       "name": "לי-חן קורן",
-      "role": "אדמיניסטרציה",
-      "position": "אדמיניסטרציה",
+      "position": "מנהלת משרד",
       "image": "/images/team/li-chen-koren.jpg",
       "linkedin": "https://www.linkedin.com/in/li-chen-koren-a7032220b/",
       "bio": "",
@@ -47,7 +43,6 @@
     {
       "id": "yarden-weiss",
       "name": "ירדן וייס",
-      "role": "אדמיניסטרציה",
       "position": "אדמיניסטרציה",
       "image": "/images/team/yarden-weiss.jpg",
       "linkedin": "",
@@ -56,42 +51,8 @@
       "order": 11
     },
     {
-      "id": "eyal-nir",
-      "name": "איל ניר",
-      "role": "ראש תחום פרוייקטים תעשייתיים",
-      "position": "ראש תחום פרוייקטים תעשייתיים",
-      "image": "/images/team/eyal-nir.jpg",
-      "linkedin": "",
-      "bio": "1971, קיבוץ הזורע. מתגורר בזכרון יעקב. מהנדס אזרחי (BSc טכניון, 2000).",
-      "category": "heads",
-      "order": 20
-    },
-    {
-      "id": "yossi-elisha",
-      "name": "יוסי אלישע",
-      "role": "ראש תחום פרוייקטים מסחריים",
-      "position": "ראש תחום פרוייקטים מסחריים",
-      "image": "/images/team/yossi-elisha.jpg",
-      "linkedin": "",
-      "bio": "1971, מצליח. מתגורר בגבעתיים. הנדסאי חשמל ואלקטרוניקה.",
-      "category": "heads",
-      "order": 21
-    },
-    {
-      "id": "victor-lifshitz",
-      "name": "ויקטור ליפשיץ",
-      "role": "ראש תחום פרוייקטים בטחוניים",
-      "position": "ראש תחום פרוייקטים בטחוניים",
-      "image": "/images/team/victor-lifshitz.jpg",
-      "linkedin": "",
-      "bio": "1973, בלארוס. מתגורר בדברת. מהנדס כימיה וחומרים (BSc בר אילן, 1997) ומוסמך בבריאות בתעסוקה (MOccH תל אביב, 2006).",
-      "category": "heads",
-      "order": 22
-    },
-    {
       "id": "rotem-glick",
       "name": "רותם גליק",
-      "role": "מנהלת תכנון ורישוי",
       "position": "מנהלת תכנון ורישוי",
       "image": "/images/team/rotem-glick.jpg",
       "linkedin": "",
@@ -102,8 +63,7 @@
     {
       "id": "ori-davidi",
       "name": "אורי דוידי",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/ori-davidi.jpg",
       "linkedin": "https://www.linkedin.com/in/ori-davidi/",
       "bio": "2000, ראשון לציון. שם מתגורר כיום. סטודנט להנדסה אזרחית, SCE.",
@@ -113,8 +73,7 @@
     {
       "id": "ido-kuri",
       "name": "עידו כורי",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/ido-kuri.jpg",
       "linkedin": "",
       "bio": "1978 ערד. מתגורר בבאר שבע. מהנדס חשמל (BSc סמי שמעון, 2014).",
@@ -124,8 +83,7 @@
     {
       "id": "shai-klartag",
       "name": "שי קלרטג",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/shai-klartag.jpg",
       "linkedin": "https://www.linkedin.com/in/shai-klartag-760b7098/",
       "bio": "1987, חיפה. מתגורר בריחן. מהנדס אזרחי (BSc טכניון, 2013).",
@@ -135,8 +93,7 @@
     {
       "id": "tamir-lederman",
       "name": "תמיר לדרמן",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/tamir-lederman.jpg",
       "linkedin": "https://www.linkedin.com/in/tamir-lederman-6081bb56/",
       "bio": "1969, רעננה. מהנדס מכונות (BSc טכניון); מוסמך למדעים בהנדסת מכונות (טכניון).",
@@ -146,8 +103,7 @@
     {
       "id": "yonatan-raymond",
       "name": "יונתן ריימונד",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/yonatan-raymond.jpg",
       "linkedin": "",
       "bio": "",
@@ -157,19 +113,42 @@
     {
       "id": "itamar-shapiro",
       "name": "איתמר שפירא",
-      "role": "מנהל פרוייקט",
-      "position": "מנהל פרוייקט",
+      "position": "מנהל פרויקט",
       "image": "/images/team/itamar-shapiro.jpg",
       "linkedin": "https://www.linkedin.com/in/itamar-shapiro-618a60a8/",
       "bio": "1984, בוסטון, ארה\"ב. מתגורר במחנה מרים. הנדסאי אזרחי (טכניון, 2002).",
       "category": "team",
       "order": 106
+    },
+    {
+      "id": "eyal-nir",
+      "name": "איל ניר",
+      "position": "ראש תחום פרויקטים תעשייתיים",
+      "image": "/images/team/eyal-nir.jpg",
+      "linkedin": "",
+      "bio": "1971, קיבוץ הזורע. מתגורר בזכרון יעקב. מהנדס אזרחי (BSc טכניון, 2000).",
+      "category": "team",
+      "order": 107
+    },
+    {
+      "id": "yossi-elisha",
+      "name": "יוסי אלישע",
+      "position": "ראש תחום פרויקטים מסחריים",
+      "image": "/images/team/yossi-elisha.jpg",
+      "linkedin": "",
+      "bio": "1971, מצליח. מתגורר בגבעתיים. הנדסאי חשמל ואלקטרוניקה.",
+      "category": "team",
+      "order": 108
+    },
+    {
+      "id": "victor-lifshitz",
+      "name": "ויקטור ליפשיץ",
+      "position": "ראש תחום פרויקטים ביטחוניים",
+      "image": "/images/team/victor-lifshitz.jpg",
+      "linkedin": "",
+      "bio": "1973, בלארוס. מתגורר בדברת. מהנדס כימיה וחומרים (BSc בר אילן, 1997) ומוסמך בבריאות בתעסוקה (MOccH תל אביב, 2006).",
+      "category": "team",
+      "order": 109
     }
-  ],
-  "categories": [
-    { "id": "founders", "name": "מייסדים" },
-    { "id": "admin", "name": "אדמיניסטרציה" },
-    { "id": "heads", "name": "ראשי תחומים" },
-    { "id": "team", "name": "צוות" }
   ]
 }

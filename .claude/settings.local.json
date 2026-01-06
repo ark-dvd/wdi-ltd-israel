@@ -4,7 +4,17 @@
       "WebFetch(domain:www.iroads.co.il)",
       "WebSearch",
       "Bash(ls:*)",
-      "WebFetch(domain:www.wdiglobal.com)"
+      "WebFetch(domain:www.wdiglobal.com)",
+      "Bash(find:*)",
+      "Bash(for file in about.html clients.html contact.html content-library.html innovation.html job-application.html jobs.html join-us.html projects.html services.html team.html 404.html)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then sed -i 's|<img src=\"\"images/wdi-logo.png\"\" alt=\"\"WDI\"\">|<img src=\"\"images/wdi-logo-white.png\"\" alt=\"\"WDI\"\" class=\"\"logo-white\"\">\\\\n          <img src=\"\"images/wdi-logo.png\"\" alt=\"\"WDI\"\" class=\"\"logo-dark\"\">|g' \"$file\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for file in *.html)",
+      "Bash(do sed -i 's|<img src=\"\"../images/wdi-logo.png\"\" alt=\"\"WDI\"\">|<img src=\"\"../images/wdi-logo-white.png\"\" alt=\"\"WDI\"\" class=\"\"logo-white\"\">\\\\n          <img src=\"\"../images/wdi-logo.png\"\" alt=\"\"WDI\"\" class=\"\"logo-dark\"\">|g' \"$file\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
