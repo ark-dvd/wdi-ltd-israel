@@ -220,10 +220,10 @@ function renderTeam(container, team) {
     if (member.degrees && member.degrees.length > 0) {
       member.degrees.forEach(d => {
         const parts = [];
-        if (d.institution) parts.push(d.institution);
         if (d.degree) parts.push(d.degree);
         if (d.title) parts.push(d.title);
         if (d.year) parts.push(d.year);
+        if (d.institution) parts.push(d.institution);
         const degreeLine = parts.filter(p => p).join(' ');
         if (degreeLine) lines.push(degreeLine);
       });
