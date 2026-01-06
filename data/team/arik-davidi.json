@@ -1,14 +1,27 @@
 {
-  "id": "arik-davidi",
-  "name": "אריק דוידי",
-  "position": "מייסד, שותף",
-  "image": "/images/team/arik-davidi.jpg",
-  "linkedin": "https://www.linkedin.com/in/arikdavidi/",
-  "category": "founders",
-  "order": 1,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
   "educationType": "",
-  "degrees": []
+  "residence": "אוסטין טקסס",
+  "degrees": [
+    {
+      "title": "הנדסת אזרחית",
+      "degree": "BSc",
+      "institution": "הטכניון",
+      "year": "2002"
+    },
+    {
+      "title": "תואר שני",
+      "degree": "MBA",
+      "institution": "האונ/ הפתוחה",
+      "year": "2010"
+    }
+  ],
+  "birthPlace": "צפת",
+  "position": "מייסד, שותף",
+  "name": "אריק דוידי",
+  "order": 1,
+  "id": "arik-davidi",
+  "image": "/images/team/arik-davidi.jpg",
+  "birthYear": 1974,
+  "linkedin": "https://www.linkedin.com/in/arikdavidi/",
+  "category": "founders"
 }
