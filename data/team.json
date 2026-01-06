@@ -31,16 +31,6 @@
       "order": 3
     },
     {
-      "id": "li-chen-koren",
-      "name": "לי-חן קורן",
-      "position": "מנהלת משרד",
-      "image": "/images/team/li-chen-koren.jpg",
-      "linkedin": "https://www.linkedin.com/in/li-chen-koren-a7032220b/",
-      "bio": "",
-      "category": "admin",
-      "order": 10
-    },
-    {
       "id": "yarden-weiss",
       "name": "ירדן וייס",
       "position": "אדמיניסטרציה",
@@ -48,7 +38,7 @@
       "linkedin": "",
       "bio": "2004, הושעיה.",
       "category": "admin",
-      "order": 11
+      "order": 10
     },
     {
       "id": "rotem-glick",
@@ -81,16 +71,6 @@
       "order": 102
     },
     {
-      "id": "shai-klartag",
-      "name": "שי קלרטג",
-      "position": "מנהל פרויקט",
-      "image": "/images/team/shai-klartag.jpg",
-      "linkedin": "https://www.linkedin.com/in/shai-klartag-760b7098/",
-      "bio": "1987, חיפה. מתגורר בריחן. מהנדס אזרחי (BSc טכניון, 2013).",
-      "category": "team",
-      "order": 103
-    },
-    {
       "id": "tamir-lederman",
       "name": "תמיר לדרמן",
       "position": "מנהל פרויקט",
@@ -98,7 +78,7 @@
       "linkedin": "https://www.linkedin.com/in/tamir-lederman-6081bb56/",
       "bio": "1969, רעננה. מהנדס מכונות (BSc טכניון); מוסמך למדעים בהנדסת מכונות (טכניון).",
       "category": "team",
-      "order": 104
+      "order": 103
     },
     {
       "id": "yonatan-raymond",
@@ -108,17 +88,7 @@
       "linkedin": "",
       "bio": "",
       "category": "team",
-      "order": 105
-    },
-    {
-      "id": "itamar-shapiro",
-      "name": "איתמר שפירא",
-      "position": "מנהל פרויקט",
-      "image": "/images/team/itamar-shapiro.jpg",
-      "linkedin": "https://www.linkedin.com/in/itamar-shapiro-618a60a8/",
-      "bio": "1984, בוסטון, ארה\"ב. מתגורר במחנה מרים. הנדסאי אזרחי (טכניון, 2002).",
-      "category": "team",
-      "order": 106
+      "order": 104
     },
     {
       "id": "eyal-nir",
@@ -128,7 +98,7 @@
       "linkedin": "",
       "bio": "1971, קיבוץ הזורע. מתגורר בזכרון יעקב. מהנדס אזרחי (BSc טכניון, 2000).",
       "category": "team",
-      "order": 107
+      "order": 105
     },
     {
       "id": "yossi-elisha",
@@ -138,7 +108,7 @@
       "linkedin": "",
       "bio": "1971, מצליח. מתגורר בגבעתיים. הנדסאי חשמל ואלקטרוניקה.",
       "category": "team",
-      "order": 108
+      "order": 106
     },
     {
       "id": "victor-lifshitz",
@@ -148,7 +118,7 @@
       "linkedin": "",
       "bio": "1973, בלארוס. מתגורר בדברת. מהנדס כימיה וחומרים (BSc בר אילן, 1997) ומוסמך בבריאות בתעסוקה (MOccH תל אביב, 2006).",
       "category": "team",
-      "order": 109
+      "order": 107
     }
   ]
 }
