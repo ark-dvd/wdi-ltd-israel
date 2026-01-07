@@ -1,4 +1,5 @@
 {
+  "gender": "male",
   "educationType": "",
   "residence": "אוסטין טקסס",
   "degrees": [
@@ -20,7 +21,7 @@
   "name": "אריק דוידי",
   "order": 1,
   "id": "arik-davidi",
-  "image": "/images/team/arik-davidi.jpg",
+  "image": "/images/team/gemini_generated_image_jcjav1jcjav1jcja.png",
   "birthYear": 1974,
   "linkedin": "https://www.linkedin.com/in/arikdavidi/",
   "category": "founders"
