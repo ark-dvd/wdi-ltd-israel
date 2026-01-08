@@ -1,11 +1,12 @@
 {
+  "gender": "male",
   "educationType": "",
   "residence": "רעננה",
   "degrees": [],
   "birthPlace": "",
   "position": "מנהל פרויקט",
   "name": "תמיר לדרמן",
-  "order": 103,
+  "order": 96,
   "id": "tamir-lederman",
   "image": "/images/team/gemini_generated_image_of4tjlof4tjlof4t.png",
   "birthYear": 1970,
