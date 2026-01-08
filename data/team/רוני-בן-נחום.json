@@ -1,9 +1,10 @@
 {
-  "order": 100,
+  "order": 99,
   "name": "רוני בן נחום",
   "category": "team",
   "birthYear": 1975,
   "residence": "רעננה",
   "image": "/images/team/gemini_generated_image_3urqzx3urqzx3urq.png",
-  "position": "מנהל פרוייקט"
+  "position": "מנהל פרוייקט",
+  "gender": "male"
 }
