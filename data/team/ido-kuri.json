@@ -1,14 +1,15 @@
 {
-  "id": "ido-kuri",
-  "name": "עידו כורי",
-  "position": "מנהל פרויקט",
-  "image": "/images/team/ido-kuri.jpg",
-  "linkedin": "",
-  "category": "team",
-  "order": 102,
-  "birthYear": "",
-  "birthPlace": "",
-  "residence": "",
+  "gender": "male",
   "educationType": "",
-  "degrees": []
+  "residence": "",
+  "degrees": [],
+  "birthPlace": "",
+  "position": "מנהל פרויקט",
+  "name": "עידו כורי",
+  "order": 94,
+  "id": "ido-kuri",
+  "image": "/images/team/ido-kuri.jpg",
+  "birthYear": "",
+  "linkedin": "",
+  "category": "team"
 }
