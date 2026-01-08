@@ -1,4 +1,5 @@
 {
+  "gender": "male",
   "educationType": "",
   "residence": "יקנעם",
   "degrees": [
@@ -18,7 +19,7 @@
   "birthPlace": "",
   "position": "מנכ\"ל WDI",
   "name": "גיא גולן",
-  "order": 2,
+  "order": 3,
   "id": "guy-golan",
   "image": "/images/team/guy-golan.jpg",
   "birthYear": 1973,
