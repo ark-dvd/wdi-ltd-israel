@@ -1,11 +1,5 @@
 import { uploadImage } from '@/lib/github';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 // Allow larger file uploads (50MB)
 export const maxDuration = 60;
 
