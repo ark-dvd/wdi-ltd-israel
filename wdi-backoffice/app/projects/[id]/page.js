@@ -5,12 +5,23 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const categoryOptions = [
-  { value: 'security', label: 'ביטחון' },
-  { value: 'commercial', label: 'מסחרי' },
-  { value: 'industrial', label: 'תעשייה' },
-  { value: 'residential', label: 'מגורים' },
-  { value: 'infrastructure', label: 'תשתיות' },
-  { value: 'public', label: 'ציבורי' },
+  { value: 'בטחוני', label: 'בטחוני' },
+  { value: 'מסחרי', label: 'מסחרי' },
+  { value: 'תעשייתי', label: 'תעשייתי' },
+  { value: 'מגורים', label: 'מגורים' },
+  { value: 'תשתיות', label: 'תשתיות' },
+  { value: 'ציבורי', label: 'ציבורי' },
+];
+
+const serviceOptions = [
+  'ניהול תכנון',
+  'מסמכי דרישות, אפיון ופרוגרמה',
+  'ניהול ביצוע ופיקוח',
+  'ייצוג בעלי עניין',
+  'ניהול והבטחת איכות',
+  'ניהול תב״ע והיתרים',
+  'שירותי PMO',
+  'ניהול הידע בפרויקט',
 ];
 
 export default function ProjectEditPage() {
@@ -31,6 +42,7 @@ export default function ProjectEditPage() {
 
   async function handleSave() {
     setSaving(true);
+    setMessage('');
     try {
       const res = await fetch(`/api/projects/${params.id}`, {
         method: 'PATCH',
@@ -40,6 +52,9 @@ export default function ProjectEditPage() {
       if (res.ok) {
         setMessage('נשמר בהצלחה! ✓');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        const error = await res.json();
+        setMessage(`שגיאה: ${error.error}`);
       }
     } catch (error) {
       setMessage('שגיאה בשמירה');
@@ -69,6 +84,7 @@ export default function ProjectEditPage() {
     }
     
     setUploading(true);
+    setMessage('');
     
     try {
       const newImages = [...currentImages];
@@ -76,6 +92,7 @@ export default function ProjectEditPage() {
       for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('folder', 'images/projects');
         
         const res = await fetch('/api/upload', {
           method: 'POST',
@@ -87,18 +104,8 @@ export default function ProjectEditPage() {
         }
       }
       
-      // Update project with new images
       setProject(prev => ({ ...prev, images: newImages }));
-      
-      // Save to Sanity
-      await fetch(`/api/projects/${params.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images: newImages }),
-      });
-      
-      setMessage('תמונות הועלו בהצלחה! ✓');
-      setTimeout(() => setMessage(''), 3000);
+      setMessage('תמונות הועלו! לחץ שמור כדי לשמור');
     } catch (error) {
       setMessage('שגיאה בהעלאת תמונות');
     } finally {
@@ -106,30 +113,31 @@ export default function ProjectEditPage() {
     }
   }
 
-  async function removeImage(index) {
+  function removeImage(index) {
     const newImages = project.images.filter((_, i) => i !== index);
     setProject(prev => ({ ...prev, images: newImages }));
-    
-    // Save to Sanity
-    await fetch(`/api/projects/${params.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ images: newImages }),
-    });
-    
-    setMessage('תמונה הוסרה');
-    setTimeout(() => setMessage(''), 2000);
   }
 
   function updateField(field, value) {
     setProject(prev => ({ ...prev, [field]: value }));
   }
 
+  function toggleService(service) {
+    const services = project.services || [];
+    if (services.includes(service)) {
+      updateField('services', services.filter(s => s !== service));
+    } else {
+      updateField('services', [...services, service]);
+    }
+  }
+
   function getImageUrl(image) {
-    if (!image?.asset?._ref) return null;
-    const ref = image.asset._ref;
-    const [, id, dimensions, format] = ref.split('-');
-    return `https://cdn.sanity.io/images/hrkxr0r8/production/${id}-${dimensions}.${format}`;
+    if (!image) return null;
+    if (typeof image === 'string') {
+      if (image.startsWith('/')) return `https://wdi.co.il${image}`;
+      return image;
+    }
+    return null;
   }
 
   if (loading) {
@@ -144,17 +152,15 @@ export default function ProjectEditPage() {
     return <div className="text-center py-12">פרויקט לא נמצא</div>;
   }
 
-  const images = project.images || [];
-
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <Link href="/projects" className="text-gray-500 hover:text-wdi-blue">← חזרה</Link>
           <h1 className="text-2xl font-bold text-wdi-blue">{project.title}</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className="text-sm text-green-500">{message}</span>}
+          {message && <span className={`text-sm ${message.includes('שגיאה') ? 'text-red-500' : 'text-green-500'}`}>{message}</span>}
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
             {saving ? 'שומר...' : 'שמור'}
           </button>
@@ -164,57 +170,37 @@ export default function ProjectEditPage() {
       <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
         {/* Images */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            תמונות ({images.length}/10)
-          </label>
-          
-          <div className="grid grid-cols-5 gap-2 mb-3">
-            {images.map((img, index) => {
+          <label className="block text-sm font-medium text-gray-700 mb-2">תמונות ({(project.images || []).length}/10)</label>
+          <div className="flex flex-wrap gap-3 mb-3">
+            {(project.images || []).map((img, index) => {
               const url = getImageUrl(img);
-              return (
-                <div key={index} className="relative aspect-square bg-gray-100 rounded overflow-hidden group">
-                  {url && <img src={url} alt="" className="w-full h-full object-cover" />}
+              return url ? (
+                <div key={index} className="relative w-24 h-24 group">
+                  <img src={url} alt="" className="w-full h-full object-cover rounded-lg" />
                   <button
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     ✕
                   </button>
-                  {index === 0 && (
-                    <span className="absolute bottom-1 left-1 bg-wdi-gold text-white text-xs px-1 rounded">
-                      ראשית
-                    </span>
-                  )}
                 </div>
-              );
+              ) : null;
             })}
-          </div>
-          
-          {images.length < 10 && (
-            <div>
+            <label className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-wdi-gold">
               <input
                 type="file"
                 accept="image/*"
                 multiple
                 onChange={handleImageUpload}
                 className="hidden"
-                id="images-upload"
               />
-              <label
-                htmlFor="images-upload"
-                className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm inline-block"
-              >
-                {uploading ? 'מעלה...' : '+ העלה תמונות'}
-              </label>
-              <span className="text-xs text-gray-500 mr-2">
-                ניתן לבחור מספר תמונות
-              </span>
-            </div>
-          )}
+              <span className="text-gray-400">{uploading ? '...' : '+'}</span>
+            </label>
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">שם הפרויקט</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">שם הפרויקט *</label>
           <input
             type="text"
             value={project.title || ''}
@@ -224,7 +210,7 @@ export default function ProjectEditPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">לקוח</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">לקוח / מזמין עבודה *</label>
           <input
             type="text"
             value={project.client || ''}
@@ -233,17 +219,28 @@ export default function ProjectEditPage() {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
-          <select
-            value={project.category || ''}
-            onChange={(e) => updateField('category', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            {categoryOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
+            <select
+              value={project.category || 'מסחרי'}
+              onChange={(e) => updateField('category', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            >
+              {categoryOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">שנה</label>
+            <input
+              type="text"
+              value={project.year || ''}
+              onChange={(e) => updateField('year', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+          </div>
         </div>
 
         <div>
@@ -256,45 +253,32 @@ export default function ProjectEditPage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">שנה</label>
-            <input
-              type="number"
-              value={project.year || ''}
-              onChange={(e) => updateField('year', parseInt(e.target.value) || null)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">סדר תצוגה</label>
-            <input
-              type="number"
-              value={project.order || 0}
-              onChange={(e) => updateField('order', parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">שירותים</label>
+          <div className="grid grid-cols-2 gap-2">
+            {serviceOptions.map(service => (
+              <label key={service} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={(project.services || []).includes(service)}
+                  onChange={() => toggleService(service)}
+                  className="w-4 h-4"
+                />
+                {service}
+              </label>
+            ))}
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={project.featured || false}
+              checked={project.featured === true}
               onChange={(e) => updateField('featured', e.target.checked)}
               className="w-4 h-4"
             />
-            <span className="text-sm">מומלץ (מוצג בעמוד הראשי)</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={project.isActive !== false}
-              onChange={(e) => updateField('isActive', e.target.checked)}
-              className="w-4 h-4"
-            />
-            <span className="text-sm">פעיל</span>
+            <span className="text-sm">פרויקט מומלץ (מוצג בעמוד הראשי)</span>
           </label>
         </div>
       </div>

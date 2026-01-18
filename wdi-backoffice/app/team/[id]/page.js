@@ -5,10 +5,10 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const categoryOptions = [
-  { value: 'management', label: 'הנהלה' },
-  { value: 'administration', label: 'אדמיניסטרציה' },
-  { value: 'department-heads', label: 'ראשי תחומים' },
-  { value: 'project-managers', label: 'מנהלי פרויקטים' },
+  { value: 'founders', label: 'הנהלה' },
+  { value: 'admin', label: 'אדמיניסטרציה' },
+  { value: 'heads', label: 'ראשי תחומים' },
+  { value: 'team', label: 'מנהלי פרויקטים' },
 ];
 
 export default function TeamEditPage() {
@@ -39,6 +39,9 @@ export default function TeamEditPage() {
       if (res.ok) {
         setMessage('נשמר בהצלחה! ✓');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        const error = await res.json();
+        setMessage(`שגיאה: ${error.error}`);
       }
     } catch (error) {
       setMessage('שגיאה בשמירה');
@@ -62,10 +65,10 @@ export default function TeamEditPage() {
     if (!file) return;
     
     setUploading(true);
+    setMessage('');
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('docId', params.id);
-    formData.append('fieldName', 'image');
+    formData.append('folder', 'images/team');
     
     try {
       const res = await fetch('/api/upload', {
@@ -75,8 +78,9 @@ export default function TeamEditPage() {
       const data = await res.json();
       if (data.image) {
         setMember(prev => ({ ...prev, image: data.image }));
-        setMessage('תמונה הועלתה בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
+        setMessage('תמונה הועלתה! לחץ שמור כדי לשמור');
+      } else {
+        setMessage(`שגיאה: ${data.error || 'שגיאה בהעלאה'}`);
       }
     } catch (error) {
       setMessage('שגיאה בהעלאת תמונה');
@@ -89,29 +93,25 @@ export default function TeamEditPage() {
     setMember(prev => ({ ...prev, [field]: value }));
   }
 
-  function updateEducation(index, field, value) {
-    const newEducation = [...(member.education || [])];
-    newEducation[index] = { ...newEducation[index], [field]: value };
-    updateField('education', newEducation);
+  function updateDegree(index, field, value) {
+    const newDegrees = [...(member.degrees || [])];
+    newDegrees[index] = { ...newDegrees[index], [field]: value };
+    updateField('degrees', newDegrees);
   }
 
-  function addEducation() {
-    updateField('education', [...(member.education || []), { degree: '', institution: '', year: '' }]);
+  function addDegree() {
+    updateField('degrees', [...(member.degrees || []), { degree: '', title: '', institution: '', year: '' }]);
   }
 
-  function removeEducation(index) {
-    updateField('education', member.education.filter((_, i) => i !== index));
+  function removeDegree(index) {
+    updateField('degrees', member.degrees.filter((_, i) => i !== index));
   }
 
   function getImageUrl(image) {
-    // Support both old Sanity format and new simple path format
     if (!image) return null;
-    if (typeof image === 'string') return image; // Simple path like /images/team/photo.png
-    if (image?.asset?._ref) {
-      // Legacy Sanity format
-      const ref = image.asset._ref;
-      const [, id, dimensions, format] = ref.split('-');
-      return `https://cdn.sanity.io/images/hrkxr0r8/production/${id}-${dimensions}.${format}`;
+    if (typeof image === 'string') {
+      if (image.startsWith('/')) return `https://wdi.co.il${image}`;
+      return image;
     }
     return null;
   }
@@ -138,7 +138,7 @@ export default function TeamEditPage() {
           <h1 className="text-2xl font-bold text-wdi-blue">{member.name}</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className="text-sm text-green-500">{message}</span>}
+          {message && <span className={`text-sm ${message.includes('שגיאה') ? 'text-red-500' : 'text-green-500'}`}>{message}</span>}
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
             {saving ? 'שומר...' : 'שמור'}
           </button>
@@ -154,7 +154,7 @@ export default function TeamEditPage() {
               {imageUrl ? (
                 <img src={imageUrl} alt={member.name} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-3xl text-gray-400">👤</span>
+                <span className="text-3xl text-gray-400">{member.name?.charAt(0) || '👤'}</span>
               )}
             </div>
             <div>
@@ -189,23 +189,36 @@ export default function TeamEditPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">תפקיד</label>
           <input
             type="text"
-            value={member.role || ''}
-            onChange={(e) => updateField('role', e.target.value)}
+            value={member.position || ''}
+            onChange={(e) => updateField('position', e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
-          <select
-            value={member.category || ''}
-            onChange={(e) => updateField('category', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            {categoryOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
+            <select
+              value={member.category || 'team'}
+              onChange={(e) => updateField('category', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            >
+              {categoryOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">מגדר</label>
+            <select
+              value={member.gender || 'male'}
+              onChange={(e) => updateField('gender', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            >
+              <option value="male">זכר</option>
+              <option value="female">נקבה</option>
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -239,46 +252,53 @@ export default function TeamEditPage() {
           />
         </div>
 
-        {/* Education */}
+        {/* Education - using degrees field */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700">השכלה</label>
-            <button onClick={addEducation} className="text-sm text-wdi-gold hover:underline">
+            <button onClick={addDegree} className="text-sm text-wdi-gold hover:underline">
               + הוסף תואר
             </button>
           </div>
-          {(member.education || []).map((edu, index) => (
+          {(member.degrees || []).map((edu, index) => (
             <div key={index} className="flex gap-2 mb-2 items-start">
               <input
                 type="text"
-                placeholder="תואר"
+                placeholder="סוג תואר"
                 value={edu.degree || ''}
-                onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                onChange={(e) => updateDegree(index, 'degree', e.target.value)}
+                className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
+              />
+              <input
+                type="text"
+                placeholder="תחום"
+                value={edu.title || ''}
+                onChange={(e) => updateDegree(index, 'title', e.target.value)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <input
                 type="text"
                 placeholder="מוסד"
                 value={edu.institution || ''}
-                onChange={(e) => updateEducation(index, 'institution', e.target.value)}
+                onChange={(e) => updateDegree(index, 'institution', e.target.value)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <input
-                type="number"
+                type="text"
                 placeholder="שנה"
                 value={edu.year || ''}
-                onChange={(e) => updateEducation(index, 'year', parseInt(e.target.value) || '')}
+                onChange={(e) => updateDegree(index, 'year', e.target.value)}
                 className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <button
-                onClick={() => removeEducation(index)}
+                onClick={() => removeDegree(index)}
                 className="text-red-400 hover:text-red-600 px-2"
               >
                 ✕
               </button>
             </div>
           ))}
-          {(!member.education || member.education.length === 0) && (
+          {(!member.degrees || member.degrees.length === 0) && (
             <p className="text-gray-400 text-sm">לא הוזנה השכלה</p>
           )}
         </div>
@@ -291,6 +311,7 @@ export default function TeamEditPage() {
             onChange={(e) => updateField('linkedin', e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             dir="ltr"
+            placeholder="https://linkedin.com/in/..."
           />
         </div>
 
@@ -313,6 +334,7 @@ export default function TeamEditPage() {
               className="w-20 px-2 py-1 border border-gray-300 rounded"
             />
           </div>
+          <span className="text-xs text-gray-500">(הנהלה: 1-9, אדמין: 10-19, ראשי תחומים: 20-29, צוות: 100+)</span>
         </div>
       </div>
 

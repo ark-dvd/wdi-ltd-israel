@@ -24,9 +24,41 @@ export default function NewTeamMemberPage() {
     linkedin: '',
     degrees: [],
     order: 100,
+    image: '',
   });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+
+  async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setUploading(true);
+    setMessage('');
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'images/team');
+    
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.image) {
+        setMember(prev => ({ ...prev, image: data.image }));
+        setMessage('תמונה הועלתה בהצלחה! ✓');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage(`שגיאה: ${data.error || 'שגיאה בהעלאה'}`);
+      }
+    } catch (error) {
+      setMessage('שגיאה בהעלאת תמונה');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleSave() {
     if (!member.name || !member.position) {
@@ -64,19 +96,30 @@ export default function NewTeamMemberPage() {
     setMember(prev => ({ ...prev, [field]: value }));
   }
 
-  function updateEducation(index, field, value) {
+  function updateDegree(index, field, value) {
     const newDegrees = [...(member.degrees || [])];
     newDegrees[index] = { ...newDegrees[index], [field]: value };
     updateField('degrees', newDegrees);
   }
 
-  function addEducation() {
+  function addDegree() {
     updateField('degrees', [...(member.degrees || []), { degree: '', title: '', institution: '', year: '' }]);
   }
 
-  function removeEducation(index) {
+  function removeDegree(index) {
     updateField('degrees', member.degrees.filter((_, i) => i !== index));
   }
+
+  function getImageUrl(image) {
+    if (!image) return null;
+    if (typeof image === 'string') {
+      if (image.startsWith('/')) return `https://wdi.co.il${image}`;
+      return image;
+    }
+    return null;
+  }
+
+  const imageUrl = getImageUrl(member.image);
 
   return (
     <div className="max-w-2xl">
@@ -94,6 +137,35 @@ export default function NewTeamMemberPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+        {/* Image Upload */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">תמונה</label>
+          <div className="flex items-center gap-4">
+            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+              {imageUrl ? (
+                <img src={imageUrl} alt="תמונה חדשה" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl text-gray-400">👤</span>
+              )}
+            </div>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
+              />
+              <label
+                htmlFor="image-upload"
+                className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
+              >
+                {uploading ? 'מעלה...' : (imageUrl ? 'החלף תמונה' : 'העלה תמונה')}
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">שם *</label>
           <input
@@ -177,7 +249,7 @@ export default function NewTeamMemberPage() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700">השכלה</label>
-            <button onClick={addEducation} className="text-sm text-wdi-gold hover:underline">
+            <button onClick={addDegree} className="text-sm text-wdi-gold hover:underline">
               + הוסף תואר
             </button>
           </div>
@@ -187,32 +259,32 @@ export default function NewTeamMemberPage() {
                 type="text"
                 placeholder="סוג תואר"
                 value={edu.degree || ''}
-                onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                onChange={(e) => updateDegree(index, 'degree', e.target.value)}
                 className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <input
                 type="text"
                 placeholder="תחום"
                 value={edu.title || ''}
-                onChange={(e) => updateEducation(index, 'title', e.target.value)}
+                onChange={(e) => updateDegree(index, 'title', e.target.value)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <input
                 type="text"
                 placeholder="מוסד"
                 value={edu.institution || ''}
-                onChange={(e) => updateEducation(index, 'institution', e.target.value)}
+                onChange={(e) => updateDegree(index, 'institution', e.target.value)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <input
                 type="text"
                 placeholder="שנה"
                 value={edu.year || ''}
-                onChange={(e) => updateEducation(index, 'year', e.target.value)}
+                onChange={(e) => updateDegree(index, 'year', e.target.value)}
                 className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
               />
               <button
-                onClick={() => removeEducation(index)}
+                onClick={() => removeDegree(index)}
                 className="text-red-400 hover:text-red-600 px-2"
               >
                 ✕
