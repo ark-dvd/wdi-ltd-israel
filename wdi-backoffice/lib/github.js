@@ -1,6 +1,5 @@
 /**
  * GitHub API Client for WDI Back Office
- * With automatic _index.json management
  */
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -96,43 +95,7 @@ async function deleteFile(path, sha, message) {
   });
 }
 
-// ==========================================
-// _index.json Management
-// ==========================================
-
-async function updateIndex(type) {
-  const basePath = PATHS[type];
-  if (!basePath) return;
-
-  const indexPath = `${basePath}/_index.json`;
-  
-  // List all JSON files in directory
-  const files = await listDirectory(basePath);
-  const jsonFiles = files
-    .filter(f => f.name.endsWith('.json') && !f.name.startsWith('_'))
-    .map(f => f.name)
-    .sort();
-
-  // Get existing _index.json if exists
-  const existing = await getFile(indexPath);
-  
-  const indexContent = {
-    files: jsonFiles,
-    updated: new Date().toISOString()
-  };
-
-  await saveFile(
-    indexPath, 
-    indexContent, 
-    `Update ${type} index`, 
-    existing?.sha
-  );
-}
-
-// ==========================================
 // CRUD Operations
-// ==========================================
-
 export async function fetchAll(type) {
   const basePath = PATHS[type];
   if (!basePath) throw new Error(`Unknown type: ${type}`);
@@ -191,9 +154,6 @@ export async function createItem(type, data) {
 
   await saveFile(filePath, itemData, `Create ${type}: ${id}`);
   
-  // Update _index.json
-  await updateIndex(type);
-  
   return { ...itemData, _id: id, _path: filePath };
 }
 
@@ -213,8 +173,6 @@ export async function updateItem(type, id, data) {
 
   await saveFile(filePath, itemData, `Update ${type}: ${id}`, existing.sha);
   
-  // No need to update _index.json for updates (file list unchanged)
-  
   return { ...itemData, _id: id, _path: filePath };
 }
 
@@ -231,16 +189,10 @@ export async function deleteItem(type, id) {
 
   await deleteFile(filePath, existing.sha, `Delete ${type}: ${id}`);
   
-  // Update _index.json
-  await updateIndex(type);
-  
   return { success: true, id };
 }
 
-// ==========================================
 // Upload functions
-// ==========================================
-
 export async function uploadImage(file, folder = 'images') {
   const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
   const filePath = `${folder}/${fileName}`;
@@ -279,10 +231,7 @@ export async function uploadVideo(file, folder = 'videos') {
   return `/${filePath}`;
 }
 
-// ==========================================
 // Helpers
-// ==========================================
-
 function generateId() {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
