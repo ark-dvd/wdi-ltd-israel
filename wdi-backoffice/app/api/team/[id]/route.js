@@ -1,44 +1,30 @@
-import { fetchOne, updateItem, deleteItem } from '@/lib/github';
+import { fetchOne, updateItem, deleteItem } from '../../../../lib/github';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = await params;
-    const member = await fetchOne('team', id);
-    if (!member) {
-      return Response.json({ error: 'Not found' }, { status: 404 });
-    }
-    return Response.json(member);
+    const item = await fetchOne('team', params.id);
+    if (!item) return Response.json({ error: 'Not found' }, { status: 404 });
+    return Response.json(item);
   } catch (error) {
-    console.error('Error fetching team member:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function PATCH(request, { params }) {
   try {
-    const { id } = await params;
     const data = await request.json();
-    
-    // Validation
-    if (!data.name || !data.role) {
-      return Response.json({ error: 'שם ותפקיד הם שדות חובה' }, { status: 400 });
-    }
-    
-    const result = await updateItem('team', id, data);
+    const result = await updateItem('team', params.id, data);
     return Response.json(result);
   } catch (error) {
-    console.error('Error updating team member:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function DELETE(request, { params }) {
   try {
-    const { id } = await params;
-    await deleteItem('team', id);
+    await deleteItem('team', params.id);
     return Response.json({ success: true });
   } catch (error) {
-    console.error('Error deleting team member:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

@@ -1,9 +1,11 @@
-import { fetchAll, fetchOne, createItem, updateItem } from '@/lib/github';
+import { fetchAll, fetchOne, createItem, updateItem } from '../../../lib/github';
 
 export async function GET() {
   try {
     const items = await fetchAll('hero');
-    return Response.json(items);
+    // Return first item or empty object
+    const hero = Array.isArray(items) && items.length > 0 ? items[0] : {};
+    return Response.json(hero);
   } catch (error) {
     console.error('Error fetching hero:', error);
     return Response.json({ error: error.message }, { status: 500 });
