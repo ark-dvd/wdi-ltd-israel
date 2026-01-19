@@ -82,7 +82,7 @@ export default function NewContentLibraryItemPage() {
               value={item.title}
               onChange={(e) => updateField('title', e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
-              placeholder="משהב"ט - המפרט הכללי לעבודות בנייה"
+              placeholder='משהב"ט - המפרט הכללי לעבודות בנייה'
             />
           </div>
           
