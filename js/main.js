@@ -215,10 +215,14 @@ function renderTeam(container, team) {
     return lines.join('<br>');
   };
 
+  // Get role/position - support both field names
+  const getRole = (member) => member.role || member.position || '';
+
   // Render single team card with hover overlay
   const renderCard = (member) => {
     const bioText = buildBioText(member);
     const hasDetails = bioText || member.linkedin;
+    const roleText = getRole(member);
     
     return `
       <div class="team-card">
@@ -227,7 +231,7 @@ function renderTeam(container, team) {
           ${hasDetails ? `
             <div class="team-card-overlay">
               <h4>${member.name}</h4>
-              <p class="team-card-position">${member.position}</p>
+              <p class="team-card-position">${roleText}</p>
               ${bioText ? `<p class="team-card-bio">${bioText}</p>` : ''}
               ${member.linkedin ? `
                 <a href="${member.linkedin}" target="_blank" class="team-card-linkedin" onclick="event.stopPropagation();">
@@ -238,48 +242,48 @@ function renderTeam(container, team) {
           ` : ''}
         </div>
         <h3 class="team-card-name">${member.name}</h3>
-        <p class="team-card-role">${member.position}</p>
+        <p class="team-card-role">${roleText}</p>
       </div>
     `;
   };
 
-  // Filter by category
-  const founders = team.filter(m => m.category === 'founders').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const admin = team.filter(m => m.category === 'admin').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const heads = team.filter(m => m.category === 'heads').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const projectManagers = team.filter(m => m.category === 'team').sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name), 'he'));
+  // Filter by category - ALIGNED WITH BACKOFFICE CATEGORIES
+  const management = team.filter(m => m.category === 'management').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const administration = team.filter(m => m.category === 'administration').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const departmentHeads = team.filter(m => m.category === 'department-heads').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const projectManagers = team.filter(m => m.category === 'project-managers').sort((a, b) => (a.order || 0) - (b.order || 0));
 
   let html = '';
 
-  if (founders.length > 0) {
+  if (management.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">הנהלה</h2>
         <div class="team-grid-new">
-          ${founders.map(renderCard).join('')}
+          ${management.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  if (admin.length > 0) {
-    const gridClass = admin.length === 1 ? 'team-grid-single' : 'team-grid-new';
+  if (administration.length > 0) {
+    const gridClass = administration.length === 1 ? 'team-grid-single' : 'team-grid-new';
     html += `
       <div class="team-section">
         <h2 class="team-section-title">אדמיניסטרציה</h2>
         <div class="${gridClass}">
-          ${admin.map(renderCard).join('')}
+          ${administration.map(renderCard).join('')}
         </div>
       </div>
     `;
   }
 
-  if (heads.length > 0) {
+  if (departmentHeads.length > 0) {
     html += `
       <div class="team-section">
         <h2 class="team-section-title">ראשי תחומים</h2>
         <div class="team-grid-new">
-          ${heads.map(renderCard).join('')}
+          ${departmentHeads.map(renderCard).join('')}
         </div>
       </div>
     `;
