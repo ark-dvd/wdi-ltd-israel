@@ -1,3 +1,6 @@
+// Force Node.js runtime (Buffer not available in Edge)
+export const runtime = 'nodejs';
+
 import { uploadImage } from '../../../lib/github';
 
 export async function POST(request) {
