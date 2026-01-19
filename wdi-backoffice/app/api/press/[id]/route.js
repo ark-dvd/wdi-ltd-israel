@@ -4,12 +4,9 @@ export async function GET(request, { params }) {
   try {
     const { id } = await params;
     const item = await fetchOne('press', id);
-    if (!item) {
-      return Response.json({ error: 'Not found' }, { status: 404 });
-    }
+    if (!item) return Response.json({ error: 'Not found' }, { status: 404 });
     return Response.json(item);
   } catch (error) {
-    console.error('Error fetching press item:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
@@ -21,7 +18,6 @@ export async function PATCH(request, { params }) {
     const result = await updateItem('press', id, data);
     return Response.json(result);
   } catch (error) {
-    console.error('Error updating press item:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
@@ -32,7 +28,6 @@ export async function DELETE(request, { params }) {
     await deleteItem('press', id);
     return Response.json({ success: true });
   } catch (error) {
-    console.error('Error deleting press item:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

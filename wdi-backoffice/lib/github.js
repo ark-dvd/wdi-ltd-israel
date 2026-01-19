@@ -1,6 +1,6 @@
 /**
  * GitHub API Client for WDI Back Office
- * Replaces Sanity - stores data as JSON files in the repository
+ * Stores data as JSON files in the repository
  */
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -9,6 +9,8 @@ const REPO_NAME = 'wdi-ltd-israel';
 const BRANCH = 'main';
 
 const BASE_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
+const RAW_BASE_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}`;
+const SITE_URL = 'https://wdi.co.il';
 
 // ==========================================
 // GITHUB API HELPERS
@@ -29,6 +31,7 @@ async function githubFetch(endpoint, options = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
+    console.error(`GitHub API Error: ${response.status}`, error);
     throw new Error(error.message || `GitHub API error: ${response.status}`);
   }
 
@@ -103,6 +106,38 @@ const PATHS = {
   press: 'data/press',
   hero: 'data/hero',
 };
+
+// ==========================================
+// IMAGE URL HELPERS
+// ==========================================
+
+/**
+ * Convert repository path to displayable URL
+ */
+export function getImageUrl(imagePath) {
+  if (!imagePath) return null;
+  
+  // Already a full URL
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  // Repository path like /images/team/photo.jpg
+  if (imagePath.startsWith('/')) {
+    return `${SITE_URL}${imagePath}`;
+  }
+  
+  return `${SITE_URL}/${imagePath}`;
+}
+
+/**
+ * Get raw GitHub URL for newly uploaded images (before deploy)
+ */
+export function getRawImageUrl(imagePath) {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+  return `${RAW_BASE_URL}/${cleanPath}`;
+}
 
 // ==========================================
 // CRUD OPERATIONS
@@ -249,10 +284,53 @@ function generateSlug(text) {
 // IMAGE HANDLING
 // ==========================================
 
+// Allowed folders for upload
+const ALLOWED_UPLOAD_FOLDERS = ['images', 'images/team', 'images/projects', 'images/clients', 'images/press', 'videos'];
+
+// Allowed file types
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
+
+// Max file sizes
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_VIDEO_SIZE = 25 * 1024 * 1024; // 25MB
+
+/**
+ * Validate upload request
+ */
+export function validateUpload(file, folder, isVideo = false) {
+  const errors = [];
+  
+  // Check folder
+  if (!ALLOWED_UPLOAD_FOLDERS.includes(folder)) {
+    errors.push(`Folder "${folder}" is not allowed`);
+  }
+  
+  // Check file type
+  const allowedTypes = isVideo ? ALLOWED_VIDEO_TYPES : ALLOWED_IMAGE_TYPES;
+  if (!allowedTypes.includes(file.type)) {
+    errors.push(`File type "${file.type}" is not allowed`);
+  }
+  
+  // Check file size
+  const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+  if (file.size > maxSize) {
+    errors.push(`File size exceeds ${maxSize / 1024 / 1024}MB limit`);
+  }
+  
+  return errors;
+}
+
 /**
  * Upload image to repository
  */
 export async function uploadImage(file, folder = 'images') {
+  // Validate
+  const errors = validateUpload(file, folder, false);
+  if (errors.length > 0) {
+    throw new Error(errors.join(', '));
+  }
+  
   const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
   const filePath = `${folder}/${fileName}`;
   
@@ -263,6 +341,34 @@ export async function uploadImage(file, folder = 'images') {
     method: 'PUT',
     body: JSON.stringify({
       message: `Upload image: ${fileName}`,
+      content: base64,
+      branch: BRANCH,
+    }),
+  });
+  
+  return `/${filePath}`;
+}
+
+/**
+ * Upload video to repository
+ */
+export async function uploadVideo(file, folder = 'videos') {
+  // Validate
+  const errors = validateUpload(file, folder, true);
+  if (errors.length > 0) {
+    throw new Error(errors.join(', '));
+  }
+  
+  const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+  const filePath = `${folder}/${fileName}`;
+  
+  const buffer = await file.arrayBuffer();
+  const base64 = Buffer.from(buffer).toString('base64');
+  
+  await githubFetch(`/contents/${filePath}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: `Upload video: ${fileName}`,
       content: base64,
       branch: BRANCH,
     }),

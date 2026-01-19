@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const serviceIcons = {
+const SERVICE_ICONS = {
   'drafting-compass': '📐',
   'file-alt': '📄',
   'hard-hat': '👷',
@@ -26,9 +26,10 @@ export default function ServicesPage() {
     try {
       const res = await fetch('/api/services');
       const data = await res.json();
-      setServices(data);
+      setServices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching services:', error);
+      setServices([]);
     } finally {
       setLoading(false);
     }
@@ -48,8 +49,11 @@ export default function ServicesPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-wdi-blue">שירותים</h1>
-          <p className="text-gray-600 mt-1">ניהול שירותי החברה ועמודי השירות</p>
+          <p className="text-gray-600 mt-1">{services.length} שירותים</p>
         </div>
+        <Link href="/services/new" className="btn-gold">
+          + הוסף שירות
+        </Link>
       </div>
 
       {/* Info Box */}
@@ -69,14 +73,14 @@ export default function ServicesPage() {
           >
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 bg-wdi-blue rounded-lg flex items-center justify-center text-2xl text-white flex-shrink-0">
-                {serviceIcons[service.icon] || '⚙️'}
+                {SERVICE_ICONS[service.icon] || '⚙️'}
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-lg text-gray-800 mb-1">{service.title}</h3>
                 <p className="text-gray-500 text-sm line-clamp-2">{service.shortDescription}</p>
                 <div className="flex items-center gap-2 mt-3">
-                  <span className={`px-2 py-1 rounded-full text-xs ${service.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                    {service.isActive ? 'פעיל' : 'לא פעיל'}
+                  <span className={`px-2 py-1 rounded-full text-xs ${service.isActive !== false ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    {service.isActive !== false ? 'פעיל' : 'לא פעיל'}
                   </span>
                   <span className="text-wdi-gold text-sm">לחץ לעריכה ←</span>
                 </div>
@@ -85,6 +89,12 @@ export default function ServicesPage() {
           </Link>
         ))}
       </div>
+
+      {services.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          אין שירותים. לחץ "+ הוסף שירות" כדי ליצור את הראשון.
+        </div>
+      )}
     </div>
   );
 }

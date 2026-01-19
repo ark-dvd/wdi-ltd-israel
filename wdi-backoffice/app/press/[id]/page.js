@@ -7,51 +7,53 @@ import Link from 'next/link';
 export default function PressEditPage() {
   const params = useParams();
   const router = useRouter();
-  const isNew = params.id === 'new';
-  
-  const [item, setItem] = useState({
-    title: '',
-    source: '',
-    date: '',
-    url: '',
-    description: '',
-    order: 0,
-    isActive: true,
-  });
-  const [loading, setLoading] = useState(!isNew);
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!isNew) {
-      fetch(`/api/press/${params.id}`)
-        .then(res => res.json())
-        .then(data => setItem(data))
-        .finally(() => setLoading(false));
+    fetchItem();
+  }, [params.id]);
+
+  async function fetchItem() {
+    try {
+      const res = await fetch(`/api/press/${params.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setItem(data);
+      } else {
+        setMessage('כתבה לא נמצאה');
+      }
+    } catch (error) {
+      console.error('Error fetching press item:', error);
+      setMessage('שגיאה בטעינת הנתונים');
+    } finally {
+      setLoading(false);
     }
-  }, [params.id, isNew]);
+  }
 
   async function handleSave() {
+    if (!item.title || !item.source) {
+      setMessage('כותרת ומקור הם שדות חובה');
+      return;
+    }
+
     setSaving(true);
+    setMessage('');
     try {
-      const url = isNew ? '/api/press' : `/api/press/${params.id}`;
-      const method = isNew ? 'POST' : 'PATCH';
-      
-      const res = await fetch(url, {
-        method,
+      const res = await fetch(`/api/press/${params.id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(item),
       });
-      
-      const data = await res.json();
-      
       if (res.ok) {
         setMessage('נשמר בהצלחה! ✓');
-        if (isNew && data._id) {
-          router.push(`/press/${data._id}`);
-        }
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        const error = await res.json();
+        setMessage(`שגיאה: ${error.error || 'שגיאה בשמירה'}`);
       }
     } catch (error) {
       setMessage('שגיאה בשמירה');
@@ -61,10 +63,15 @@ export default function PressEditPage() {
   }
 
   async function handleDelete() {
-    if (!confirm('האם למחוק את הכתבה?')) return;
+    if (!confirm('האם אתה בטוח שברצונך למחוק את הכתבה?')) return;
+    
     try {
-      await fetch(`/api/press/${params.id}`, { method: 'DELETE' });
-      router.push('/press');
+      const res = await fetch(`/api/press/${params.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.push('/press');
+      } else {
+        setMessage('שגיאה במחיקה');
+      }
     } catch (error) {
       setMessage('שגיאה במחיקה');
     }
@@ -74,13 +81,20 @@ export default function PressEditPage() {
     const file = e.target.files[0];
     if (!file) return;
     
+    if (!file.type.startsWith('image/')) {
+      setMessage('יש להעלות קובץ תמונה בלבד');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage('גודל התמונה חייב להיות עד 5MB');
+      return;
+    }
+    
     setUploading(true);
+    setMessage('מעלה לוגו...');
     const formData = new FormData();
     formData.append('file', file);
-    if (!isNew) {
-      formData.append('docId', params.id);
-      formData.append('fieldName', 'logo');
-    }
+    formData.append('folder', 'images/press');
     
     try {
       const res = await fetch('/api/upload', {
@@ -90,8 +104,9 @@ export default function PressEditPage() {
       const data = await res.json();
       if (data.image) {
         setItem(prev => ({ ...prev, logo: data.image }));
-        setMessage('לוגו הועלה בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
+        setMessage('לוגו הועלה! לחץ שמור לשמירה ✓');
+      } else {
+        setMessage(`שגיאה: ${data.error || 'שגיאה בהעלאה'}`);
       }
     } catch (error) {
       setMessage('שגיאה בהעלאת לוגו');
@@ -105,10 +120,12 @@ export default function PressEditPage() {
   }
 
   function getImageUrl(image) {
-    if (!image?.asset?._ref) return null;
-    const ref = image.asset._ref;
-    const [, id, dimensions, format] = ref.split('-');
-    return `https://cdn.sanity.io/images/hrkxr0r8/production/${id}-${dimensions}.${format}`;
+    if (!image) return null;
+    if (typeof image === 'string') {
+      if (image.startsWith('http')) return image;
+      return `https://wdi.co.il${image.startsWith('/') ? '' : '/'}${image}`;
+    }
+    return null;
   }
 
   if (loading) {
@@ -119,35 +136,51 @@ export default function PressEditPage() {
     );
   }
 
-  const logoUrl = getImageUrl(item?.logo);
+  if (!item) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 mb-4">כתבה לא נמצאה</p>
+        <Link href="/press" className="text-wdi-blue hover:text-wdi-gold">חזרה לרשימה</Link>
+      </div>
+    );
+  }
+
+  const logoUrl = getImageUrl(item.logo);
 
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/press" className="text-gray-500 hover:text-wdi-blue">← חזרה</Link>
-          <h1 className="text-2xl font-bold text-wdi-blue">
-            {isNew ? 'כתבה חדשה' : item.title}
-          </h1>
+          <Link href="/press" className="text-gray-400 hover:text-gray-600">
+            → חזרה לרשימה
+          </Link>
+          <h1 className="text-2xl font-bold text-wdi-blue">עריכת כתבה</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className="text-sm text-green-500">{message}</span>}
+          {message && (
+            <span className={`text-sm ${message.includes('✓') ? 'text-green-500' : 'text-red-500'}`}>
+              {message}
+            </span>
+          )}
+          <button onClick={handleDelete} className="px-4 py-2 text-red-500 hover:text-red-700 text-sm">
+            מחק
+          </button>
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
             {saving ? 'שומר...' : 'שמור'}
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-        {/* Logo Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">לוגו המקור</label>
-          <div className="flex items-center gap-4">
-            <div className="w-24 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden border">
+      <div className="space-y-6">
+        {/* Logo */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-semibold text-wdi-blue mb-4">לוגו המקור</h2>
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
               {logoUrl ? (
-                <img src={logoUrl} alt="" className="max-w-full max-h-full object-contain p-1" />
+                <img src={logoUrl} alt="לוגו" className="max-h-full max-w-full object-contain" />
               ) : (
-                <span className="text-2xl text-gray-400">📰</span>
+                <span className="text-3xl text-gray-300">📰</span>
               )}
             </div>
             <div>
@@ -160,100 +193,86 @@ export default function PressEditPage() {
               />
               <label
                 htmlFor="logo-upload"
-                className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
+                className={`cursor-pointer px-4 py-2 rounded-lg text-sm inline-block ${
+                  uploading ? 'bg-gray-200 text-gray-500' : 'bg-gray-100 hover:bg-gray-200'
+                }`}
               >
                 {uploading ? 'מעלה...' : (logoUrl ? 'החלף לוגו' : 'העלה לוגו')}
               </label>
+              <p className="text-xs text-gray-500 mt-2">לוגו של העיתון/אתר</p>
             </div>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">כותרת הכתבה</label>
-          <input
-            type="text"
-            value={item.title || ''}
-            onChange={(e) => updateField('title', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="כותרת הכתבה כפי שפורסמה"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">מקור / אתר</label>
-            <input
-              type="text"
-              value={item.source || ''}
-              onChange={(e) => updateField('source', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="לדוגמה: Ynet, Globes, TheMarker"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">תאריך פרסום</label>
-            <input
-              type="date"
-              value={item.date || ''}
-              onChange={(e) => updateField('date', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              dir="ltr"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קישור לכתבה</label>
-          <input
-            type="url"
-            value={item.url || ''}
-            onChange={(e) => updateField('url', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            dir="ltr"
-            placeholder="https://..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">תיאור קצר (אופציונלי)</label>
-          <textarea
-            value={item.description || ''}
-            onChange={(e) => updateField('description', e.target.value)}
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="תקציר קצר של הכתבה"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={item.isActive !== false}
-              onChange={(e) => updateField('isActive', e.target.checked)}
-              className="w-4 h-4"
-            />
-            <span className="text-sm">פעיל</span>
-          </label>
-          <div>
-            <label className="text-sm text-gray-700 ml-2">סדר:</label>
-            <input
-              type="number"
-              value={item.order || 0}
-              onChange={(e) => updateField('order', parseInt(e.target.value))}
-              className="w-20 px-2 py-1 border border-gray-300 rounded"
-            />
+        {/* Details */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-semibold text-wdi-blue mb-4">פרטי הכתבה</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">כותרת הכתבה *</label>
+              <input
+                type="text"
+                value={item.title || ''}
+                onChange={(e) => updateField('title', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">מקור (שם העיתון/אתר) *</label>
+              <input
+                type="text"
+                value={item.source || ''}
+                onChange={(e) => updateField('source', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">תאריך</label>
+              <input
+                type="text"
+                value={item.date || ''}
+                onChange={(e) => updateField('date', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">קישור לכתבה</label>
+              <input
+                type="url"
+                value={item.url || ''}
+                onChange={(e) => updateField('url', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                dir="ltr"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">סדר תצוגה</label>
+              <input
+                type="number"
+                value={item.order || 100}
+                onChange={(e) => updateField('order', parseInt(e.target.value) || 100)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
           </div>
         </div>
+        
+        {/* Preview link */}
+        {item.url && (
+          <div className="bg-blue-50 rounded-lg p-4">
+            <p className="text-sm text-blue-700">
+              <strong>🔗 קישור לכתבה:</strong>{' '}
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
+                {item.url}
+              </a>
+            </p>
+          </div>
+        )}
       </div>
-
-      {!isNew && (
-        <div className="mt-6 flex justify-end">
-          <button onClick={handleDelete} className="text-red-500 hover:text-red-700 text-sm">
-            🗑️ מחק כתבה
-          </button>
-        </div>
-      )}
     </div>
   );
 }

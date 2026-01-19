@@ -18,6 +18,12 @@ export async function PATCH(request, { params }) {
   try {
     const { id } = await params;
     const data = await request.json();
+    
+    // Validation
+    if (!data.name || !data.role) {
+      return Response.json({ error: 'שם ותפקיד הם שדות חובה' }, { status: 400 });
+    }
+    
     const result = await updateItem('team', id, data);
     return Response.json(result);
   } catch (error) {

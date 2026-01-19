@@ -18,6 +18,11 @@ export async function PATCH(request, { params }) {
   try {
     const { id } = await params;
     const data = await request.json();
+    
+    if (!data.title || !data.client) {
+      return Response.json({ error: 'שם פרויקט ולקוח הם שדות חובה' }, { status: 400 });
+    }
+    
     const result = await updateItem('projects', id, data);
     return Response.json(result);
   } catch (error) {

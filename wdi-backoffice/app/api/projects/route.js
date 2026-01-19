@@ -13,6 +13,12 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
+    
+    // Validation
+    if (!data.title || !data.client) {
+      return Response.json({ error: 'שם פרויקט ולקוח הם שדות חובה' }, { status: 400 });
+    }
+    
     const result = await createItem('projects', data);
     return Response.json(result);
   } catch (error) {

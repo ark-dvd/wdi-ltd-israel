@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const ICON_OPTIONS = [
@@ -15,34 +15,19 @@ const ICON_OPTIONS = [
   { value: 'file-signature', label: '📝 היתרים', emoji: '📝' },
 ];
 
-export default function ServiceEditPage() {
-  const params = useParams();
+export default function NewServicePage() {
   const router = useRouter();
-  const [service, setService] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [service, setService] = useState({
+    title: '',
+    shortDescription: '',
+    description: '',
+    icon: 'drafting-compass',
+    slug: '',
+    isActive: true,
+    order: 100,
+  });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetchService();
-  }, [params.id]);
-
-  async function fetchService() {
-    try {
-      const res = await fetch(`/api/services/${params.id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setService(data);
-      } else {
-        setMessage('שירות לא נמצא');
-      }
-    } catch (error) {
-      console.error('Error fetching service:', error);
-      setMessage('שגיאה בטעינת הנתונים');
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function handleSave() {
     if (!service.title) {
@@ -53,14 +38,18 @@ export default function ServiceEditPage() {
     setSaving(true);
     setMessage('');
     try {
-      const res = await fetch(`/api/services/${params.id}`, {
-        method: 'PATCH',
+      const res = await fetch('/api/services', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(service),
       });
+      
       if (res.ok) {
-        setMessage('נשמר בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
+        const data = await res.json();
+        setMessage('נוצר בהצלחה! ✓');
+        setTimeout(() => {
+          router.push(`/services/${data._id || data.id}`);
+        }, 1000);
       } else {
         const error = await res.json();
         setMessage(`שגיאה: ${error.error || 'שגיאה בשמירה'}`);
@@ -72,40 +61,8 @@ export default function ServiceEditPage() {
     }
   }
 
-  async function handleDelete() {
-    if (!confirm('האם אתה בטוח שברצונך למחוק את השירות?')) return;
-    
-    try {
-      const res = await fetch(`/api/services/${params.id}`, { method: 'DELETE' });
-      if (res.ok) {
-        router.push('/services');
-      } else {
-        setMessage('שגיאה במחיקה');
-      }
-    } catch (error) {
-      setMessage('שגיאה במחיקה');
-    }
-  }
-
   function updateField(field, value) {
     setService(prev => ({ ...prev, [field]: value }));
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wdi-blue"></div>
-      </div>
-    );
-  }
-
-  if (!service) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 mb-4">שירות לא נמצא</p>
-        <Link href="/services" className="text-wdi-blue hover:text-wdi-gold">חזרה לרשימה</Link>
-      </div>
-    );
   }
 
   return (
@@ -115,7 +72,7 @@ export default function ServiceEditPage() {
           <Link href="/services" className="text-gray-400 hover:text-gray-600">
             → חזרה לרשימה
           </Link>
-          <h1 className="text-2xl font-bold text-wdi-blue">עריכת {service.title}</h1>
+          <h1 className="text-2xl font-bold text-wdi-blue">שירות חדש</h1>
         </div>
         <div className="flex items-center gap-4">
           {message && (
@@ -123,9 +80,6 @@ export default function ServiceEditPage() {
               {message}
             </span>
           )}
-          <button onClick={handleDelete} className="px-4 py-2 text-red-500 hover:text-red-700 text-sm">
-            מחק
-          </button>
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
             {saving ? 'שומר...' : 'שמור'}
           </button>
@@ -140,9 +94,10 @@ export default function ServiceEditPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">שם השירות *</label>
               <input
                 type="text"
-                value={service.title || ''}
+                value={service.title}
                 onChange={(e) => updateField('title', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                placeholder="ניהול תכנון"
               />
             </div>
             
@@ -153,6 +108,7 @@ export default function ServiceEditPage() {
                 value={service.shortDescription || ''}
                 onChange={(e) => updateField('shortDescription', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                placeholder="תיאור קצר שיופיע בכרטיס"
               />
             </div>
             
@@ -183,6 +139,7 @@ export default function ServiceEditPage() {
                 onChange={(e) => updateField('description', e.target.value)}
                 rows={6}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                placeholder="תיאור מפורט של השירות"
               />
             </div>
             
@@ -195,6 +152,7 @@ export default function ServiceEditPage() {
                   onChange={(e) => updateField('slug', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
                   dir="ltr"
+                  placeholder="design-management"
                 />
               </div>
               <div>

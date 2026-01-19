@@ -5,7 +5,6 @@ export async function GET() {
     const jobs = await fetchAll('jobs');
     return Response.json(jobs);
   } catch (error) {
-    console.error('Error fetching jobs:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
@@ -13,10 +12,12 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
+    if (!data.title) {
+      return Response.json({ error: 'שם המשרה הוא שדה חובה' }, { status: 400 });
+    }
     const result = await createItem('jobs', data);
     return Response.json(result);
   } catch (error) {
-    console.error('Error creating job:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

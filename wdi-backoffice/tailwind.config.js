@@ -8,8 +8,7 @@ module.exports = {
     extend: {
       colors: {
         'wdi-blue': '#1a365d',
-        'wdi-blue-light': '#2d4a7c',
-        'wdi-gold': '#c9a227',
+        'wdi-gold': '#c9a961',
       },
     },
   },

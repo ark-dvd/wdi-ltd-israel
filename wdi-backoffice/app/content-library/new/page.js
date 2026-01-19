@@ -4,28 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const categoryOptions = [
-  { value: 'articles', label: 'מאמרים' },
-  { value: 'presentations', label: 'מצגות' },
-  { value: 'forms', label: 'טפסים' },
-  { value: 'guides', label: 'מדריכים' },
-];
-
-export default function NewContentItemPage() {
+export default function NewContentLibraryItemPage() {
   const router = useRouter();
   const [item, setItem] = useState({
     title: '',
-    category: 'articles',
     description: '',
-    file: '',
-    externalUrl: '',
+    url: '',
+    category: 'מפרטים ותקנות',
+    order: 100,
   });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   async function handleSave() {
-    if (!item.title) {
-      setMessage('כותרת היא שדה חובה');
+    if (!item.title || !item.url) {
+      setMessage('כותרת וקישור הם שדות חובה');
       return;
     }
 
@@ -46,7 +39,7 @@ export default function NewContentItemPage() {
         }, 1000);
       } else {
         const error = await res.json();
-        setMessage(`שגיאה: ${error.error}`);
+        setMessage(`שגיאה: ${error.error || 'שגיאה בשמירה'}`);
       }
     } catch (error) {
       setMessage('שגיאה בשמירה');
@@ -63,73 +56,82 @@ export default function NewContentItemPage() {
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/content-library" className="text-gray-500 hover:text-wdi-blue">← חזרה</Link>
-          <h1 className="text-2xl font-bold text-wdi-blue">הוספת פריט למאגר מידע</h1>
+          <Link href="/content-library" className="text-gray-400 hover:text-gray-600">
+            → חזרה לרשימה
+          </Link>
+          <h1 className="text-2xl font-bold text-wdi-blue">קישור חדש</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className={`text-sm ${message.includes('שגיאה') ? 'text-red-500' : 'text-green-500'}`}>{message}</span>}
+          {message && (
+            <span className={`text-sm ${message.includes('✓') ? 'text-green-500' : 'text-red-500'}`}>
+              {message}
+            </span>
+          )}
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
-            {saving ? 'שומר...' : 'צור פריט'}
+            {saving ? 'שומר...' : 'שמור'}
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">כותרת *</label>
-          <input
-            type="text"
-            value={item.title}
-            onChange={(e) => updateField('title', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
-          <select
-            value={item.category}
-            onChange={(e) => updateField('category', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            {categoryOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
-          <textarea
-            value={item.description}
-            onChange={(e) => updateField('description', e.target.value)}
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">נתיב קובץ</label>
-          <input
-            type="text"
-            value={item.file}
-            onChange={(e) => updateField('file', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            dir="ltr"
-            placeholder="/documents/file.pdf"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קישור חיצוני</label>
-          <input
-            type="url"
-            value={item.externalUrl}
-            onChange={(e) => updateField('externalUrl', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            dir="ltr"
-            placeholder="https://..."
-          />
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">כותרת *</label>
+            <input
+              type="text"
+              value={item.title}
+              onChange={(e) => updateField('title', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              placeholder="משהב"ט - המפרט הכללי לעבודות בנייה"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
+            <textarea
+              value={item.description || ''}
+              onChange={(e) => updateField('description', e.target.value)}
+              rows={3}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              placeholder="תיאור קצר של המשאב"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">קישור *</label>
+            <input
+              type="url"
+              value={item.url || ''}
+              onChange={(e) => updateField('url', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              dir="ltr"
+              placeholder="https://..."
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
+            <select
+              value={item.category || 'מפרטים ותקנות'}
+              onChange={(e) => updateField('category', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+            >
+              <option value="מפרטים ותקנות">מפרטים ותקנות</option>
+              <option value="גופים ממשלתיים">גופים ממשלתיים</option>
+              <option value="מקורות בינלאומיים">מקורות בינלאומיים</option>
+              <option value="כלים ומשאבים">כלים ומשאבים</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">סדר תצוגה</label>
+            <input
+              type="number"
+              value={item.order || 100}
+              onChange={(e) => updateField('order', parseInt(e.target.value) || 100)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+            />
+          </div>
         </div>
       </div>
     </div>

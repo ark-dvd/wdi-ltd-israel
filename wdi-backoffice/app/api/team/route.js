@@ -13,6 +13,12 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
+    
+    // Validation
+    if (!data.name || !data.role) {
+      return Response.json({ error: 'שם ותפקיד הם שדות חובה' }, { status: 400 });
+    }
+    
     const result = await createItem('team', data);
     return Response.json(result);
   } catch (error) {

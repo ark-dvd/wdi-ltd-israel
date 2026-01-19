@@ -13,6 +13,9 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
+    if (!data.name) {
+      return Response.json({ error: 'שם הלקוח הוא שדה חובה' }, { status: 400 });
+    }
     const result = await createItem('clients', data);
     return Response.json(result);
   } catch (error) {

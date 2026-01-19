@@ -7,190 +7,109 @@ import Link from 'next/link';
 export default function ClientEditPage() {
   const params = useParams();
   const router = useRouter();
-  const [item, setItem] = useState(null);
+  const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    fetch(`/api/clients/${params.id}`)
-      .then(res => res.json())
-      .then(data => setItem(data))
-      .finally(() => setLoading(false));
-  }, [params.id]);
+  useEffect(() => { fetchClient(); }, [params.id]);
+
+  async function fetchClient() {
+    try {
+      const res = await fetch(`/api/clients/${params.id}`);
+      if (res.ok) setClient(await res.json());
+      else setMessage('לקוח לא נמצא');
+    } catch (error) {
+      setMessage('שגיאה בטעינה');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleSave() {
+    if (!client.name) { setMessage('שם הלקוח הוא שדה חובה'); return; }
     setSaving(true);
     try {
       const res = await fetch(`/api/clients/${params.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item),
+        body: JSON.stringify(client),
       });
-      if (res.ok) {
-        setMessage('נשמר בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
-      }
-    } catch (error) {
-      setMessage('שגיאה בשמירה');
-    } finally {
-      setSaving(false);
-    }
+      if (res.ok) { setMessage('נשמר! ✓'); setTimeout(() => setMessage(''), 3000); }
+      else setMessage('שגיאה בשמירה');
+    } catch { setMessage('שגיאה'); }
+    finally { setSaving(false); }
   }
 
   async function handleDelete() {
-    if (!confirm('האם למחוק את הלקוח?')) return;
+    if (!confirm('למחוק?')) return;
     try {
-      await fetch(`/api/clients/${params.id}`, { method: 'DELETE' });
-      router.push('/clients');
-    } catch (error) {
-      setMessage('שגיאה במחיקה');
-    }
+      const res = await fetch(`/api/clients/${params.id}`, { method: 'DELETE' });
+      if (res.ok) router.push('/clients');
+    } catch { setMessage('שגיאה במחיקה'); }
   }
 
-  async function handleLogoUpload(e) {
+  async function handleImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
-    
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('docId', params.id);
-    formData.append('fieldName', 'logo');
-    
+    formData.append('folder', 'images/clients');
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.image) {
-        setItem(prev => ({ ...prev, logo: data.image }));
-        setMessage('לוגו הועלה בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
+        setClient(prev => ({ ...prev, logo: data.image }));
+        setMessage('לוגו הועלה! לחץ שמור ✓');
       }
-    } catch (error) {
-      setMessage('שגיאה בהעלאת לוגו');
-    } finally {
-      setUploading(false);
-    }
+    } catch { setMessage('שגיאה בהעלאה'); }
+    finally { setUploading(false); }
   }
 
-  function updateField(field, value) {
-    setItem(prev => ({ ...prev, [field]: value }));
-  }
+  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wdi-blue"></div></div>;
+  if (!client) return <div className="text-center py-12"><p className="text-gray-500 mb-4">לקוח לא נמצא</p><Link href="/clients" className="text-wdi-blue">חזרה</Link></div>;
 
-  function getImageUrl(image) {
-    if (!image?.asset?._ref) return null;
-    const ref = image.asset._ref;
-    const [, id, dimensions, format] = ref.split('-');
-    return `https://cdn.sanity.io/images/hrkxr0r8/production/${id}-${dimensions}.${format}`;
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wdi-blue"></div>
-      </div>
-    );
-  }
-
-  if (!item) return <div className="text-center py-12">לקוח לא נמצא</div>;
-
-  const logoUrl = getImageUrl(item.logo);
+  const imageUrl = client.logo && (client.logo.startsWith('http') ? client.logo : `https://wdi.co.il${client.logo}`);
 
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/clients" className="text-gray-500 hover:text-wdi-blue">← חזרה</Link>
-          <h1 className="text-2xl font-bold text-wdi-blue">{item.name}</h1>
+          <Link href="/clients" className="text-gray-400 hover:text-gray-600">→ חזרה</Link>
+          <h1 className="text-2xl font-bold text-wdi-blue">עריכת {client.name}</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className="text-sm text-green-500">{message}</span>}
-          <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
-            {saving ? 'שומר...' : 'שמור'}
-          </button>
+          {message && <span className={`text-sm ${message.includes('✓') ? 'text-green-500' : 'text-red-500'}`}>{message}</span>}
+          <button onClick={handleDelete} className="text-red-500 text-sm">מחק</button>
+          <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">{saving ? 'שומר...' : 'שמור'}</button>
         </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-        {/* Logo Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">לוגו</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">שם הלקוח *</label>
+          <input type="text" value={client.name || ''} onChange={(e) => setClient(prev => ({ ...prev, name: e.target.value }))} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">לוגו</label>
           <div className="flex items-center gap-4">
-            <div className="w-32 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border">
-              {logoUrl ? (
-                <img src={logoUrl} alt={item.name} className="max-w-full max-h-full object-contain p-2" />
-              ) : (
-                <span className="text-2xl text-gray-400">🏢</span>
-              )}
+            <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+              {imageUrl ? <img src={imageUrl} alt="" className="w-full h-full object-contain p-2" /> : '🏢'}
             </div>
             <div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="hidden"
-                id="logo-upload"
-              />
-              <label
-                htmlFor="logo-upload"
-                className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
-              >
-                {uploading ? 'מעלה...' : (logoUrl ? 'החלף לוגו' : 'העלה לוגו')}
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="logo-upload" />
+              <label htmlFor="logo-upload" className={`cursor-pointer px-4 py-2 rounded-lg text-sm inline-block ${uploading ? 'bg-gray-200' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                {uploading ? 'מעלה...' : 'החלף לוגו'}
               </label>
             </div>
           </div>
         </div>
-
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">שם הלקוח</label>
-          <input
-            type="text"
-            value={item.name || ''}
-            onChange={(e) => updateField('name', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
+          <label className="block text-sm font-medium text-gray-700 mb-1">סדר תצוגה</label>
+          <input type="number" value={client.order || 100} onChange={(e) => setClient(prev => ({ ...prev, order: parseInt(e.target.value) || 100 }))} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
-          <input
-            type="text"
-            value={item.category || ''}
-            onChange={(e) => updateField('category', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={item.isActive !== false}
-              onChange={(e) => updateField('isActive', e.target.checked)}
-              className="w-4 h-4"
-            />
-            <span className="text-sm">פעיל</span>
-          </label>
-          <div>
-            <label className="text-sm text-gray-700 ml-2">סדר:</label>
-            <input
-              type="number"
-              value={item.order || 0}
-              onChange={(e) => updateField('order', parseInt(e.target.value))}
-              className="w-20 px-2 py-1 border border-gray-300 rounded"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 flex justify-end">
-        <button onClick={handleDelete} className="text-red-500 hover:text-red-700 text-sm">
-          🗑️ מחק לקוח
-        </button>
       </div>
     </div>
   );

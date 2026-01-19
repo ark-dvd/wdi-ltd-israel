@@ -2,80 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --wdi-blue: #1a365d;
-  --wdi-gold: #c9a227;
-}
-
 body {
-  font-family: 'Assistant', -apple-system, BlinkMacSystemFont, sans-serif;
   direction: rtl;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--wdi-blue);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #2d4a7c;
-}
-
-/* Card hover effect */
-.card-hover {
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Active nav link */
-.nav-active {
-  background: rgba(201, 162, 39, 0.1);
-  border-right: 3px solid var(--wdi-gold);
-}
-
-/* Form input styles */
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--wdi-gold);
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
-}
-
-/* Button styles */
-.btn-primary {
-  background: var(--wdi-blue);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background: #2d4a7c;
-}
-
 .btn-gold {
-  background: var(--wdi-gold);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s;
+  @apply px-4 py-2 bg-wdi-gold text-white rounded-lg hover:bg-wdi-gold/90 transition font-medium;
 }
 
-.btn-gold:hover {
-  background: #b8922e;
+.card-hover {
+  @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

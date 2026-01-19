@@ -8,11 +8,30 @@ export default function ClientsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/clients')
-      .then(res => res.json())
-      .then(data => setClients(data))
-      .finally(() => setLoading(false));
+    fetchClients();
   }, []);
+
+  async function fetchClients() {
+    try {
+      const res = await fetch('/api/clients');
+      const data = await res.json();
+      setClients(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      setClients([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getImageUrl(image) {
+    if (!image) return null;
+    if (typeof image === 'string') {
+      if (image.startsWith('http')) return image;
+      return `https://wdi.co.il${image.startsWith('/') ? '' : '/'}${image}`;
+    }
+    return null;
+  }
 
   if (loading) {
     return (
@@ -33,19 +52,32 @@ export default function ClientsPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {clients.map((client) => (
-          <Link
-            key={client._id}
-            href={`/clients/${client._id}`}
-            className="bg-white rounded-xl p-4 shadow-sm card-hover border border-gray-100 hover:border-wdi-gold text-center"
-          >
-            <div className="h-16 flex items-center justify-center text-3xl text-gray-400 mb-2">
-              🏢
-            </div>
-            <p className="font-medium text-gray-800 text-sm">{client.name}</p>
-          </Link>
-        ))}
+        {clients.map((client) => {
+          const imageUrl = getImageUrl(client.logo || client.image);
+          return (
+            <Link
+              key={client._id}
+              href={`/clients/${client._id}`}
+              className="bg-white rounded-xl p-4 shadow-sm card-hover border border-gray-100 hover:border-wdi-gold text-center"
+            >
+              <div className="w-20 h-20 mx-auto bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden mb-2">
+                {imageUrl ? (
+                  <img src={imageUrl} alt={client.name} className="w-full h-full object-contain p-2" />
+                ) : (
+                  <span className="text-3xl">🏢</span>
+                )}
+              </div>
+              <h3 className="font-medium text-gray-800 text-sm">{client.name}</h3>
+            </Link>
+          );
+        })}
       </div>
+
+      {clients.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          אין לקוחות. לחץ "+ הוסף לקוח" כדי להוסיף את הראשון.
+        </div>
+      )}
     </div>
   );
 }

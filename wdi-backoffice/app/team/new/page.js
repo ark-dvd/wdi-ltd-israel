@@ -4,64 +4,35 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const categoryOptions = [
-  { value: 'founders', label: 'הנהלה' },
-  { value: 'admin', label: 'אדמיניסטרציה' },
-  { value: 'heads', label: 'ראשי תחומים' },
-  { value: 'team', label: 'מנהלי פרויקטים' },
+// Consistent categories - MUST match page.js and [id]/page.js
+const TEAM_CATEGORIES = [
+  { value: 'management', label: 'הנהלה' },
+  { value: 'administration', label: 'אדמיניסטרציה' },
+  { value: 'department-heads', label: 'ראשי תחומים' },
+  { value: 'project-managers', label: 'מנהלי פרויקטים' },
 ];
 
 export default function NewTeamMemberPage() {
   const router = useRouter();
   const [member, setMember] = useState({
     name: '',
-    position: '',
-    category: 'team',
+    role: '', // Consistent field name
+    category: 'project-managers',
     gender: 'male',
-    birthYear: null,
+    birthYear: '',
     birthPlace: '',
     residence: '',
     linkedin: '',
-    degrees: [],
-    order: 100,
+    degrees: [], // Consistent field name
     image: '',
+    order: 100,
   });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
 
-  async function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    setUploading(true);
-    setMessage('');
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('folder', 'images/team');
-    
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.image) {
-        setMember(prev => ({ ...prev, image: data.image }));
-        setMessage('תמונה הועלתה בהצלחה! ✓');
-        setTimeout(() => setMessage(''), 3000);
-      } else {
-        setMessage(`שגיאה: ${data.error || 'שגיאה בהעלאה'}`);
-      }
-    } catch (error) {
-      setMessage('שגיאה בהעלאת תמונה');
-    } finally {
-      setUploading(false);
-    }
-  }
-
   async function handleSave() {
-    if (!member.name || !member.position) {
+    if (!member.name || !member.role) {
       setMessage('שם ותפקיד הם שדות חובה');
       return;
     }
@@ -83,12 +54,52 @@ export default function NewTeamMemberPage() {
         }, 1000);
       } else {
         const error = await res.json();
-        setMessage(`שגיאה: ${error.error}`);
+        setMessage(`שגיאה: ${error.error || 'שגיאה בשמירה'}`);
       }
     } catch (error) {
       setMessage('שגיאה בשמירה');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      setMessage('יש להעלות קובץ תמונה בלבד');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage('גודל התמונה חייב להיות עד 5MB');
+      return;
+    }
+    
+    setUploading(true);
+    setMessage('');
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'images/team');
+    
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.image) {
+        setMember(prev => ({ ...prev, image: data.image }));
+        setMessage('תמונה הועלתה! ✓');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage(`שגיאה: ${data.error || 'שגיאה בהעלאה'}`);
+      }
+    } catch (error) {
+      setMessage('שגיאה בהעלאת תמונה');
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -113,8 +124,9 @@ export default function NewTeamMemberPage() {
   function getImageUrl(image) {
     if (!image) return null;
     if (typeof image === 'string') {
-      if (image.startsWith('/')) return `https://wdi.co.il${image}`;
-      return image;
+      if (image.startsWith('http')) return image;
+      // Use raw GitHub URL for newly uploaded images
+      return `https://raw.githubusercontent.com/ark-dvd/wdi-ltd-israel/main${image.startsWith('/') ? '' : '/'}${image}`;
     }
     return null;
   }
@@ -122,30 +134,36 @@ export default function NewTeamMemberPage() {
   const imageUrl = getImageUrl(member.image);
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/team" className="text-gray-500 hover:text-wdi-blue">← חזרה</Link>
-          <h1 className="text-2xl font-bold text-wdi-blue">הוספת חבר צוות חדש</h1>
+          <Link href="/team" className="text-gray-400 hover:text-gray-600">
+            → חזרה לרשימה
+          </Link>
+          <h1 className="text-2xl font-bold text-wdi-blue">חבר צוות חדש</h1>
         </div>
         <div className="flex items-center gap-4">
-          {message && <span className={`text-sm ${message.includes('שגיאה') ? 'text-red-500' : 'text-green-500'}`}>{message}</span>}
+          {message && (
+            <span className={`text-sm ${message.includes('✓') ? 'text-green-500' : 'text-red-500'}`}>
+              {message}
+            </span>
+          )}
           <button onClick={handleSave} disabled={saving} className="btn-gold disabled:opacity-50">
-            {saving ? 'שומר...' : 'צור חבר צוות'}
+            {saving ? 'שומר...' : 'שמור'}
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-        {/* Image Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">תמונה</label>
-          <div className="flex items-center gap-4">
-            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+      <div className="space-y-6">
+        {/* Image */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-semibold text-wdi-blue mb-4">תמונה</h2>
+          <div className="flex items-center gap-6">
+            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center text-4xl text-gray-300 overflow-hidden">
               {imageUrl ? (
-                <img src={imageUrl} alt="תמונה חדשה" className="w-full h-full object-cover" />
+                <img src={imageUrl} alt={member.name} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-3xl text-gray-400">👤</span>
+                '👤'
               )}
             </div>
             <div>
@@ -158,162 +176,194 @@ export default function NewTeamMemberPage() {
               />
               <label
                 htmlFor="image-upload"
-                className="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
+                className={`cursor-pointer px-4 py-2 rounded-lg text-sm inline-block ${
+                  uploading ? 'bg-gray-200 text-gray-500' : 'bg-gray-100 hover:bg-gray-200'
+                }`}
               >
-                {uploading ? 'מעלה...' : (imageUrl ? 'החלף תמונה' : 'העלה תמונה')}
+                {uploading ? 'מעלה...' : 'העלה תמונה'}
               </label>
+              <p className="text-xs text-gray-500 mt-2">JPG, PNG או WebP עד 5MB</p>
             </div>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">שם *</label>
-          <input
-            type="text"
-            value={member.name}
-            onChange={(e) => updateField('name', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="שם מלא"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">תפקיד *</label>
-          <input
-            type="text"
-            value={member.position}
-            onChange={(e) => updateField('position', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="תפקיד"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
-            <select
-              value={member.category}
-              onChange={(e) => updateField('category', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            >
-              {categoryOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+        {/* Basic Info */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-semibold text-wdi-blue mb-4">פרטים בסיסיים</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא *</label>
+              <input
+                type="text"
+                value={member.name}
+                onChange={(e) => updateField('name', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">תפקיד *</label>
+              <input
+                type="text"
+                value={member.role}
+                onChange={(e) => updateField('role', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">קטגוריה</label>
+              <select
+                value={member.category}
+                onChange={(e) => updateField('category', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              >
+                {TEAM_CATEGORIES.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">מגדר</label>
+              <select
+                value={member.gender}
+                onChange={(e) => updateField('gender', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              >
+                <option value="male">זכר</option>
+                <option value="female">נקבה</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">שנת לידה</label>
+              <input
+                type="number"
+                value={member.birthYear || ''}
+                onChange={(e) => updateField('birthYear', e.target.value ? parseInt(e.target.value) : null)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                min="1950"
+                max="2010"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">מקום לידה</label>
+              <input
+                type="text"
+                value={member.birthPlace || ''}
+                onChange={(e) => updateField('birthPlace', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">מקום מגורים</label>
+              <input
+                type="text"
+                value={member.residence || ''}
+                onChange={(e) => updateField('residence', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+              <input
+                type="url"
+                value={member.linkedin || ''}
+                onChange={(e) => updateField('linkedin', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+                dir="ltr"
+                placeholder="https://linkedin.com/in/..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">סדר תצוגה</label>
+              <input
+                type="number"
+                value={member.order || 100}
+                onChange={(e) => updateField('order', parseInt(e.target.value) || 100)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wdi-blue focus:border-transparent"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">מגדר</label>
-            <select
-              value={member.gender}
-              onChange={(e) => updateField('gender', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            >
-              <option value="male">זכר</option>
-              <option value="female">נקבה</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">שנת לידה</label>
-            <input
-              type="number"
-              value={member.birthYear || ''}
-              onChange={(e) => updateField('birthYear', parseInt(e.target.value) || null)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">מקום לידה</label>
-            <input
-              type="text"
-              value={member.birthPlace}
-              onChange={(e) => updateField('birthPlace', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">מקום מגורים</label>
-          <input
-            type="text"
-            value={member.residence}
-            onChange={(e) => updateField('residence', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
         </div>
 
         {/* Education */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-gray-700">השכלה</label>
-            <button onClick={addDegree} className="text-sm text-wdi-gold hover:underline">
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-wdi-blue">השכלה</h2>
+            <button
+              onClick={addDegree}
+              className="text-sm text-wdi-blue hover:text-wdi-gold"
+            >
               + הוסף תואר
             </button>
           </div>
+          
           {(member.degrees || []).map((edu, index) => (
-            <div key={index} className="flex gap-2 mb-2 items-start">
-              <input
-                type="text"
-                placeholder="סוג תואר"
-                value={edu.degree || ''}
-                onChange={(e) => updateDegree(index, 'degree', e.target.value)}
-                className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
-              />
-              <input
-                type="text"
-                placeholder="תחום"
-                value={edu.title || ''}
-                onChange={(e) => updateDegree(index, 'title', e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
-              />
-              <input
-                type="text"
-                placeholder="מוסד"
-                value={edu.institution || ''}
-                onChange={(e) => updateDegree(index, 'institution', e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
-              />
-              <input
-                type="text"
-                placeholder="שנה"
-                value={edu.year || ''}
-                onChange={(e) => updateDegree(index, 'year', e.target.value)}
-                className="w-20 px-3 py-2 border border-gray-300 rounded text-sm"
-              />
-              <button
-                onClick={() => removeDegree(index)}
-                className="text-red-400 hover:text-red-600 px-2"
-              >
-                ✕
-              </button>
+            <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4">
+              <div className="flex justify-between items-start mb-3">
+                <span className="text-sm font-medium text-gray-600">תואר {index + 1}</span>
+                <button
+                  onClick={() => removeDegree(index)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  הסר
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">סוג תואר</label>
+                  <select
+                    value={edu.degree || ''}
+                    onChange={(e) => updateDegree(index, 'degree', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  >
+                    <option value="">בחר סוג</option>
+                    <option value="B.Sc">B.Sc - תואר ראשון</option>
+                    <option value="B.A">B.A - תואר ראשון</option>
+                    <option value="M.Sc">M.Sc - תואר שני</option>
+                    <option value="M.A">M.A - תואר שני</option>
+                    <option value="MBA">MBA</option>
+                    <option value="Ph.D">Ph.D - דוקטורט</option>
+                    <option value="הנדסאי">הנדסאי</option>
+                    <option value="טכנאי">טכנאי</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">שם התואר</label>
+                  <input
+                    type="text"
+                    value={edu.title || ''}
+                    onChange={(e) => updateDegree(index, 'title', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    placeholder="הנדסה אזרחית"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">מוסד לימודים</label>
+                  <input
+                    type="text"
+                    value={edu.institution || ''}
+                    onChange={(e) => updateDegree(index, 'institution', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    placeholder="הטכניון"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">שנת סיום</label>
+                  <input
+                    type="number"
+                    value={edu.year || ''}
+                    onChange={(e) => updateDegree(index, 'year', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    min="1970"
+                    max="2030"
+                  />
+                </div>
+              </div>
             </div>
           ))}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
-          <input
-            type="url"
-            value={member.linkedin}
-            onChange={(e) => updateField('linkedin', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            dir="ltr"
-            placeholder="https://linkedin.com/in/..."
-          />
-        </div>
-
-        <div>
-          <label className="text-sm text-gray-700 ml-2">סדר תצוגה:</label>
-          <input
-            type="number"
-            value={member.order}
-            onChange={(e) => updateField('order', parseInt(e.target.value))}
-            className="w-20 px-2 py-1 border border-gray-300 rounded"
-          />
-          <span className="text-xs text-gray-500 mr-2">(הנהלה: 1-9, אדמין: 10-19, ראשי תחומים: 20-29, צוות: 100+)</span>
+          
+          {(!member.degrees || member.degrees.length === 0) && (
+            <p className="text-gray-400 text-sm">לא הוזנו תארים</p>
+          )}
         </div>
       </div>
     </div>

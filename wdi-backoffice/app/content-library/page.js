@@ -8,11 +8,21 @@ export default function ContentLibraryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/content-library')
-      .then(res => res.json())
-      .then(data => setItems(data))
-      .finally(() => setLoading(false));
+    fetchItems();
   }, []);
+
+  async function fetchItems() {
+    try {
+      const res = await fetch('/api/content-library');
+      const data = await res.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching content library:', error);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -22,7 +32,8 @@ export default function ContentLibraryPage() {
     );
   }
 
-  const categories = [...new Set(items.map(i => i.category))];
+  // Group by category
+  const categories = [...new Set(items.map(i => i.category || 'כללי'))];
 
   return (
     <div>
@@ -34,29 +45,40 @@ export default function ContentLibraryPage() {
         <Link href="/content-library/new" className="btn-gold">+ הוסף קישור</Link>
       </div>
 
-      {categories.map(category => (
-        <div key={category} className="mb-8">
-          <h2 className="text-xl font-bold text-gray-700 mb-4">{category}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {items.filter(i => i.category === category).map((item) => (
-              <Link
-                key={item._id}
-                href={`/content-library/${item._id}`}
-                className="bg-white rounded-xl p-4 shadow-sm card-hover border border-gray-100 hover:border-wdi-gold"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl">🔗</div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-gray-800 mb-1">{item.title}</h3>
-                    <p className="text-gray-500 text-sm line-clamp-2">{item.description}</p>
-                    <p className="text-wdi-gold text-xs mt-2 truncate">{item.url}</p>
+      {categories.map(category => {
+        const categoryItems = items.filter(i => (i.category || 'כללי') === category);
+        if (categoryItems.length === 0) return null;
+        
+        return (
+          <div key={category} className="mb-8">
+            <h2 className="text-xl font-bold text-gray-700 mb-4">{category}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {categoryItems.map((item) => (
+                <Link
+                  key={item._id}
+                  href={`/content-library/${item._id}`}
+                  className="bg-white rounded-xl p-4 shadow-sm card-hover border border-gray-100 hover:border-wdi-gold"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">🔗</div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-800 mb-1">{item.title}</h3>
+                      <p className="text-gray-500 text-sm line-clamp-2">{item.description}</p>
+                      <p className="text-wdi-gold text-xs mt-2 truncate" dir="ltr">{item.url}</p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
+        );
+      })}
+
+      {items.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          אין פריטים במאגר המידע. לחץ "+ הוסף קישור" כדי להוסיף את הראשון.
         </div>
-      ))}
+      )}
     </div>
   );
 }
