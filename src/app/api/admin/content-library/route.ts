@@ -15,11 +15,12 @@ export const GET = withAuth(async (request: NextRequest) => {
     const { page, limit, offset } = parsePagination(url);
     const isActive = url.searchParams.get('isActive');
 
-    let filter = `_type == "contentLibraryItem"`;
-    if (isActive !== null) filter += ` && isActive == ${isActive === 'true'}`;
+    let filter = `(_type == "contentLibraryItem" || _type == "contentItem")`;
+    if (isActive === 'true') filter += ` && isActive != false`;
+    else if (isActive === 'false') filter += ` && isActive == false`;
 
     const [data, total] = await Promise.all([
-      sanityClient.fetch(`*[${filter}] | order(order asc) [${offset}...${offset + limit}]{ _id, title, category, isActive, order, updatedAt }`),
+      sanityClient.fetch(`*[${filter}] | order(order asc) [${offset}...${offset + limit}]{ _id, _type, title, category, "externalUrl": coalesce(externalUrl, url), isActive, order, updatedAt }`),
       sanityClient.fetch(`count(*[${filter}])`),
     ]);
 

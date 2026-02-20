@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw } from 'lucide-react';
-import { apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -34,7 +34,7 @@ export function ServicesTab() {
 
   const fetchItems = useCallback(async () => {
     setLoading(true); setFetchErr(null);
-    try { const r = await apiGet<Service[]>('/api/admin/services'); setItems(r.data); }
+    try { const r = await apiList<Service>('/api/admin/services'); setItems(r.data); }
     catch (e) { setFetchErr(e as ErrorEnvelope); }
     finally { setLoading(false); }
   }, []);

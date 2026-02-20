@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw } from 'lucide-react';
-import { apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -29,7 +29,7 @@ export function PressTab() {
 
   const fetchItems = useCallback(async () => {
     setLoading(true); setFetchErr(null);
-    try { const r = await apiGet<PressItem[]>('/api/admin/press'); setItems(r.data); }
+    try { const r = await apiList<PressItem>('/api/admin/press'); setItems(r.data); }
     catch (e) { setFetchErr(e as ErrorEnvelope); } finally { setLoading(false); }
   }, []);
   useEffect(() => { fetchItems(); }, [fetchItems]);

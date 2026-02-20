@@ -14,7 +14,7 @@ import { sanityClient } from './sanity/client';
 export async function getActiveServices() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "service" && isActive == true] | order(order asc){
+      `*[_type == "service" && isActive != false] | order(order asc){
         _id, "name": coalesce(name, title), "slug": slug.current,
         "description": coalesce(description, shortDescription), tagline, icon,
         highlights, detailContent, image, order
@@ -29,7 +29,7 @@ export async function getActiveServices() {
 export async function getService(slug: string) {
   try {
     return await sanityClient.fetch(
-      `*[_type == "service" && slug.current == $slug && isActive == true][0]{
+      `*[_type == "service" && slug.current == $slug && isActive != false][0]{
         ...,
         "name": coalesce(name, title),
         "description": coalesce(description, shortDescription)
@@ -100,7 +100,7 @@ export async function getProject(slug: string) {
 export async function getTeamMembers() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "teamMember" && isActive == true] | order(
+      `*[_type == "teamMember" && isActive != false] | order(
         select(
           category == "founders" => 0,
           category == "management" => 1,
@@ -121,7 +121,7 @@ export async function getTeamMembers() {
 export async function getTeamMembersByCategory(category: string) {
   try {
     return await sanityClient.fetch(
-      `*[_type == "teamMember" && isActive == true && category == $category] | order(order asc){
+      `*[_type == "teamMember" && isActive != false && category == $category] | order(order asc){
         _id, name, role, category, image, bio, qualifications, degrees, linkedin, email, phone, order
       }`,
       { category },
@@ -137,7 +137,7 @@ export async function getTeamMembersByCategory(category: string) {
 export async function getActiveClientsContent() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "clientContent" && isActive == true] | order(order asc){
+      `*[(_type == "clientContent" || _type == "client") && isActive != false] | order(order asc){
         _id, name, logo, websiteUrl, order
       }`,
     );
@@ -152,7 +152,7 @@ export async function getActiveClientsContent() {
 export async function getFeaturedTestimonials() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "testimonial" && isFeatured == true && isActive == true] | order(order asc){
+      `*[_type == "testimonial" && isFeatured == true && isActive != false] | order(order asc){
         _id, clientName, quote, companyName, role, image, "projectTitle": projectRef->title
       }`,
     );
@@ -165,7 +165,7 @@ export async function getFeaturedTestimonials() {
 export async function getActiveTestimonials() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "testimonial" && isActive == true] | order(order asc){
+      `*[_type == "testimonial" && isActive != false] | order(order asc){
         _id, clientName, quote, companyName, role, image, isFeatured, "projectTitle": projectRef->title
       }`,
     );
@@ -180,8 +180,8 @@ export async function getActiveTestimonials() {
 export async function getActivePressItems() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "pressItem" && isActive == true] | order(publishDate desc){
-        _id, title, source, publishDate, excerpt, externalUrl, image, order
+      `*[(_type == "pressItem" || _type == "press") && isActive != false] | order(publishDate desc){
+        _id, title, source, publishDate, excerpt, "externalUrl": coalesce(externalUrl, url), image, order
       }`,
     );
   } catch (err) {
@@ -195,7 +195,7 @@ export async function getActivePressItems() {
 export async function getActiveJobs() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "job" && isActive == true] | order(order asc){
+      `*[_type == "job" && isActive != false] | order(order asc){
         _id, title, description, requirements, location, type, department, contactEmail, order
       }`,
     );
@@ -210,8 +210,8 @@ export async function getActiveJobs() {
 export async function getActiveContentLibraryItems() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "contentLibraryItem" && isActive == true] | order(order asc){
-        _id, title, description, category, fileUrl, externalUrl, image, order
+      `*[(_type == "contentLibraryItem" || _type == "contentItem") && isActive != false] | order(order asc){
+        _id, title, description, category, fileUrl, "externalUrl": coalesce(externalUrl, url), image, order
       }`,
     );
   } catch (err) {

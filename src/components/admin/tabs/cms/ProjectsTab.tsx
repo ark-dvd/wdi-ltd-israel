@@ -5,7 +5,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw, Star, Trash2 } from 'lucide-react';
-import { apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { apiList, apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -56,7 +56,7 @@ export function ProjectsTab() {
 
   const fetchItems = useCallback(async () => {
     setLoading(true); setFetchErr(null);
-    try { const r = await apiGet<Project[]>('/api/admin/projects'); setItems(r.data); }
+    try { const r = await apiList<Project>('/api/admin/projects'); setItems(r.data); }
     catch (e) { setFetchErr(e as ErrorEnvelope); } finally { setLoading(false); }
   }, []);
   useEffect(() => { fetchItems(); }, [fetchItems]);

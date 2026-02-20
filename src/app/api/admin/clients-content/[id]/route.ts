@@ -21,7 +21,7 @@ export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext
       return validationError('נתוני קלט לא תקינים', fieldErrors);
     }
 
-    const existing = await sanityClient.fetch(`*[_type == "clientContent" && _id == $id][0]`, { id });
+    const existing = await sanityClient.fetch(`*[(_type == "clientContent" || _type == "client") && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
     const conflict = checkConcurrency(parsed.data.updatedAt, existing.updatedAt);
@@ -44,7 +44,7 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
     const { updatedAt } = body;
     if (!updatedAt) return validationError('updatedAt נדרש');
 
-    const existing = await sanityClient.fetch(`*[_type == "clientContent" && _id == $id][0]`, { id });
+    const existing = await sanityClient.fetch(`*[(_type == "clientContent" || _type == "client") && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
     const conflict = checkConcurrency(updatedAt, existing.updatedAt);
