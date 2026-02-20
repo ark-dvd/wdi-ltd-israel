@@ -139,7 +139,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     await tx.commit();
     return successResponse({ received: true }, undefined, 201);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 }

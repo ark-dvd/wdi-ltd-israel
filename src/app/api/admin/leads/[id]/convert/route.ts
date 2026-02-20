@@ -115,7 +115,8 @@ export const POST = withAuth(async (request: NextRequest, { params, session }: A
     ]);
 
     return successResponse({ client, engagement }, undefined, 201);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

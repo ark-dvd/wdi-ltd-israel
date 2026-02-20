@@ -27,7 +27,8 @@ export const GET = withAuth(async (request: NextRequest) => {
     ]);
 
     return listResponse(data, total, page, limit);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -60,7 +61,8 @@ export const POST = withAuth(async (request: NextRequest, { session }: AuthConte
     });
 
     return successResponse(doc, undefined, 201);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

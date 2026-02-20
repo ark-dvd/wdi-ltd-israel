@@ -25,7 +25,8 @@ export const GET = withAuth(async (request: NextRequest) => {
     );
 
     return successResponse(activities);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -92,7 +93,8 @@ export const POST = withAuth(async (request: NextRequest, { session }: AuthConte
     });
 
     return successResponse(activity, undefined, 201);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

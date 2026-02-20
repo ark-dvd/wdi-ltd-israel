@@ -20,7 +20,8 @@ export const GET = withAuth(async (request: NextRequest) => {
     );
 
     return successResponse(activities);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

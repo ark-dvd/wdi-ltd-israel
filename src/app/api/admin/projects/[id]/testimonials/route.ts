@@ -23,7 +23,8 @@ export const GET = withAuth(async (_request: NextRequest, { params }: AuthContex
     );
 
     return successResponse(testimonials);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -52,7 +53,8 @@ export const POST = withAuth(async (request: NextRequest, { params }: AuthContex
     });
 
     return successResponse(doc, undefined, 201);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

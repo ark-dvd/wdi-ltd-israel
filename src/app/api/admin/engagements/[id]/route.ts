@@ -25,7 +25,8 @@ export const GET = withAuth(async (_request: NextRequest, { params }: AuthContex
     );
     if (!engagement) return notFoundError();
     return successResponse(engagement);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -73,7 +74,8 @@ export const PUT = withAuth(async (request: NextRequest, { params, session }: Au
 
     const updated = await sanityClient.fetch(`*[_type == "engagement" && _id == $id][0]`, { id });
     return successResponse(updated, activity);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -93,7 +95,8 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
 
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

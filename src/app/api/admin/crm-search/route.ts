@@ -36,7 +36,8 @@ export const GET = withAuth(async (request: NextRequest) => {
     ]);
 
     return successResponse({ leads, clients, engagements });
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

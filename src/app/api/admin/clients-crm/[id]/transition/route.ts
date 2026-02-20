@@ -50,7 +50,8 @@ export const POST = withAuth(async (request: NextRequest, { params, session }: A
 
     const updated = await sanityClient.fetch(`*[_type == "clientCrm" && _id == $id][0]`, { id });
     return successResponse(updated, activity);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

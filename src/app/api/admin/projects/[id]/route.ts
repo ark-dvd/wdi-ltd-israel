@@ -25,7 +25,8 @@ export const GET = withAuth(async (_request: NextRequest, { params }: AuthContex
     );
     if (!project) return notFoundError();
     return successResponse(project);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -62,7 +63,8 @@ export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext
 
     const doc = await sanityWriteClient.patch(id).set(patchFields).commit();
     return successResponse(doc);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -86,7 +88,8 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
 
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

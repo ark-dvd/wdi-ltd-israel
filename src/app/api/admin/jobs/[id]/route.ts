@@ -31,7 +31,8 @@ export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext
     const doc = await sanityWriteClient.patch(id).set({ ...fields, updatedAt: new Date().toISOString() }).commit();
 
     return successResponse(doc);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -55,7 +56,8 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
 
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

@@ -26,7 +26,8 @@ export const GET = withAuth(async (_request: NextRequest, { params }: AuthContex
     );
     if (!client) return notFoundError();
     return successResponse(client);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -103,7 +104,8 @@ export const PATCH = withAuth(async (request: NextRequest, { params, session }: 
 
     const updated = await sanityClient.fetch(`*[_type == "clientCrm" && _id == $id][0]`, { id });
     return successResponse(updated, activity);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

@@ -92,7 +92,8 @@ export const POST = withAuth(async (request: NextRequest, { session }: AuthConte
     await tx.commit();
 
     return successResponse({ affected: ids.length }, activity);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

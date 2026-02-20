@@ -1,6 +1,6 @@
 /**
  * Client-side API helper — DOC-050 §2, §5
- * Handles JSON fetch, 8-second timeout, error parsing
+ * Handles JSON fetch, 15-second timeout (cold start safe), error parsing
  */
 
 export interface ErrorEnvelope {
@@ -25,7 +25,7 @@ export interface ListEnvelope<T> {
   limit: number;
 }
 
-const TIMEOUT_MS = 8000;
+const TIMEOUT_MS = 15_000;
 
 export async function apiFetch<T>(
   url: string,

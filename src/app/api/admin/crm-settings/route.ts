@@ -40,7 +40,8 @@ export const GET = withAuth(async () => {
   try {
     const doc = await sanityClient.fetch(`*[_type == "crmSettings" && _id == $id][0]`, { id: SINGLETON_ID });
     return successResponse(doc ?? { _id: SINGLETON_ID, _type: 'crmSettings', ...DEFAULTS });
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -98,7 +99,8 @@ export const PUT = withAuth(async (request: NextRequest) => {
     });
 
     return successResponse(doc);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });

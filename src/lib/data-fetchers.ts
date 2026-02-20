@@ -14,7 +14,8 @@ export async function getActiveServices() {
         _id, name, slug, description, tagline, icon, highlights, detailContent, image, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -25,7 +26,8 @@ export async function getService(slug: string) {
       `*[_type == "service" && slug.current == $slug && isActive == true][0]`,
       { slug },
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return null;
   }
 }
@@ -39,7 +41,8 @@ export async function getActiveProjects() {
         _id, title, slug, client, sector, description, scope, location, images, featuredImage, isFeatured, startDate, completedAt, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -52,7 +55,8 @@ export async function getActiveProjectsBySector(sector: string) {
       }`,
       { sector },
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -68,7 +72,8 @@ export async function getProject(slug: string) {
       }`,
       { slug },
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return null;
   }
 }
@@ -90,7 +95,8 @@ export async function getTeamMembers() {
         _id, name, role, category, image, bio, qualifications, degrees, linkedin, email, phone, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -103,7 +109,8 @@ export async function getTeamMembersByCategory(category: string) {
       }`,
       { category },
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -117,7 +124,8 @@ export async function getActiveClientsContent() {
         _id, name, logo, websiteUrl, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -131,7 +139,8 @@ export async function getFeaturedTestimonials() {
         _id, clientName, quote, companyName, role, image, "projectTitle": projectRef->title
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -143,7 +152,8 @@ export async function getActiveTestimonials() {
         _id, clientName, quote, companyName, role, image, isFeatured, "projectTitle": projectRef->title
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -157,7 +167,8 @@ export async function getActivePressItems() {
         _id, title, source, publishDate, excerpt, externalUrl, image, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -171,7 +182,8 @@ export async function getActiveJobs() {
         _id, title, description, requirements, location, type, department, contactEmail, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -185,7 +197,8 @@ export async function getActiveContentLibraryItems() {
         _id, title, description, category, fileUrl, externalUrl, image, order
       }`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return [];
   }
 }
@@ -197,7 +210,8 @@ export async function getHeroSettings() {
     return await sanityClient.fetch(
       `*[_type == "heroSettings" && _id == "heroSettings"][0]`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return null;
   }
 }
@@ -207,7 +221,8 @@ export async function getSiteSettings() {
     return await sanityClient.fetch(
       `*[_type == "siteSettings" && _id == "siteSettings"][0]`,
     );
-  } catch {
+  } catch (err) {
+    console.error('[ssr]', err);
     return null;
   }
 }

@@ -17,7 +17,8 @@ export const GET = withAuth(async () => {
     const doc = await sanityClient.fetch(`*[_type == "siteSettings" && _id == $id][0]`, { id: SINGLETON_ID });
     if (!doc) return notFoundError('הגדרות אתר לא נמצאו');
     return successResponse(doc);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
@@ -42,7 +43,8 @@ export const PUT = withAuth(async (request: NextRequest) => {
     const doc = await sanityWriteClient.patch(SINGLETON_ID).set({ ...fields, updatedAt: new Date().toISOString() }).commit();
 
     return successResponse(doc);
-  } catch {
+  } catch (err) {
+    console.error('[api]', err);
     return serverError();
   }
 });
