@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(for folder in data/testimonials data/team data/projects data/services data/clients-items data/press data/jobs data/content-library data/hero)",
+      "Bash(do echo \"=== $folder \\(ALL files ever\\) ===\")",
+      "Bash(xargs:*)",
+      "Bash(find:*)",
+      "Bash(done)",
+      "Bash(ls:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+/**
+ * All 15 Sanity schema definitions per DOC-020 §3.1–3.15.
+ *
+ * CRM Entities (5): Lead, ClientCRM, Engagement, Activity, CrmSettings
+ * Content Entities (10): Service, Project, TeamMember, ClientContent,
+ *   Testimonial, PressItem, Job, ContentLibraryItem, HeroSettings, SiteSettings
+ */
+
+// CRM Entities
+import { leadSchema } from './lead';
+import { clientCrmSchema } from './client-crm';
+import { engagementSchema } from './engagement';
+import { activitySchema } from './activity';
+import { crmSettingsSchema } from './crm-settings';
+
+// Content Entities
+import { serviceSchema } from './service';
+import { projectSchema } from './project';
+import { teamMemberSchema } from './team-member';
+import { clientContentSchema } from './client-content';
+import { testimonialSchema } from './testimonial';
+import { pressItemSchema } from './press-item';
+import { jobSchema } from './job';
+import { contentLibraryItemSchema } from './content-library-item';
+import { heroSettingsSchema } from './hero-settings';
+import { siteSettingsSchema } from './site-settings';
+
+// Re-export everything
+export { leadSchema, LEAD_STATUS, LEAD_PRIORITY, LEAD_TRANSITIONS } from './lead';
+export type { LeadStatus, LeadPriority } from './lead';
+
+export { clientCrmSchema, CLIENT_CRM_STATUS, CLIENT_CRM_TRANSITIONS, PREFERRED_CONTACT } from './client-crm';
+export type { ClientCrmStatus } from './client-crm';
+
+export { engagementSchema, ENGAGEMENT_STATUS, ENGAGEMENT_TRANSITIONS } from './engagement';
+export type { EngagementStatus } from './engagement';
+
+export { activitySchema, ACTIVITY_TYPE, ACTIVITY_ENTITY_TYPE } from './activity';
+export type { ActivityType, ActivityEntityType } from './activity';
+
+export {
+  crmSettingsSchema,
+  CRM_SETTINGS_ID,
+  DEFAULT_PIPELINE_STAGES,
+  DEFAULT_ENGAGEMENT_STATUSES,
+  DEFAULT_SERVICE_TYPES,
+  DEFAULT_LEAD_SOURCES,
+} from './crm-settings';
+
+export { serviceSchema } from './service';
+export { projectSchema, PROJECT_SECTOR } from './project';
+export type { ProjectSector } from './project';
+export { teamMemberSchema, TEAM_CATEGORY } from './team-member';
+export type { TeamCategory } from './team-member';
+export { clientContentSchema } from './client-content';
+export { testimonialSchema } from './testimonial';
+export { pressItemSchema } from './press-item';
+export { jobSchema } from './job';
+export { contentLibraryItemSchema } from './content-library-item';
+export { heroSettingsSchema, HERO_SETTINGS_ID } from './hero-settings';
+export { siteSettingsSchema, SITE_SETTINGS_ID } from './site-settings';
+
+/** All schema objects for Sanity Studio configuration */
+export const allSchemas = [
+  leadSchema,
+  clientCrmSchema,
+  engagementSchema,
+  activitySchema,
+  crmSettingsSchema,
+  serviceSchema,
+  projectSchema,
+  teamMemberSchema,
+  clientContentSchema,
+  testimonialSchema,
+  pressItemSchema,
+  jobSchema,
+  contentLibraryItemSchema,
+  heroSettingsSchema,
+  siteSettingsSchema,
+];
