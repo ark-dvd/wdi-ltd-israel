@@ -1,0 +1,31 @@
+<!--
+  Netlify Forms detection file for @netlify/plugin-nextjs v5.
+  https://ntl.fyi/next-runtime-forms-migration
+
+  Netlify's build bot parses this file to register form names.
+  The actual forms are rendered by React components at runtime.
+  This file is never displayed to users.
+-->
+<html>
+<body>
+  <!-- Job Application Form -->
+  <form name="job-application" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <input type="tel" name="phone" />
+    <input type="text" name="position" />
+    <textarea name="message"></textarea>
+    <input type="file" name="cv" />
+  </form>
+
+  <!-- Supplier Registration Form -->
+  <form name="supplier-registration" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="company" />
+    <input type="text" name="contactName" />
+    <input type="email" name="email" />
+    <input type="tel" name="phone" />
+    <input type="text" name="specialty" />
+    <textarea name="message"></textarea>
+  </form>
+</body>
+</html>

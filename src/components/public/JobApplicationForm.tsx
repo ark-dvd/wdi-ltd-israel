@@ -2,7 +2,7 @@
 
 /**
  * Job application form — 'use client' component for /job-application page.
- * Uses Netlify Forms with data-netlify="true" per DOC-010 section 3.7.
+ * Uses Netlify Forms via public/__forms.html detection (plugin-nextjs v5).
  */
 import { useState, useRef, type FormEvent } from 'react';
 
@@ -78,7 +78,6 @@ export function JobApplicationForm() {
       ref={formRef}
       name="job-application"
       method="POST"
-      data-netlify="true"
       encType="multipart/form-data"
       onSubmit={handleSubmit}
       className="space-y-6"

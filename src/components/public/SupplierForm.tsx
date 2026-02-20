@@ -2,7 +2,7 @@
 
 /**
  * Supplier registration form — 'use client' component for /join-us page.
- * Uses Netlify Forms with data-netlify="true".
+ * Uses Netlify Forms via public/__forms.html detection (plugin-nextjs v5).
  */
 import { useState, useRef, type FormEvent } from 'react';
 
@@ -77,7 +77,6 @@ export function SupplierForm() {
       ref={formRef}
       name="supplier-registration"
       method="POST"
-      data-netlify="true"
       onSubmit={handleSubmit}
       className="space-y-6"
       noValidate
