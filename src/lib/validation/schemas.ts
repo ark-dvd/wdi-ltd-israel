@@ -54,7 +54,8 @@ export const leadIntakeSchema = z.object({
   company: z.string().optional(),
   phone: z.string().optional(),
   servicesInterested: z.array(z.string()).optional(),
-  turnstileToken: z.string().min(1),
+  turnstileToken: z.string().min(1).optional(),
+  _honeypot: z.string().max(0, 'Bot detected').optional(),
 });
 
 // ─── CRM: Client CRM (§3.2) ────────────────────────────────

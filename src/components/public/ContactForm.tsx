@@ -51,8 +51,8 @@ export function ContactForm() {
     setStatus('submitting');
 
     try {
-      // Turnstile token placeholder — integrate Cloudflare Turnstile widget here
-      const turnstileToken = ''; // TODO: Get token from Turnstile widget
+      const form = e.currentTarget;
+      const honeypot = (form.elements.namedItem('_honeypot') as HTMLInputElement)?.value;
 
       const res = await fetch('/api/public/leads', {
         method: 'POST',
@@ -67,7 +67,7 @@ export function ContactForm() {
             formData.servicesInterested.length > 0
               ? formData.servicesInterested
               : undefined,
-          turnstileToken: turnstileToken || undefined,
+          _honeypot: honeypot || undefined,
         }),
       });
 
@@ -238,9 +238,17 @@ export function ContactForm() {
         />
       </div>
 
-      {/* Turnstile placeholder */}
-      {/* TODO: Add Cloudflare Turnstile widget here */}
-      {/* <div id="turnstile-widget" className="my-4" /> */}
+      {/* Honeypot — hidden from humans, bots auto-fill it */}
+      <div aria-hidden="true" className="absolute opacity-0 h-0 w-0 overflow-hidden">
+        <label htmlFor="contact-honeypot">Leave this empty</label>
+        <input
+          id="contact-honeypot"
+          name="_honeypot"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
 
       {/* Submit */}
       <button

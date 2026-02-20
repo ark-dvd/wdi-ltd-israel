@@ -1,22 +1,39 @@
 /**
  * Sentry error monitoring — DOC-010 §2.2
- * Structured error tracking for production.
+ * If SENTRY_DSN is not set, falls back to console.error.
  */
 
-export function initSentry(): void {
-  // Sentry is initialized via @sentry/nextjs instrumentation
-  // in sentry.client.config.ts and sentry.server.config.ts
-  // This module provides helper utilities.
+const SENTRY_CONFIGURED = !!process.env.SENTRY_DSN;
+
+if (!SENTRY_CONFIGURED) {
+  console.warn(
+    '[sentry] SENTRY_DSN not set — error reporting disabled. Using console.error as fallback.',
+  );
 }
 
-/** Report an error to Sentry with context */
+export function initSentry(): void {
+  if (!SENTRY_CONFIGURED) return;
+  // Sentry is initialized via @sentry/nextjs instrumentation
+  // in sentry.client.config.ts and sentry.server.config.ts
+}
+
+/** Report an error to Sentry with context, or console.error as fallback */
 export async function reportError(
   error: unknown,
   context?: Record<string, unknown>,
 ): Promise<void> {
-  const Sentry = await import('@sentry/nextjs');
-  if (context) {
-    Sentry.setContext('additional', context);
+  if (!SENTRY_CONFIGURED) {
+    console.error('[sentry:fallback]', error, context ?? '');
+    return;
   }
-  Sentry.captureException(error);
+
+  try {
+    const Sentry = await import('@sentry/nextjs');
+    if (context) {
+      Sentry.setContext('additional', context);
+    }
+    Sentry.captureException(error);
+  } catch {
+    console.error('[sentry:fallback] Failed to report to Sentry:', error, context ?? '');
+  }
 }

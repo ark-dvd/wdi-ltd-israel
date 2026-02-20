@@ -1,6 +1,115 @@
+# ── Netlify configuration — DOC-060 §7 (H-07) ──────────────
+# Required environment variables (set in Netlify UI):
+#   NEXTAUTH_URL          — https://wdi-israel.co.il
+#   NEXTAUTH_SECRET       — Random 32+ char secret
+#   GOOGLE_CLIENT_ID      — Google OAuth client ID
+#   GOOGLE_CLIENT_SECRET  — Google OAuth client secret
+#   NEXT_PUBLIC_SANITY_PROJECT_ID — Sanity project ID
+#   NEXT_PUBLIC_SANITY_DATASET    — Sanity dataset name
+#   SANITY_API_TOKEN      — Sanity write token
+#   TURNSTILE_SECRET_KEY  — Cloudflare Turnstile secret
+#   NEXT_PUBLIC_TURNSTILE_SITE_KEY — Turnstile site key
+#   UPSTASH_REDIS_REST_URL    — Upstash Redis URL
+#   UPSTASH_REDIS_REST_TOKEN  — Upstash Redis token
+#   NEXT_PUBLIC_SITE_URL  — https://wdi-israel.co.il
+
 [build]
-  publish = "."
-  command = "node scripts/update-indexes.js"
+  command = "npm run build"
+  publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Redirect old static HTML paths to new Next.js routes
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/about.html"
+  to = "/about"
+  status = 301
+
+[[redirects]]
+  from = "/services.html"
+  to = "/services"
+  status = 301
+
+[[redirects]]
+  from = "/projects.html"
+  to = "/projects"
+  status = 301
+
+[[redirects]]
+  from = "/team.html"
+  to = "/team"
+  status = 301
+
+[[redirects]]
+  from = "/clients.html"
+  to = "/clients"
+  status = 301
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/contact"
+  status = 301
+
+[[redirects]]
+  from = "/jobs.html"
+  to = "/jobs"
+  status = 301
+
+[[redirects]]
+  from = "/innovation.html"
+  to = "/innovation"
+  status = 301
+
+[[redirects]]
+  from = "/join-us.html"
+  to = "/join-us"
+  status = 301
+
+[[redirects]]
+  from = "/job-application.html"
+  to = "/job-application"
+  status = 301
+
+[[redirects]]
+  from = "/content-library.html"
+  to = "/content-library"
+  status = 301
+
+[[redirects]]
+  from = "/404.html"
+  to = "/404"
+  status = 301
+
+# Old service detail pages (static HTML had different slugs)
+[[redirects]]
+  from = "/services/*.html"
+  to = "/services/:splat"
+  status = 301
+
+# Old project detail pages
+[[redirects]]
+  from = "/projects/*.html"
+  to = "/projects/:splat"
+  status = 301
+
+# Security: block direct access to old backoffice
+[[redirects]]
+  from = "/wdi-backoffice/*"
+  to = "/admin"
+  status = 301
+
+# Headers — supplement Next.js headers for static assets
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"

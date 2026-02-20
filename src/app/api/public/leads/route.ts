@@ -1,7 +1,7 @@
 /**
  * POST /api/public/leads — Public lead intake (contact form)
  * DOC-040 §2.2, INV-021
- * Turnstile abuse prevention, duplicate detection, rate limited 5/min
+ * Turnstile abuse prevention (if configured), honeypot fallback, duplicate detection, rate limited 5/min
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { sanityClient, sanityWriteClient } from '@/lib/sanity/client';
@@ -9,6 +9,8 @@ import { successResponse, validationError, serverError } from '@/lib/api/respons
 import { leadIntakeSchema } from '@/lib/validation/schemas';
 import { publicLeadRateLimit, getIdentifier } from '@/lib/rate-limit';
 import { addActivityToTransaction } from '@/lib/api/activity';
+
+const TURNSTILE_CONFIGURED = !!process.env.TURNSTILE_SECRET_KEY;
 
 async function verifyTurnstile(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
@@ -43,13 +45,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return validationError('נתוני קלט לא תקינים', fieldErrors);
     }
 
-    // Turnstile verification (fail-closed)
-    const valid = await verifyTurnstile(parsed.data.turnstileToken);
-    if (!valid) {
-      return validationError('אימות אנושי נכשל. נסה שוב.');
+    // Honeypot check — bots fill hidden fields, humans don't
+    if (parsed.data._honeypot) {
+      // Silently discard bot submission (return success so bot doesn't retry)
+      return successResponse({ received: true });
     }
 
-    const { turnstileToken: _, ...leadData } = parsed.data;
+    // Turnstile verification (only if configured)
+    if (TURNSTILE_CONFIGURED) {
+      if (!parsed.data.turnstileToken) {
+        return validationError('אימות אנושי נדרש.');
+      }
+      const valid = await verifyTurnstile(parsed.data.turnstileToken);
+      if (!valid) {
+        return validationError('אימות אנושי נכשל. נסה שוב.');
+      }
+    }
+
+    const { turnstileToken: _, _honeypot: __, ...leadData } = parsed.data;
     const email = leadData.email.toLowerCase().trim();
     const message = leadData.message.trim();
     const now = new Date().toISOString();

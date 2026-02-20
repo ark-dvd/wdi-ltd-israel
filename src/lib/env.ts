@@ -1,6 +1,8 @@
 /**
  * Environment variable validation — DOC-010 §3.6
- * Fail-fast: application refuses to start with missing required vars.
+ * Core vars (Sanity, Auth) are required. External services
+ * (Upstash, Sentry, Turnstile) are optional — the app degrades
+ * gracefully when they are absent.
  */
 import { z } from 'zod';
 
@@ -17,15 +19,15 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required'),
   ADMIN_ALLOWED_EMAILS: z.string().optional(),
 
-  // Upstash Redis
-  UPSTASH_REDIS_REST_URL: z.string().url('UPSTASH_REDIS_REST_URL must be a valid URL'),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(1, 'UPSTASH_REDIS_REST_TOKEN is required'),
+  // Upstash Redis (optional — rate limiting disabled if absent)
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 
-  // Sentry
+  // Sentry (optional — console.error fallback if absent)
   SENTRY_DSN: z.string().optional(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 
-  // Turnstile
+  // Turnstile (optional — honeypot fallback if absent)
   TURNSTILE_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
 });
