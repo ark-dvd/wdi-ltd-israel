@@ -12,13 +12,14 @@ if (!token) {
   console.error('[sanity/client] SANITY_API_TOKEN is not set — mutations and private dataset reads will fail.');
 }
 
-/** Read-only client for SSR rendering and public reads — CDN enabled, token for private datasets */
+/** Read-only client for SSR rendering and public reads — CDN enabled, published perspective only */
 export const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
   useCdn: true,
   token,
+  perspective: 'published',
 });
 
 /** Write client for admin mutations and reads needing fresh data — CDN disabled */

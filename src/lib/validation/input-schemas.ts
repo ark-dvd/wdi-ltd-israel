@@ -261,6 +261,8 @@ export const heroSettingsUpdateSchema = z.object({
   subheadline: z.string().optional(),
   ctaText: z.string().optional(),
   ctaLink: z.string().optional(),
+  cta2Text: z.string().optional(),
+  cta2Link: z.string().optional(),
   backgroundImage: z.any().optional(),
   videoUrl: z.any().optional(),
 });

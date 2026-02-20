@@ -1,227 +1,122 @@
 /**
- * Service detail page — /services/[slug]
- * Server component with SSG via generateStaticParams.
- * Includes rich-text body, highlights, FAQ section, and JSON-LD.
+ * Service detail — ORIGINAL_DESIGN_SPEC §7, DOC-070 §3.6
+ * PageHeader with service name, detail content, highlights, sidebar with other services.
+ * Share buttons (WhatsApp, Facebook, email).
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
-import { getActiveServices, getService } from '@/lib/data-fetchers';
-import { sanityImageUrl } from '@/lib/sanity/image';
+import Image from 'next/image';
+import { getService, getActiveServices } from '@/lib/data-fetchers';
+import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
-import { ServiceJsonLd, FAQPageJsonLd } from '@/components/public/JsonLd';
+import { sanityImageUrl } from '@/lib/sanity/image';
 
 export const revalidate = 3600;
 
-/* ── SSG ─────────────────────────────────────────────────────── */
-
 export async function generateStaticParams() {
   const services = await getActiveServices();
-  return services
-    .map((s: { slug: string | { current: string } }) => ({
-      slug: typeof s.slug === 'string' ? s.slug : s.slug?.current ?? '',
-    }))
-    .filter((p: { slug: string }) => p.slug.length > 0);
+  return services.map((s: { slug: string }) => ({ slug: s.slug }));
 }
 
-/* ── Metadata ────────────────────────────────────────────────── */
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const service = await getService(slug);
-  if (!service) {
-    return { title: 'שירות לא נמצא | WDI' };
-  }
   return {
-    title: `${service.name} | שירותים | WDI`,
-    description:
-      service.tagline || service.description || `שירות ${service.name} מבית WDI`,
+    title: service?.name ?? 'שירות',
+    description: service?.tagline ?? service?.description ?? '',
+    alternates: { canonical: `/services/${slug}` },
   };
 }
 
-/* ── Page ────────────────────────────────────────────────────── */
-
-export default async function ServiceDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const service = await getService(slug);
+  const [service, allServices] = await Promise.all([
+    getService(slug),
+    getActiveServices(),
+  ]);
+
   if (!service) notFound();
 
-  const imageUrl = sanityImageUrl(service.image);
-
-  /* FAQ generation per DOC-060 §6.3 */
-  const faqItems: { question: string; answer: string }[] = [
-    {
-      question: `מה כולל שירות ${service.name}?`,
-      answer:
-        service.tagline ||
-        service.description ||
-        `שירות ${service.name} כולל ליווי מקצועי מקיף מצוות WDI.`,
-    },
-    {
-      question: `למי מיועד שירות ${service.name}?`,
-      answer: `שירות ${service.name} מיועד ליזמים, חברות בנייה, גופים ציבוריים וארגונים המחפשים ליווי הנדסי מקצועי.`,
-    },
-    {
-      question: `מה היתרונות של ${service.name} עם WDI?`,
-      answer: `WDI מציעה ניסיון עשיר, צוות מקצועי מהשורה הראשונה, ושיטות עבודה מוכחות המבטיחות תוצאות מיטביות בכל פרויקט.`,
-    },
-  ];
+  const otherServices = allServices.filter((s: { slug: string }) => s.slug !== slug);
+  const imgUrl = service.image ? sanityImageUrl(service.image) : '';
 
   return (
-    <article className="py-16 lg:py-24" dir="rtl">
-      {/* JSON-LD */}
-      <ServiceJsonLd service={service} />
-      <FAQPageJsonLd questions={faqItems} />
+    <>
+      <PageHeader
+        title={service.name}
+        subtitle={service.tagline}
+        breadcrumb={service.name}
+      />
 
-      <div className="max-w-container mx-auto px-4 lg:px-8">
-        {/* Breadcrumb */}
-        <nav aria-label="מיקום" className="mb-8 text-sm text-gray-500">
-          <ol className="flex items-center gap-2">
-            <li>
-              <Link href="/" className="hover:text-wdi-primary transition">
-                דף הבית
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/services" className="hover:text-wdi-primary transition">
-                שירותים
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li className="text-wdi-primary font-medium">{service.name}</li>
-          </ol>
-        </nav>
+      <section className="section">
+        <div className="container">
+          {/* Share buttons */}
+          <div className="share-buttons" style={{ marginBottom: 32 }}>
+            <a className="share-btn whatsapp" href={`https://wa.me/?text=${encodeURIComponent(service.name + ' - WDI')}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <i className="fab fa-whatsapp" />
+            </a>
+            <a className="share-btn facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`/services/${slug}`)}`} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <i className="fab fa-facebook-f" />
+            </a>
+            <a className="share-btn email" href={`mailto:?subject=${encodeURIComponent(service.name)}&body=${encodeURIComponent('WDI - ' + service.name)}`} aria-label="Email">
+              <i className="fas fa-envelope" />
+            </a>
+          </div>
 
-        {/* Hero section */}
-        <header className="mb-12">
-          {imageUrl && (
-            <div className="relative h-64 lg:h-96 w-full rounded-2xl overflow-hidden mb-8">
-              <Image
-                src={imageUrl}
-                alt={service.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1200px) 100vw, 1200px"
-                priority
-              />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 40, alignItems: 'start' }}>
+            {/* Main content */}
+            <div>
+              {imgUrl && (
+                <Image src={imgUrl} alt={service.name} width={800} height={400} style={{ width: '100%', height: 'auto', borderRadius: 16, marginBottom: 32 }} />
+              )}
+
+              {/* Detail content (rich text) */}
+              {service.detailContent && (
+                <div className="animate-on-scroll">
+                  <PortableText value={service.detailContent} />
+                </div>
+              )}
+
+              {/* Highlights */}
+              {service.highlights && service.highlights.length > 0 && (
+                <div style={{ marginTop: 40 }}>
+                  <h3 style={{ marginBottom: 20 }}>נקודות מפתח</h3>
+                  {service.highlights.map((h: { _key?: string; title?: string; description?: string }, i: number) => (
+                    <div key={h._key ?? i} className="animate-on-scroll" style={{ marginBottom: 16, paddingRight: 16, borderRight: '3px solid var(--secondary)' }}>
+                      {h.title && <h4 style={{ marginBottom: 4 }}>{h.title}</h4>}
+                      {h.description && <p style={{ color: 'var(--gray-600)', fontSize: '0.95rem', lineHeight: 1.7 }}>{h.description}</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
 
-          <h1 className="text-3xl lg:text-5xl font-bold text-wdi-primary mb-4">
-            {service.name}
-          </h1>
-
-          {service.tagline && (
-            <p className="text-xl text-wdi-secondary font-medium">
-              {service.tagline}
-            </p>
-          )}
-        </header>
-
-        {/* Body content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main content */}
-          <section className="lg:col-span-2">
-            {service.detailContent && (
-              <div className="prose prose-lg max-w-none">
-                <PortableText value={service.detailContent} />
-              </div>
-            )}
-
-            {!service.detailContent && service.description && (
-              <p className="text-gray-700 leading-relaxed text-lg">
-                {service.description}
-              </p>
-            )}
-          </section>
-
-          {/* Sidebar: highlights */}
-          {service.highlights && service.highlights.length > 0 && (
-            <aside className="lg:col-span-1">
-              <div className="bg-gray-50 rounded-2xl p-6 lg:p-8 sticky top-24">
-                <h2 className="text-xl font-bold text-wdi-primary mb-6">
-                  דגשים עיקריים
-                </h2>
-                <ul className="space-y-4">
-                  {service.highlights.map(
-                    (highlight: { _key?: string; title?: string; description?: string } | string, index: number) => {
-                      const title = typeof highlight === 'string' ? highlight : highlight.title;
-                      const description = typeof highlight === 'string' ? undefined : highlight.description;
-                      const key = typeof highlight === 'string' ? index : (highlight._key ?? index);
-                      return (
-                        <li key={key} className="flex items-start gap-3">
-                          <span className="mt-1 flex-shrink-0 w-6 h-6 bg-wdi-secondary text-white rounded-full flex items-center justify-center text-xs font-bold">
-                            {index + 1}
-                          </span>
-                          <div>
-                            <span className="text-gray-700 leading-relaxed font-medium">
-                              {title}
-                            </span>
-                            {description && (
-                              <p className="text-gray-500 text-sm mt-1">{description}</p>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    },
-                  )}
-                </ul>
-              </div>
+            {/* Sidebar — other services */}
+            <aside style={{ position: 'sticky', top: 100 }}>
+              <h4 style={{ marginBottom: 16 }}>שירותים נוספים</h4>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {otherServices.map((s: { _id: string; name: string; slug: string }) => (
+                  <li key={s._id} style={{ marginBottom: 8 }}>
+                    <Link href={`/services/${s.slug}`} style={{ color: 'var(--gray-600)', fontSize: '0.9rem', display: 'block', padding: '8px 12px', borderRadius: 8, transition: 'background 0.2s' }}>
+                      {s.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </aside>
-          )}
+          </div>
         </div>
+      </section>
 
-        {/* ── FAQ Section — DOC-060 §6.3 ─────────────────────────── */}
-        <section className="mt-16 lg:mt-24 border-t border-gray-200 pt-12">
-          <h2 className="text-2xl lg:text-3xl font-bold text-wdi-primary mb-8">
-            שאלות נפוצות
-          </h2>
-
-          <dl className="space-y-6">
-            {faqItems.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 rounded-xl p-6"
-              >
-                <dt>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                    {faq.question}
-                  </h2>
-                </dt>
-                <dd className="text-gray-600 leading-relaxed">
-                  {faq.answer}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* CTA */}
-        <section className="mt-16 text-center bg-wdi-primary rounded-2xl p-8 lg:p-12">
-          <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-            מעוניינים בשירות {service.name}?
-          </h2>
-          <p className="text-white/80 mb-6 max-w-xl mx-auto">
-            צוות WDI ישמח לשמוע על הפרויקט שלכם ולהציע פתרון מותאם אישית.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-block bg-wdi-secondary hover:bg-wdi-secondary-light text-white font-semibold px-8 py-3 rounded-lg transition"
-          >
-            צרו קשר
-          </Link>
-        </section>
-      </div>
-    </article>
+      {/* CTA */}
+      <section className="cta-section">
+        <div className="container">
+          <h2>מעוניינים בשירות זה?</h2>
+          <p>צוות WDI ישמח לסייע לכם</p>
+          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
+        </div>
+      </section>
+    </>
   );
 }

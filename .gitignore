@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Sentry
 .sentryclirc
+
+# Large media files (served from CMS or CDN in production)
+public/videos/

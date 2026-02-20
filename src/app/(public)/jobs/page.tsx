@@ -1,25 +1,26 @@
 /**
- * Jobs / Careers page — active job listings. Server Component. DOC-060 §6.7
+ * Jobs / Careers — DOC-070 §3.14
+ * PageHeader, job listings with tags, descriptions, apply buttons.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getActiveJobs } from '@/lib/data-fetchers';
-import { JobPostingJsonLd } from '@/components/public/JsonLd';
+import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'קריירה',
-  description:
-    'הצטרפו לצוות WDI — משרות פתוחות בניהול פרויקטים, פיקוח הנדסי וייעוץ. גלו הזדמנויות קריירה בחברת בוטיק מובילה.',
+  title: 'משרות',
+  description: 'משרות פתוחות ב-WDI — הצטרפו לצוות',
   alternates: { canonical: '/jobs' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
-  'משרה מלאה': 'משרה מלאה',
-  'משרה חלקית': 'משרה חלקית',
+  'full-time': 'משרה מלאה',
+  'part-time': 'חלקית',
   freelance: 'פרילנס',
+  contract: 'חוזה',
 };
 
 export default async function JobsPage() {
@@ -27,166 +28,97 @@ export default async function JobsPage() {
 
   return (
     <>
-      {/* JSON-LD for each job */}
-      {jobs.map((job: any) => (
-        <JobPostingJsonLd key={job._id} job={job} />
-      ))}
+      <PageHeader title="משרות פתוחות" subtitle="הצטרפו לצוות WDI" />
 
-      {/* Hero */}
-      <section className="bg-wdi-primary text-white py-16 lg:py-24">
-        <div className="max-w-container mx-auto px-4 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4">קריירה ב-WDI</h1>
-          <p className="text-lg lg:text-xl text-white/80 max-w-2xl mx-auto">
-            מחפשים את האתגר הבא? הצטרפו לצוות של אנשי מקצוע מובילים בתחום הבנייה והתשתיות
-          </p>
+      <section className="section">
+        <div className="container" style={{ maxWidth: 800 }}>
+          {jobs.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {jobs.map((job: {
+                _id: string; title: string; description?: any; requirements?: any;
+                location?: string; type?: string; department?: string; contactEmail?: string;
+              }) => (
+                <article key={job._id} className="animate-on-scroll" style={{
+                  background: 'white', borderRadius: 16, padding: 32,
+                  border: '1px solid var(--gray-200)', transition: 'all 0.3s ease',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{job.title}</h3>
+                    {job.type && (
+                      <span style={{
+                        background: 'var(--secondary)', color: 'var(--primary-dark)',
+                        fontSize: '0.75rem', fontWeight: 600, padding: '4px 12px', borderRadius: 20,
+                      }}>
+                        {TYPE_LABELS[job.type] ?? job.type}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Tags */}
+                  <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap', fontSize: '0.85rem', color: 'var(--gray-500)' }}>
+                    {job.department && (
+                      <span><i className="fas fa-building" style={{ marginLeft: 6 }} />{job.department}</span>
+                    )}
+                    {job.location && (
+                      <span><i className="fas fa-map-marker-alt" style={{ marginLeft: 6 }} />{job.location}</span>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  {job.description && (
+                    <div style={{ marginBottom: 16, color: 'var(--gray-600)', lineHeight: 1.7 }}>
+                      {typeof job.description === 'string' ? (
+                        <p>{job.description}</p>
+                      ) : (
+                        <PortableText value={job.description} />
+                      )}
+                    </div>
+                  )}
+
+                  {/* Requirements */}
+                  {job.requirements && (
+                    <div style={{ marginBottom: 20 }}>
+                      <h4 style={{ fontSize: '1rem', marginBottom: 8 }}>דרישות</h4>
+                      <div style={{ color: 'var(--gray-600)', fontSize: '0.9rem', lineHeight: 1.7 }}>
+                        {typeof job.requirements === 'string' ? (
+                          <p>{job.requirements}</p>
+                        ) : (
+                          <PortableText value={job.requirements} />
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Apply */}
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <Link href="/job-application" className="btn btn-primary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
+                      הגשת מועמדות
+                    </Link>
+                    {job.contactEmail && (
+                      <a href={`mailto:${job.contactEmail}?subject=מועמדות: ${job.title}`} className="btn btn-secondary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
+                        <i className="fas fa-envelope" /> שלח CV
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '60px 0' }}>
+              <i className="fas fa-briefcase" style={{ fontSize: '3rem', color: 'var(--gray-300)', marginBottom: 16, display: 'block' }} />
+              <h3 style={{ color: 'var(--gray-500)', fontWeight: 500 }}>אין משרות פתוחות כרגע</h3>
+              <p style={{ color: 'var(--gray-400)' }}>אנחנו תמיד שמחים לקבל קורות חיים</p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Job listings */}
-      <section className="py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-container mx-auto px-4 lg:px-8">
-          {jobs.length > 0 ? (
-            <>
-              <h2 className="text-2xl lg:text-3xl font-bold text-wdi-primary mb-8 text-center">
-                משרות פתוחות
-              </h2>
-
-              <ul className="space-y-6 max-w-3xl mx-auto">
-                {jobs.map((job: any) => (
-                  <li key={job._id}>
-                    <article className="bg-white rounded-xl shadow-wdi-md p-6 lg:p-8 hover:shadow-wdi-lg transition-shadow">
-                      {/* Header */}
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                        <h3 className="text-xl font-bold text-wdi-primary">
-                          {job.title}
-                        </h3>
-                        {job.type && (
-                          <span className="inline-block bg-wdi-secondary/10 text-wdi-secondary px-3 py-1 rounded-full text-sm font-medium shrink-0">
-                            {TYPE_LABELS[job.type] ?? job.type}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Meta badges */}
-                      <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-4">
-                        {job.department && (
-                          <span className="flex items-center gap-1.5">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                              />
-                            </svg>
-                            {job.department}
-                          </span>
-                        )}
-                        {job.location && (
-                          <span className="flex items-center gap-1.5">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                            </svg>
-                            {job.location}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Description */}
-                      {job.description && (
-                        <div className="text-gray-600 leading-relaxed mb-6 line-clamp-4">
-                          {Array.isArray(job.description) ? (
-                            <PortableText value={job.description} />
-                          ) : (
-                            <p>{job.description}</p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Requirements */}
-                      {job.requirements && (
-                        <div className="mb-6">
-                          <h4 className="text-sm font-bold text-gray-700 mb-2">
-                            דרישות התפקיד:
-                          </h4>
-                          <div className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                            {Array.isArray(job.requirements) ? (
-                              <PortableText value={job.requirements} />
-                            ) : (
-                              <p>{job.requirements}</p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* CTA */}
-                      <Link
-                        href="/job-application"
-                        className="inline-block bg-wdi-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-wdi-primary-light transition-colors"
-                      >
-                        הגשת מועמדות
-                      </Link>
-                    </article>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <div className="text-center py-16 max-w-xl mx-auto">
-              <div className="bg-white rounded-xl shadow-wdi-md p-10">
-                <svg
-                  className="w-16 h-16 text-gray-300 mx-auto mb-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M21 13.255A23.193 23.193 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                <h2 className="text-xl font-bold text-wdi-primary mb-3">
-                  אין משרות פתוחות כרגע
-                </h2>
-                <p className="text-gray-500 leading-relaxed">
-                  כרגע אין משרות זמינות, אך אנחנו תמיד שמחים לשמוע מאנשי מקצוע
-                  מוכשרים. שלחו קורות חיים ל-
-                  <a
-                    href="mailto:careers@wdi-israel.co.il"
-                    className="text-wdi-primary hover:text-wdi-primary-light font-medium transition-colors"
-                  >
-                    careers@wdi-israel.co.il
-                  </a>
-                </p>
-              </div>
-            </div>
-          )}
+      {/* CTA */}
+      <section className="cta-section">
+        <div className="container">
+          <h2>לא מצאתם משרה מתאימה?</h2>
+          <p>שלחו לנו קורות חיים ונחזור אליכם</p>
+          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
         </div>
       </section>
     </>

@@ -225,7 +225,10 @@ export async function getActiveContentLibraryItems() {
 export async function getHeroSettings() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "heroSettings"][0]`,
+      `*[_type == "heroSettings"][0]{
+        ...,
+        "videoFileUrl": videoUrl.asset->url
+      }`,
     );
   } catch (err) {
     console.error('[ssr]', err);

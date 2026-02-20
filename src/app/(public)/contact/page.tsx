@@ -1,135 +1,81 @@
 /**
- * Contact page — /contact
- * Server component with embedded client-side ContactForm.
- * Includes LocalBusinessJsonLd for structured data.
+ * Contact page — ORIGINAL_DESIGN_SPEC §11, DOC-070 §3.13
+ * PageHeader, two-column: contact form + info sidebar with map.
  */
 import type { Metadata } from 'next';
+import { getSiteSettings } from '@/lib/data-fetchers';
+import { PageHeader } from '@/components/public/PageHeader';
 import { ContactForm } from '@/components/public/ContactForm';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
-  title: 'צור קשר | WDI',
-  description:
-    'צרו קשר עם WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. נשמח לשמוע מכם ולסייע בפרויקט הבא שלכם.',
+  title: 'צור קשר',
+  description: 'צור קשר עם WDI — ניהול פרויקטים, פיקוח וייעוץ הנדסי',
   alternates: { canonical: '/contact' },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+
   return (
     <>
-      <LocalBusinessJsonLd />
+      <LocalBusinessJsonLd settings={settings} />
+      <PageHeader title="צור קשר" subtitle="נשמח לשמוע מכם" />
 
-      <section className="py-16 lg:py-24" dir="rtl">
-        <div className="max-w-container mx-auto px-4 lg:px-8">
-          {/* Page heading */}
-          <header className="mb-12 text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-wdi-primary mb-4">
-              צור קשר
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              נשמח לשמוע מכם. מלאו את הטופס ונחזור אליכם בהקדם האפשרי.
-            </p>
-          </header>
-
-          {/* Two-column layout: form (right in RTL) + contact info (left in RTL) */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
-            {/* Form — right side (RTL) — takes 3 of 5 columns */}
-            <div className="lg:col-span-3">
-              <div className="rounded-2xl bg-white border border-gray-200 shadow-wdi-sm p-6 sm:p-8">
-                <h2 className="text-2xl font-bold text-wdi-primary mb-6">
-                  שלחו לנו פנייה
-                </h2>
-                <ContactForm />
-              </div>
+      <section className="section">
+        <div className="container">
+          <div className="contact-grid">
+            {/* Contact Form */}
+            <div className="contact-form-card animate-on-scroll">
+              <ContactForm />
             </div>
 
-            {/* Contact info — left side (RTL) — takes 2 of 5 columns */}
-            <aside className="lg:col-span-2">
-              <div className="space-y-8">
-                {/* Office info */}
-                <div className="rounded-2xl bg-gray-50 border border-gray-200 p-6">
-                  <h2 className="text-xl font-bold text-wdi-primary mb-5">
-                    פרטי התקשרות
-                  </h2>
-                  <dl className="space-y-4">
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500 mb-1">טלפון</dt>
-                      <dd>
-                        <a
-                          href="tel:+972-3-000-0000"
-                          className="text-wdi-primary font-medium hover:text-wdi-primary-light transition"
-                          dir="ltr"
-                        >
-                          03-000-0000
-                        </a>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500 mb-1">אימייל</dt>
-                      <dd>
-                        <a
-                          href="mailto:info@wdi-israel.co.il"
-                          className="text-wdi-primary font-medium hover:text-wdi-primary-light transition"
-                          dir="ltr"
-                        >
-                          info@wdi-israel.co.il
-                        </a>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500 mb-1">כתובת</dt>
-                      <dd className="text-gray-700">
-                        ישראל
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
+            {/* Contact Info */}
+            <div className="animate-on-scroll">
+              <h3 style={{ marginBottom: 24 }}>פרטי התקשרות</h3>
+              {settings?.phone && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                  <i className="fas fa-phone" style={{ color: 'var(--secondary)', width: 20, textAlign: 'center' }} />
+                  <a href={`tel:${settings.phone}`} dir="ltr" style={{ color: 'var(--gray-700)' }}>{settings.phone}</a>
+                </p>
+              )}
+              {settings?.email && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                  <i className="fas fa-envelope" style={{ color: 'var(--secondary)', width: 20, textAlign: 'center' }} />
+                  <a href={`mailto:${settings.email}`} dir="ltr" style={{ color: 'var(--gray-700)' }}>{settings.email}</a>
+                </p>
+              )}
+              {settings?.address && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                  <i className="fas fa-map-marker-alt" style={{ color: 'var(--secondary)', width: 20, textAlign: 'center' }} />
+                  <span>{settings.address}</span>
+                </p>
+              )}
 
-                {/* Working hours */}
-                <div className="rounded-2xl bg-gray-50 border border-gray-200 p-6">
-                  <h2 className="text-xl font-bold text-wdi-primary mb-5">
-                    שעות פעילות
-                  </h2>
-                  <dl className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <dt className="text-gray-600">ראשון - חמישי</dt>
-                      <dd className="font-medium text-gray-800" dir="ltr">08:00 - 17:00</dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-gray-600">שישי</dt>
-                      <dd className="font-medium text-gray-800" dir="ltr">08:00 - 13:00</dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-gray-600">שבת</dt>
-                      <dd className="font-medium text-gray-800">סגור</dd>
-                    </div>
-                  </dl>
-                </div>
+              {/* Google Maps embed */}
+              {settings?.googleMapsEmbed && (
+                <div
+                  style={{ marginTop: 24, borderRadius: 12, overflow: 'hidden', height: 300 }}
+                  dangerouslySetInnerHTML={{ __html: settings.googleMapsEmbed }}
+                />
+              )}
 
-                {/* Quick info */}
-                <div className="rounded-2xl bg-wdi-primary text-white p-6">
-                  <h2 className="text-xl font-bold mb-4">למה WDI?</h2>
-                  <ul className="space-y-3 text-sm text-white/85">
-                    <li className="flex items-start gap-2">
-                      <span className="text-wdi-secondary mt-0.5" aria-hidden="true">&#10003;</span>
-                      ניסיון של למעלה מעשור בניהול פרויקטים
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-wdi-secondary mt-0.5" aria-hidden="true">&#10003;</span>
-                      צוות מהנדסים מנוסה ומקצועי
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-wdi-secondary mt-0.5" aria-hidden="true">&#10003;</span>
-                      ליווי מקצה לקצה — מתכנון ועד מסירה
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-wdi-secondary mt-0.5" aria-hidden="true">&#10003;</span>
-                      גישה בוטיקית ויחס אישי לכל לקוח
-                    </li>
-                  </ul>
-                </div>
+              {/* Social links */}
+              <div className="social-links" style={{ marginTop: 24 }}>
+                {settings?.socialLinks?.linkedin && (
+                  <a href={settings.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ background: 'var(--primary)', color: 'white' }}>
+                    <i className="fab fa-linkedin-in" />
+                  </a>
+                )}
+                {settings?.socialLinks?.facebook && (
+                  <a href={settings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ background: 'var(--primary)', color: 'white' }}>
+                    <i className="fab fa-facebook-f" />
+                  </a>
+                )}
               </div>
-            </aside>
+            </div>
           </div>
         </div>
       </section>
