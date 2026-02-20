@@ -38,6 +38,13 @@ export const serviceSchema = {
       type: 'array' as const,
       of: [{ type: 'block' as const }],
     },
+    {
+      name: 'howWdiDoesIt',
+      title: 'איך WDI עושה את זה?',
+      type: 'array' as const,
+      of: [{ type: 'string' as const }],
+    },
+    { name: 'ctaText', title: 'טקסט כפתור CTA', type: 'string' as const },
     { name: 'image', title: 'תמונה', type: 'image' as const, options: { hotspot: true } },
     { name: 'order', title: 'סדר', type: 'number' as const, validation: (Rule: { required: () => unknown }) => Rule.required() },
     { name: 'isActive', title: 'פעיל', type: 'boolean' as const, initialValue: true },

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw, Trash2 } from 'lucide-react';
 import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
@@ -12,15 +12,19 @@ import ImageUpload from '../../ImageUpload';
 import RichTextEditor from '../../RichTextEditor';
 
 interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
+interface Highlight { _key?: string; title: string; description?: string }
 interface Service {
   _id: string; name: string; slug: { current: string } | string; description: string;
-  tagline?: string; icon?: string; image?: SanityImage | null; highlights?: { title: string; description?: string }[];
+  tagline?: string; icon?: string; image?: SanityImage | null; highlights?: Highlight[];
+  howWdiDoesIt?: string[]; ctaText?: string;
   detailContent?: unknown[]; isActive: boolean; order: number; updatedAt: string;
 }
 type Filter = 'all' | 'active' | 'hidden';
 
+function genKey() { return Math.random().toString(36).slice(2, 10); }
+
 const empty = (): Partial<Service> & { slug: string } => ({
-  name: '', slug: '', description: '', tagline: '', icon: '', highlights: [], isActive: true, order: 0,
+  name: '', slug: '', description: '', tagline: '', icon: '', highlights: [], howWdiDoesIt: [], ctaText: 'צרו איתנו קשר', isActive: true, order: 0,
 });
 
 export function ServicesTab() {
@@ -94,7 +98,7 @@ export function ServicesTab() {
             <button key={s._id} onClick={() => openEdit(s)} className="w-full bg-white rounded-lg border border-gray-200 p-4 text-right hover:border-wdi-primary/30 hover:shadow-wdi-sm transition flex items-center justify-between" type="button">
               <div><p className="font-semibold text-gray-900">{s.name}</p><p className="text-sm text-gray-500">{s.tagline}</p></div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-400">#{s.order}</span>
+                <span className="text-xs text-gray-400">{slugStr(s) || `#${s.order}`}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{s.isActive ? 'פעיל' : 'מוסתר'}</span>
               </div>
             </button>
@@ -114,9 +118,44 @@ export function ServicesTab() {
           <div><label className="block text-sm font-medium text-gray-700 mb-1">Slug *</label><input type="text" value={form.slug ?? ''} onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /><FieldError error={mutErr?.fieldErrors?.slug} /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תת-כותרת</label><input type="text" value={form.tagline ?? ''} onChange={(e) => setForm((p) => ({ ...p, tagline: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תיאור *</label><textarea value={form.description ?? ''} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /><FieldError error={mutErr?.fieldErrors?.description} /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">אייקון</label><input type="text" value={form.icon ?? ''} onChange={(e) => setForm((p) => ({ ...p, icon: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">אייקון</label><input type="text" value={form.icon ?? ''} onChange={(e) => setForm((p) => ({ ...p, icon: e.target.value }))} placeholder="לדוגמא: fas fa-hard-hat" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /><p className="mt-1 text-xs text-gray-400">שם אייקון מ-Font Awesome</p></div>
           <ImageUpload label="תמונה" value={(form as Record<string, unknown>).image as SanityImage | null ?? null} onChange={(v) => setForm((p) => ({ ...p, image: v } as typeof p))} />
           <RichTextEditor label="תוכן מפורט" value={(form as Record<string, unknown>).detailContent as unknown[] ?? null} onChange={(v) => setForm((p) => ({ ...p, detailContent: v } as typeof p))} />
+
+          {/* highlights[] — עקרונות */}
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-semibold text-gray-800">עקרונות</label>
+              <button onClick={() => setForm((p) => ({ ...p, highlights: [...(p.highlights || []), { _key: genKey(), title: '', description: '' }] } as typeof p))} className="text-sm text-wdi-primary hover:underline flex items-center gap-1" type="button"><Plus size={14} />הוסף</button>
+            </div>
+            {(form.highlights || []).map((h, i) => (
+              <div key={h._key || i} className="bg-gray-50 rounded-lg p-3 space-y-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <input type="text" value={h.title} onChange={(e) => { const arr = [...(form.highlights || [])]; arr[i] = { ...arr[i], title: e.target.value } as Highlight; setForm((p) => ({ ...p, highlights: arr } as typeof p)); }} placeholder="כותרת" className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm" />
+                  <button onClick={() => setForm((p) => ({ ...p, highlights: (p.highlights || []).filter((_, j) => j !== i) } as typeof p))} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
+                </div>
+                <textarea value={h.description ?? ''} onChange={(e) => { const arr = [...(form.highlights || [])]; arr[i] = { ...arr[i], description: e.target.value } as Highlight; setForm((p) => ({ ...p, highlights: arr } as typeof p)); }} placeholder="תיאור" rows={2} className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm" />
+              </div>
+            ))}
+          </div>
+
+          {/* howWdiDoesIt[] */}
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-semibold text-gray-800">איך WDI עושה את זה?</label>
+              <button onClick={() => setForm((p) => ({ ...p, howWdiDoesIt: [...(p.howWdiDoesIt || []), ''] } as typeof p))} className="text-sm text-wdi-primary hover:underline flex items-center gap-1" type="button"><Plus size={14} />הוסף</button>
+            </div>
+            {(form.howWdiDoesIt || []).map((item, i) => (
+              <div key={i} className="flex items-center gap-2 mb-2">
+                <input type="text" value={item} onChange={(e) => { const arr = [...(form.howWdiDoesIt || [])]; arr[i] = e.target.value; setForm((p) => ({ ...p, howWdiDoesIt: arr } as typeof p)); }} className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm" />
+                <button onClick={() => setForm((p) => ({ ...p, howWdiDoesIt: (p.howWdiDoesIt || []).filter((_, j) => j !== i) } as typeof p))} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
+              </div>
+            ))}
+          </div>
+
+          {/* ctaText */}
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">טקסט כפתור CTA</label><input type="text" value={form.ctaText ?? 'צרו איתנו קשר'} onChange={(e) => setForm((p) => ({ ...p, ctaText: e.target.value } as typeof p))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+
           <div className="flex items-center justify-between"><label className="text-sm font-medium text-gray-700">פעיל</label>
             <button onClick={() => setForm((p) => ({ ...p, isActive: !p.isActive }))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${form.isActive ? 'bg-wdi-primary' : 'bg-gray-300'}`} type="button" style={{ direction: 'ltr' }}><span className={`inline-block h-4 w-4 rounded-full bg-white transition ${form.isActive ? 'translate-x-6' : 'translate-x-1'}`} /></button>
           </div>
