@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   title: 'פרויקטים | WDI',
   description:
     'פרויקטים נבחרים של WDI — ניהול פרויקטים, פיקוח וייעוץ הנדסי במגזרים ביטחוניים, מסחריים, תעשייתיים ועוד.',
+  alternates: { canonical: '/projects' },
 };
 
 export default async function ProjectsPage({

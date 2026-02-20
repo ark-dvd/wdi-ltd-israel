@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: 'אודות | WDI',
   description:
     'WDI היא חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי שנוסדה ב-2013. מובילים בתחומי הביטחון, המסחר, התעשייה, התשתיות, המגורים והציבור.',
+  alternates: { canonical: '/about' },
 };
 
 const SECTORS = [

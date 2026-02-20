@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'מדיניות פרטיות',
   description: 'מדיניות הפרטיות של WDI',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {

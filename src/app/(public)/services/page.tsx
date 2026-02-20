@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: 'שירותים | WDI',
   description:
     'מגוון שירותי ניהול פרויקטים, פיקוח וייעוץ הנדסי של WDI — חברת בוטיק מובילה בישראל.',
+  alternates: { canonical: '/services' },
 };
 
 export default async function ServicesPage() {

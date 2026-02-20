@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'תנאי שימוש',
   description: 'תנאי שימוש באתר WDI',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'הצטרפות למאגר ספקים | WDI',
   description:
     'הצטרפו למאגר הספקים של WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. אנו מחפשים ספקים ונותני שירותים מקצועיים.',
+  alternates: { canonical: '/join-us' },
 };
 
 const BENEFITS = [

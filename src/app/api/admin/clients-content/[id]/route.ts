@@ -1,4 +1,5 @@
 /**
+ * GET /api/admin/clients-content/:id — Fetch single client content
  * PUT /api/admin/clients-content/:id — Update client content
  * DELETE /api/admin/clients-content/:id — Delete client content
  * DOC-040 §2.9.4
@@ -9,6 +10,18 @@ import { sanityClient, sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, notFoundError, serverError } from '@/lib/api/response';
 import { checkConcurrency } from '@/lib/api/concurrency';
 import { clientContentUpdateSchema } from '@/lib/validation/input-schemas';
+
+export const GET = withAuth(async (_request: NextRequest, { params }: AuthContext<{ id: string }>) => {
+  try {
+    const { id } = params;
+    const doc = await sanityClient.fetch(`*[_type == "clientContent" && _id == $id][0]`, { id });
+    if (!doc) return notFoundError();
+    return successResponse(doc);
+  } catch (err) {
+    console.error('[api]', err);
+    return serverError();
+  }
+});
 
 export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext<{ id: string }>) => {
   try {

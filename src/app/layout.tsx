@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Assistant } from 'next/font/google';
+import { Assistant, Heebo } from 'next/font/google';
 import './globals.css';
 
 const assistant = Assistant({
@@ -7,6 +7,13 @@ const assistant = Assistant({
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-assistant',
+});
+
+const heebo = Heebo({
+  subsets: ['hebrew'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-heebo',
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
@@ -31,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="he" dir="rtl" className={assistant.variable}>
+    <html lang="he" dir="rtl" className={`${assistant.variable} ${heebo.variable}`}>
       <body className="font-assistant antialiased">{children}</body>
     </html>
   );

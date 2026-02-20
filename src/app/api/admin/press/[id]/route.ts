@@ -1,4 +1,5 @@
 /**
+ * GET /api/admin/press/:id — Fetch single press item
  * PUT /api/admin/press/:id — Update press item
  * DELETE /api/admin/press/:id — Delete press item
  * DOC-040 §2.9.6
@@ -9,6 +10,18 @@ import { sanityClient, sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, notFoundError, serverError } from '@/lib/api/response';
 import { checkConcurrency } from '@/lib/api/concurrency';
 import { pressUpdateSchema } from '@/lib/validation/input-schemas';
+
+export const GET = withAuth(async (_request: NextRequest, { params }: AuthContext<{ id: string }>) => {
+  try {
+    const { id } = params;
+    const doc = await sanityClient.fetch(`*[_type == "pressItem" && _id == $id][0]`, { id });
+    if (!doc) return notFoundError();
+    return successResponse(doc);
+  } catch (err) {
+    console.error('[api]', err);
+    return serverError();
+  }
+});
 
 export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext<{ id: string }>) => {
   try {

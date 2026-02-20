@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'צור קשר | WDI',
   description:
     'צרו קשר עם WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. נשמח לשמוע מכם ולסייע בפרויקט הבא שלכם.',
+  alternates: { canonical: '/contact' },
 };
 
 export default function ContactPage() {

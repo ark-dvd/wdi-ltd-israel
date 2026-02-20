@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'הצהרת נגישות',
   description: 'הצהרת נגישות אתר WDI',
+  alternates: { canonical: '/accessibility' },
 };
 
 export default function AccessibilityPage() {

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'חדשנות וטכנולוגיה | WDI',
   description:
     'WDI מאמצת טכנולוגיות מתקדמות בתחום ניהול פרויקטי בנייה — BIM, ניהול דיגיטלי, קיימות ובנייה חכמה.',
+  alternates: { canonical: '/innovation' },
 };
 
 const FALLBACK_SECTIONS = [

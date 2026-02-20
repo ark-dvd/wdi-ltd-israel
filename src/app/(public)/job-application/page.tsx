@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: 'הגשת מועמדות | WDI',
   description:
     'הגישו מועמדות למשרה ב-WDI — חברת בוטיק מובילה לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל.',
+  alternates: { canonical: '/job-application' },
 };
 
 export default function JobApplicationPage() {

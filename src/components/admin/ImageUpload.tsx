@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
 interface SanityImageValue {
@@ -77,10 +78,13 @@ export default function ImageUpload({ label, value, onChange }: ImageUploadProps
 
       {imageUrl ? (
         <div className="relative inline-block">
-          <img
+          <Image
             src={imageUrl}
             alt={label}
+            width={128}
+            height={128}
             className="h-32 w-32 object-cover rounded border border-gray-200"
+            unoptimized
           />
           <button
             type="button"

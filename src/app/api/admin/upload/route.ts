@@ -5,15 +5,25 @@
  */
 export const runtime = 'nodejs';
 
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/auth/guard';
 import { sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, serverError } from '@/lib/api/response';
+import { uploadRateLimit, getIdentifier } from '@/lib/rate-limit';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-export const POST = withAuth(async (request: NextRequest) => {
+export const POST = withAuth(async (request: NextRequest, { session }) => {
   try {
+    // Rate limit upload requests (20/min per user)
+    const rl = await uploadRateLimit.limit(getIdentifier(request, session.user.email));
+    if (!rl.success) {
+      return NextResponse.json(
+        { category: 'validation', code: 'RATE_LIMITED', message: 'יותר מדי העלאות. נסה שוב בעוד דקה.', retryable: true },
+        { status: 429 },
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file');
 
