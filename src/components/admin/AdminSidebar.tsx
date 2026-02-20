@@ -2,19 +2,18 @@
 
 /**
  * Desktop sidebar — DOC-030 §3.1
- * CRM section first (primary), CMS section second
+ * CRM section DEFERRED per CANONICAL-AMENDMENT-001.
+ * Intake section added per AMENDMENT-001.
  */
 import {
   Users, FolderOpen, Briefcase, Building, Newspaper, BriefcaseBusiness,
-  Library, Play, Settings, BarChart3, UserPlus, UserCheck, Handshake,
-  Columns3, SlidersHorizontal, Search, LogOut, Info, ClipboardList, type LucideIcon,
+  Library, Play, Settings, LogOut, Info, ClipboardList, Inbox, Lightbulb, type LucideIcon,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
 interface AdminSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  newLeadCount: number;
   userEmail: string;
 }
 
@@ -24,13 +23,8 @@ interface NavItem {
   tab: string;
 }
 
-const CRM_ITEMS: NavItem[] = [
-  { label: 'לוח בקרה', icon: BarChart3, tab: 'dashboard' },
-  { label: 'לידים', icon: UserPlus, tab: 'leads' },
-  { label: 'לקוחות CRM', icon: UserCheck, tab: 'clients-crm' },
-  { label: 'התקשרויות', icon: Handshake, tab: 'engagements' },
-  { label: 'צינור מכירות', icon: Columns3, tab: 'pipeline' },
-  { label: 'הגדרות CRM', icon: SlidersHorizontal, tab: 'crm-settings' },
+const INTAKE_ITEMS: NavItem[] = [
+  { label: 'תיבת פניות', icon: Inbox, tab: 'intake' },
 ];
 
 const CMS_ITEMS: NavItem[] = [
@@ -43,11 +37,47 @@ const CMS_ITEMS: NavItem[] = [
   { label: 'מאגר מידע', icon: Library, tab: 'content-library' },
   { label: 'Hero', icon: Play, tab: 'hero' },
   { label: 'עמוד אודות', icon: Info, tab: 'about-page' },
+  { label: 'עמוד חדשנות', icon: Lightbulb, tab: 'innovation-page' },
   { label: 'טופס ספקים', icon: ClipboardList, tab: 'supplier-form-settings' },
   { label: 'הגדרות אתר', icon: Settings, tab: 'site-settings' },
 ];
 
-export function AdminSidebar({ activeTab, onTabChange, newLeadCount, userEmail }: AdminSidebarProps) {
+function NavSection({ title, items, activeTab, onTabChange }: {
+  title: string;
+  items: NavItem[];
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}) {
+  return (
+    <>
+      <div className="px-4 mb-1">
+        <span className="text-xs font-semibold text-gray-400 tracking-wider">{title}</span>
+      </div>
+      <ul className="space-y-0.5 px-2 mb-6">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.tab;
+          return (
+            <li key={item.tab}>
+              <button
+                onClick={() => onTabChange(item.tab)}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
+                  isActive ? 'bg-wdi-primary text-white' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                type="button"
+              >
+                <Icon size={18} />
+                <span className="flex-1 text-right">{item.label}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
+
+export function AdminSidebar({ activeTab, onTabChange, userEmail }: AdminSidebarProps) {
   return (
     <aside className="hidden lg:flex lg:flex-col w-64 bg-white border-l border-gray-200 h-screen sticky top-0" dir="rtl">
       {/* Logo */}
@@ -58,73 +88,12 @@ export function AdminSidebar({ activeTab, onTabChange, newLeadCount, userEmail }
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
-        {/* CRM Section */}
-        <div className="px-4 mb-1">
-          <span className="text-xs font-semibold text-gray-400 tracking-wider">ניהול לקוחות</span>
-        </div>
-        <ul className="space-y-0.5 px-2 mb-6">
-          {CRM_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.tab;
-            const badge = item.tab === 'leads' ? newLeadCount : 0;
-            return (
-              <li key={item.tab}>
-                <button
-                  onClick={() => onTabChange(item.tab)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
-                    isActive ? 'bg-wdi-primary text-white' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                  type="button"
-                >
-                  <Icon size={18} />
-                  <span className="flex-1 text-right">{item.label}</span>
-                  {badge > 0 && (
-                    <span className="bg-red-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
-                      {badge}
-                    </span>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* CMS Section */}
-        <div className="px-4 mb-1">
-          <span className="text-xs font-semibold text-gray-400 tracking-wider">ניהול תוכן</span>
-        </div>
-        <ul className="space-y-0.5 px-2">
-          {CMS_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.tab;
-            return (
-              <li key={item.tab}>
-                <button
-                  onClick={() => onTabChange(item.tab)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
-                    isActive ? 'bg-wdi-primary text-white' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                  type="button"
-                >
-                  <Icon size={18} />
-                  <span className="flex-1 text-right">{item.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <NavSection title="פניות נכנסות" items={INTAKE_ITEMS} activeTab={activeTab} onTabChange={onTabChange} />
+        <NavSection title="ניהול תוכן" items={CMS_ITEMS} activeTab={activeTab} onTabChange={onTabChange} />
       </nav>
 
-      {/* Search + Logout */}
+      {/* Logout */}
       <div className="border-t border-gray-200 p-3 space-y-2">
-        <button
-          onClick={() => onTabChange('crm-search')}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
-          type="button"
-        >
-          <Search size={18} />
-          <span>חיפוש CRM</span>
-        </button>
         <button
           onClick={() => signOut({ callbackUrl: '/admin/login' })}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition"

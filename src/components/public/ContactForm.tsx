@@ -2,7 +2,8 @@
 
 /**
  * Contact form — 'use client' component for /contact page.
- * Submits to POST /api/public/leads with JSON body.
+ * Submits to POST /api/public/intake with submissionType 'general'.
+ * CANONICAL-AMENDMENT-001
  */
 import { useState, type FormEvent } from 'react';
 
@@ -54,18 +55,19 @@ export function ContactForm() {
       const form = e.currentTarget;
       const honeypot = (form.elements.namedItem('_honeypot') as HTMLInputElement)?.value;
 
-      const res = await fetch('/api/public/leads', {
+      const res = await fetch('/api/public/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || undefined,
-          company: formData.company || undefined,
+          submissionType: 'general',
+          contactName: formData.name,
+          contactEmail: formData.email,
+          contactPhone: formData.phone || undefined,
+          organization: formData.company || undefined,
           message: formData.message,
-          servicesInterested:
+          subject:
             formData.servicesInterested.length > 0
-              ? formData.servicesInterested
+              ? formData.servicesInterested.join(', ')
               : undefined,
           _honeypot: honeypot || undefined,
         }),

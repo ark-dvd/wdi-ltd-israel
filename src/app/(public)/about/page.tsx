@@ -1,9 +1,12 @@
 /**
  * About page — /about
  * Server component: company story, facts, sectors, values, CTA.
+ * Fetches CMS data from aboutPage singleton; falls back to hardcoded Hebrew content.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getAboutPage } from '@/lib/data-fetchers';
+import { PortableText } from '@/components/public/PortableText';
 
 export const metadata: Metadata = {
   title: 'אודות | WDI',
@@ -44,7 +47,7 @@ const SECTORS = [
   },
 ];
 
-const VALUES = [
+const FALLBACK_VALUES = [
   {
     title: 'מקצועיות',
     description: 'צוות מהנדסים בעלי ניסיון רב ומומחיות ייחודית בתחומי הבנייה והפיקוח.',
@@ -63,7 +66,21 @@ const VALUES = [
   },
 ];
 
-export default function AboutPage() {
+const FALLBACK_STATS = [
+  { label: 'שנת הקמה', value: '2013' },
+  { label: 'סוג חברה', value: 'בוטיק' },
+  { label: 'סקטורים', value: '6' },
+  { label: 'תחומי שירות', value: 'ניהול, פיקוח, ייעוץ' },
+];
+
+export default async function AboutPage() {
+  const data = await getAboutPage();
+
+  const stats = data?.stats?.length ? data.stats : FALLBACK_STATS;
+  const values = data?.values?.length ? data.values : FALLBACK_VALUES;
+  const hasStoryContent = data?.storyContent && Array.isArray(data.storyContent) && data.storyContent.length > 0;
+  const vision = data?.vision;
+
   return (
     <article dir="rtl">
       {/* Hero section */}
@@ -74,9 +91,8 @@ export default function AboutPage() {
               אודות WDI
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
-              WDI היא חברת בוטיק מובילה בישראל בתחומי ניהול פרויקטי בנייה, פיקוח
-              הנדסי וייעוץ. מאז הקמתה ב-2013, החברה מציעה שירותים ייחודיים ומקצועיים
-              ללקוחות ממגוון מגזרים — מפרויקטים ביטחוניים ועד מתחמי מגורים יוקרתיים.
+              {vision ||
+                'WDI היא חברת בוטיק מובילה בישראל בתחומי ניהול פרויקטי בנייה, פיקוח הנדסי וייעוץ. מאז הקמתה ב-2013, החברה מציעה שירותים ייחודיים ומקצועיים ללקוחות ממגוון מגזרים — מפרויקטים ביטחוניים ועד מתחמי מגורים יוקרתיים.'}
             </p>
           </header>
         </div>
@@ -88,45 +104,41 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-bold text-wdi-primary mb-6">הסיפור שלנו</h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
-                <p>
-                  WDI נוסדה מתוך חזון ברור: לשנות את הדרך שבה מנוהלים פרויקטי בנייה בישראל.
-                  מייסדי החברה, מהנדסים בעלי ניסיון של עשרות שנים בתעשיית הבנייה, זיהו את
-                  הצורך בגישה בוטיקית ומקצועית שמעמידה את הלקוח במרכז.
-                </p>
-                <p>
-                  לאורך למעלה מעשור של פעילות, WDI צברה מוניטין של מצוינות מקצועית ואמינות.
-                  החברה ניהלה בהצלחה עשרות פרויקטים מורכבים בסקטורים מגוונים — ביטחון, מסחר,
-                  תעשייה, תשתיות, מגורים ומבני ציבור.
-                </p>
-                <p>
-                  הגישה הייחודית שלנו משלבת מקצוענות הנדסית עם טכנולוגיות חדשניות,
-                  ומאפשרת לנו לספק ללקוחות שירות ברמה הגבוהה ביותר — מהתכנון הראשוני
-                  ועד מסירת המפתח.
-                </p>
-              </div>
+              {hasStoryContent ? (
+                <div className="space-y-4 text-gray-600 leading-relaxed">
+                  <PortableText value={data.storyContent} />
+                </div>
+              ) : (
+                <div className="space-y-4 text-gray-600 leading-relaxed">
+                  <p>
+                    WDI נוסדה מתוך חזון ברור: לשנות את הדרך שבה מנוהלים פרויקטי בנייה בישראל.
+                    מייסדי החברה, מהנדסים בעלי ניסיון של עשרות שנים בתעשיית הבנייה, זיהו את
+                    הצורך בגישה בוטיקית ומקצועית שמעמידה את הלקוח במרכז.
+                  </p>
+                  <p>
+                    לאורך למעלה מעשור של פעילות, WDI צברה מוניטין של מצוינות מקצועית ואמינות.
+                    החברה ניהלה בהצלחה עשרות פרויקטים מורכבים בסקטורים מגוונים — ביטחון, מסחר,
+                    תעשייה, תשתיות, מגורים ומבני ציבור.
+                  </p>
+                  <p>
+                    הגישה הייחודית שלנו משלבת מקצוענות הנדסית עם טכנולוגיות חדשניות,
+                    ומאפשרת לנו לספק ללקוחות שירות ברמה הגבוהה ביותר — מהתכנון הראשוני
+                    ועד מסירת המפתח.
+                  </p>
+                </div>
+              )}
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 lg:p-10">
               <h3 className="text-xl font-bold text-wdi-primary mb-6">עובדות ונתונים</h3>
               <dl className="grid grid-cols-2 gap-6">
-                <div>
-                  <dt className="text-sm text-gray-500 mb-1">שנת הקמה</dt>
-                  <dd className="text-3xl font-bold text-wdi-primary">2013</dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500 mb-1">סוג חברה</dt>
-                  <dd className="text-lg font-bold text-wdi-primary">בוטיק</dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500 mb-1">סקטורים</dt>
-                  <dd className="text-3xl font-bold text-wdi-primary">6</dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500 mb-1">תחומי שירות</dt>
-                  <dd className="text-lg font-bold text-wdi-primary leading-tight">
-                    ניהול, פיקוח, ייעוץ
-                  </dd>
-                </div>
+                {stats.map((stat: { label: string; value: string }, i: number) => (
+                  <div key={stat.label || i}>
+                    <dt className="text-sm text-gray-500 mb-1">{stat.label}</dt>
+                    <dd className="text-lg font-bold text-wdi-primary leading-tight">
+                      {stat.value}
+                    </dd>
+                  </div>
+                ))}
               </dl>
             </div>
           </div>
@@ -216,8 +228,8 @@ export default function AboutPage() {
             העקרונות שמנחים אותנו בכל פרויקט ובכל אינטראקציה עם הלקוחות שלנו.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {VALUES.map((value) => (
-              <div key={value.title} className="text-center">
+            {values.map((value: { title: string; description?: string }, i: number) => (
+              <div key={value.title || i} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
                   <span className="text-wdi-secondary text-xl font-bold" aria-hidden="true">
                     &#10003;

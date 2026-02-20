@@ -461,6 +461,24 @@ export const aboutPageUpdateSchema = z.object({
   values: z.array(valueInput).optional(),
 });
 
+// ─── Innovation Page (singleton) ─────────────────────────────
+
+const innovationSectionInput = z.object({
+  title: z.string().min(1),
+  subtitle: z.string().optional(),
+  description: z.string().optional(),
+  features: z.array(z.string()).optional(),
+});
+
+export const innovationPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  headline: z.string().optional(),
+  introduction: z.string().optional(),
+  sections: z.array(innovationSectionInput).optional(),
+  visionTitle: z.string().optional(),
+  visionText: z.string().optional(),
+});
+
 // ─── Supplier Form Settings (singleton) ─────────────────────
 
 export const supplierFormSettingsUpdateSchema = z.object({
@@ -474,4 +492,34 @@ export const supplierFormSettingsUpdateSchema = z.object({
 
 export const crmSearchSchema = z.object({
   q: z.string().min(2),
+});
+
+// ─── Intake Submission (AMENDMENT-001) ──────────────────────
+
+const submissionTypeEnum = z.enum(['general', 'job_application', 'supplier_application']);
+const contactStatusEnum = z.enum(['not_contacted', 'contacted']);
+const relevanceEnum = z.enum(['not_assessed', 'high', 'medium', 'low']);
+
+/** Public intake form submission — validated server-side before Sanity create */
+export const intakePublicSchema = z.object({
+  submissionType: submissionTypeEnum,
+  contactName: z.string().min(1, 'שם הוא שדה חובה'),
+  contactEmail: z.string().email('כתובת אימייל לא תקינה'),
+  contactPhone: z.string().optional(),
+  organization: z.string().optional(),
+  subject: z.string().optional(),
+  message: z.string().optional(),
+  cvFileUrl: z.string().optional(),
+  positionAppliedFor: z.string().optional(),
+  supplierCategory: z.string().optional(),
+  supplierExperience: z.string().optional(),
+  _honeypot: z.string().max(0, 'Bot detected').optional(),
+});
+
+/** Admin triage PATCH — partial update of triage fields */
+export const intakeTriageSchema = z.object({
+  contactStatus: contactStatusEnum.optional(),
+  relevance: relevanceEnum.optional(),
+  outcome: z.string().optional(),
+  internalNotes: z.string().optional(),
 });

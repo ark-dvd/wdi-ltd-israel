@@ -1,10 +1,11 @@
 /**
- * All 17 Sanity schema definitions.
+ * All 18 Sanity schema definitions.
  *
  * CRM Entities (5): Lead, ClientCRM, Engagement, Activity, CrmSettings
- * Content Entities (12): Service, Project, TeamMember, ClientContent,
+ * Intake (1): IntakeSubmission (CANONICAL-AMENDMENT-001)
+ * Content Entities (13): Service, Project, TeamMember, ClientContent,
  *   Testimonial, PressItem, Job, ContentLibraryItem, HeroSettings, SiteSettings,
- *   AboutPage, SupplierFormSettings
+ *   AboutPage, InnovationPage, SupplierFormSettings
  */
 
 // CRM Entities
@@ -13,6 +14,9 @@ import { clientCrmSchema } from './client-crm';
 import { engagementSchema } from './engagement';
 import { activitySchema } from './activity';
 import { crmSettingsSchema } from './crm-settings';
+
+// Intake (AMENDMENT-001)
+import { intakeSubmissionSchema } from './intake-submission';
 
 // Content Entities
 import { serviceSchema } from './service';
@@ -26,6 +30,7 @@ import { contentLibraryItemSchema } from './content-library-item';
 import { heroSettingsSchema } from './hero-settings';
 import { siteSettingsSchema } from './site-settings';
 import { aboutPageSchema } from './about-page';
+import { innovationPageSchema } from './innovation-page';
 import { supplierFormSettingsSchema } from './supplier-form-settings';
 
 // Re-export everything
@@ -63,15 +68,26 @@ export { contentLibraryItemSchema } from './content-library-item';
 export { heroSettingsSchema, HERO_SETTINGS_ID } from './hero-settings';
 export { siteSettingsSchema, SITE_SETTINGS_ID } from './site-settings';
 export { aboutPageSchema, ABOUT_PAGE_ID } from './about-page';
+export { innovationPageSchema, INNOVATION_PAGE_ID } from './innovation-page';
 export { supplierFormSettingsSchema, SUPPLIER_FORM_SETTINGS_ID } from './supplier-form-settings';
 
-/** All schema objects for Sanity Studio configuration */
+export {
+  intakeSubmissionSchema,
+  SUBMISSION_TYPE, CONTACT_STATUS, RELEVANCE,
+  OUTCOME_GENERAL, OUTCOME_JOB, OUTCOME_SUPPLIER,
+  OUTCOME_BY_TYPE, SOURCE, isValidOutcome,
+} from './intake-submission';
+export type {
+  SubmissionType, ContactStatus, Relevance,
+  OutcomeGeneral, OutcomeJob, OutcomeSupplier, Source,
+} from './intake-submission';
+
+/** All schema objects for Sanity Studio configuration.
+ *  CRM schemas (lead, clientCrm, engagement, activity, crmSettings)
+ *  are DEFERRED per CANONICAL-AMENDMENT-001 and excluded from allSchemas.
+ *  They remain importable for future Phase 2+ work. */
 export const allSchemas = [
-  leadSchema,
-  clientCrmSchema,
-  engagementSchema,
-  activitySchema,
-  crmSettingsSchema,
+  intakeSubmissionSchema,
   serviceSchema,
   projectSchema,
   teamMemberSchema,
@@ -83,5 +99,6 @@ export const allSchemas = [
   heroSettingsSchema,
   siteSettingsSchema,
   aboutPageSchema,
+  innovationPageSchema,
   supplierFormSettingsSchema,
 ];

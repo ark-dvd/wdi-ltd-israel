@@ -1,10 +1,11 @@
 /**
  * Innovation page — /innovation
  * Server component: presentational content about WDI's innovative approach.
- * No Sanity type — content is static Hebrew text.
+ * Fetches CMS data from innovationPage singleton; falls back to hardcoded Hebrew content.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getInnovationPage } from '@/lib/data-fetchers';
 
 export const metadata: Metadata = {
   title: 'חדשנות וטכנולוגיה | WDI',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     'WDI מאמצת טכנולוגיות מתקדמות בתחום ניהול פרויקטי בנייה — BIM, ניהול דיגיטלי, קיימות ובנייה חכמה.',
 };
 
-const INNOVATION_SECTIONS = [
+const FALLBACK_SECTIONS = [
   {
     id: 'bim',
     title: 'טכנולוגיית BIM',
@@ -71,7 +72,30 @@ const INNOVATION_SECTIONS = [
   },
 ];
 
-export default function InnovationPage() {
+const FALLBACK_HEADLINE = 'חדשנות וטכנולוגיה';
+const FALLBACK_INTRODUCTION =
+  'WDI מובילה את תעשיית ניהול הפרויקטים בישראל באימוץ טכנולוגיות חדשניות. אנו משלבים כלים דיגיטליים מתקדמים, מתודולוגיות BIM, עקרונות בנייה ירוקה ופתרונות בנייה חכמה — כדי לספק ללקוחותינו את התוצאות הטובות ביותר.';
+const FALLBACK_VISION_TITLE = 'החזון שלנו';
+const FALLBACK_VISION_TEXT =
+  'אנו מאמינים שעתיד תעשיית הבנייה טמון בשילוב של טכנולוגיה, קיימות ומקצועיות. WDI פועלת ללא לאות כדי להיות בחזית החדשנות — ולהוביל את התעשייה לעבר סטנדרטים חדשים של יעילות, איכות ואחריות סביבתית.';
+
+interface CmsSection {
+  _key?: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  features?: string[];
+}
+
+export default async function InnovationPage() {
+  const data = await getInnovationPage();
+
+  const headline = data?.headline || FALLBACK_HEADLINE;
+  const introduction = data?.introduction || FALLBACK_INTRODUCTION;
+  const sections: CmsSection[] = data?.sections?.length ? data.sections : FALLBACK_SECTIONS;
+  const visionTitle = data?.visionTitle || FALLBACK_VISION_TITLE;
+  const visionText = data?.visionText || FALLBACK_VISION_TEXT;
+
   return (
     <article dir="rtl">
       {/* Hero */}
@@ -79,53 +103,57 @@ export default function InnovationPage() {
         <div className="max-w-container mx-auto px-4 lg:px-8">
           <header className="max-w-3xl">
             <h1 className="text-4xl lg:text-5xl font-bold text-wdi-primary mb-6">
-              חדשנות וטכנולוגיה
+              {headline}
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
-              WDI מובילה את תעשיית ניהול הפרויקטים בישראל באימוץ טכנולוגיות חדשניות.
-              אנו משלבים כלים דיגיטליים מתקדמים, מתודולוגיות BIM, עקרונות בנייה ירוקה
-              ופתרונות בנייה חכמה — כדי לספק ללקוחותינו את התוצאות הטובות ביותר.
+              {introduction}
             </p>
           </header>
         </div>
       </section>
 
       {/* Innovation sections */}
-      {INNOVATION_SECTIONS.map((section, index) => (
+      {sections.map((section, index) => (
         <section
-          key={section.id}
+          key={section._key || index}
           className={`py-16 lg:py-20 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
         >
           <div className="max-w-container mx-auto px-4 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
               <div>
-                <p className="text-sm font-medium text-wdi-secondary mb-2" dir="ltr">
-                  {section.subtitle}
-                </p>
+                {section.subtitle && (
+                  <p className="text-sm font-medium text-wdi-secondary mb-2" dir="ltr">
+                    {section.subtitle}
+                  </p>
+                )}
                 <h2 className="text-3xl font-bold text-wdi-primary mb-4">
                   {section.title}
                 </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  {section.description}
-                </p>
+                {section.description && (
+                  <p className="text-gray-600 leading-relaxed">
+                    {section.description}
+                  </p>
+                )}
               </div>
-              <div>
-                <ul className="space-y-3" role="list">
-                  {section.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <span
-                        className="flex-shrink-0 w-6 h-6 rounded-full bg-wdi-primary/10 flex items-center justify-center mt-0.5"
-                        aria-hidden="true"
-                      >
-                        <svg className="w-3.5 h-3.5 text-wdi-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </span>
-                      <span className="text-gray-700 leading-relaxed">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {section.features && section.features.length > 0 && (
+                <div>
+                  <ul className="space-y-3" role="list">
+                    {section.features.map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-start gap-3">
+                        <span
+                          className="flex-shrink-0 w-6 h-6 rounded-full bg-wdi-primary/10 flex items-center justify-center mt-0.5"
+                          aria-hidden="true"
+                        >
+                          <svg className="w-3.5 h-3.5 text-wdi-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        <span className="text-gray-700 leading-relaxed">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -134,11 +162,9 @@ export default function InnovationPage() {
       {/* Vision statement */}
       <section className="py-16 lg:py-20 bg-wdi-primary text-white">
         <div className="max-w-container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-6">החזון שלנו</h2>
+          <h2 className="text-3xl font-bold mb-6">{visionTitle}</h2>
           <p className="text-white/80 max-w-3xl mx-auto text-lg leading-relaxed mb-8">
-            אנו מאמינים שעתיד תעשיית הבנייה טמון בשילוב של טכנולוגיה, קיימות ומקצועיות.
-            WDI פועלת ללא לאות כדי להיות בחזית החדשנות — ולהוביל את התעשייה לעבר
-            סטנדרטים חדשים של יעילות, איכות ואחריות סביבתית.
+            {visionText}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

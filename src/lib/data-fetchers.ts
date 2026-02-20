@@ -265,3 +265,14 @@ export async function getSupplierFormSettings() {
     return null;
   }
 }
+
+export async function getInnovationPage() {
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "innovationPage"][0]`,
+    );
+  } catch (err) {
+    console.error('[ssr]', err);
+    return null;
+  }
+}

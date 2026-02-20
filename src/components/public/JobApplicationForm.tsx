@@ -2,16 +2,32 @@
 
 /**
  * Job application form — 'use client' component for /job-application page.
- * Uses Netlify Forms via public/__forms.html detection (plugin-nextjs v5).
+ * Submits to POST /api/public/intake with submissionType 'job_application'.
+ * CANONICAL-AMENDMENT-001
+ * NOTE: CV file upload via /api/admin/upload is deferred for v1.0.
+ *       Applicants are asked to email their CV separately.
  */
-import { useState, useRef, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  message: string;
+}
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 export function JobApplicationForm() {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    phone: '',
+    position: '',
+    message: '',
+  });
   const [status, setStatus] = useState<FormStatus>('idle');
-  const formRef = useRef<HTMLFormElement>(null);
-  const [fileName, setFileName] = useState<string>('');
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,17 +35,25 @@ export function JobApplicationForm() {
 
     try {
       const form = e.currentTarget;
-      const formData = new FormData(form);
+      const honeypot = (form.elements.namedItem('_honeypot') as HTMLInputElement)?.value;
 
-      const res = await fetch('/', {
+      const res = await fetch('/api/public/intake', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionType: 'job_application',
+          contactName: formData.name,
+          contactEmail: formData.email,
+          contactPhone: formData.phone || undefined,
+          positionAppliedFor: formData.position || undefined,
+          message: formData.message || undefined,
+          _honeypot: honeypot || undefined,
+        }),
       });
 
       if (res.ok) {
         setStatus('success');
-        formRef.current?.reset();
-        setFileName('');
+        setFormData({ name: '', email: '', phone: '', position: '', message: '' });
       } else {
         setStatus('error');
       }
@@ -75,17 +99,10 @@ export function JobApplicationForm() {
 
   return (
     <form
-      ref={formRef}
-      name="job-application"
-      method="POST"
-      encType="multipart/form-data"
       onSubmit={handleSubmit}
       className="space-y-6"
       noValidate
     >
-      {/* Netlify hidden form name field */}
-      <input type="hidden" name="form-name" value="job-application" />
-
       {status === 'error' && (
         <div
           className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-700 text-sm"
@@ -102,9 +119,10 @@ export function JobApplicationForm() {
         </label>
         <input
           id="job-name"
-          name="name"
           type="text"
           required
+          value={formData.name}
+          onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="ישראל ישראלי"
         />
@@ -117,10 +135,11 @@ export function JobApplicationForm() {
         </label>
         <input
           id="job-email"
-          name="email"
           type="email"
           required
           dir="ltr"
+          value={formData.email}
+          onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="email@example.com"
         />
@@ -133,10 +152,11 @@ export function JobApplicationForm() {
         </label>
         <input
           id="job-phone"
-          name="phone"
           type="tel"
           required
           dir="ltr"
+          value={formData.phone}
+          onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="050-0000000"
         />
@@ -149,8 +169,9 @@ export function JobApplicationForm() {
         </label>
         <input
           id="job-position"
-          name="position"
           type="text"
+          value={formData.position}
+          onChange={(e) => setFormData((prev) => ({ ...prev, position: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="למשל: מהנדס פיקוח, מנהל פרויקטים..."
         />
@@ -163,41 +184,29 @@ export function JobApplicationForm() {
         </label>
         <textarea
           id="job-message"
-          name="message"
           rows={4}
+          value={formData.message}
+          onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
           placeholder="ספרו לנו קצת על עצמכם, הניסיון שלכם ומה מעניין אתכם..."
         />
       </div>
 
-      {/* CV Upload */}
-      <div>
-        <label htmlFor="job-cv" className="block text-sm font-medium text-gray-700 mb-1">
-          קורות חיים (PDF, DOC, DOCX)
-        </label>
-        <div className="relative">
-          <input
-            id="job-cv"
-            name="cv"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={(e) => setFileName(e.target.files?.[0]?.name || '')}
-            className="sr-only"
-          />
-          <label
-            htmlFor="job-cv"
-            className="flex items-center justify-center gap-2 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 text-gray-500 hover:border-wdi-primary hover:text-wdi-primary transition cursor-pointer"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-            {fileName ? (
-              <span className="text-sm font-medium text-wdi-primary">{fileName}</span>
-            ) : (
-              <span className="text-sm">לחצו כאן לבחירת קובץ או גררו לכאן</span>
-            )}
-          </label>
-        </div>
+      {/* CV note */}
+      <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-blue-700 text-sm">
+        לצירוף קורות חיים, אנא שלחו אותם בדוא&quot;ל לכתובת: <strong dir="ltr">hr@wdi.co.il</strong>
+      </div>
+
+      {/* Honeypot — hidden from humans, bots auto-fill it */}
+      <div aria-hidden="true" className="absolute opacity-0 h-0 w-0 overflow-hidden">
+        <label htmlFor="job-honeypot">Leave this empty</label>
+        <input
+          id="job-honeypot"
+          name="_honeypot"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
 
       {/* Submit */}

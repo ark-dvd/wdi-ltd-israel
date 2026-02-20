@@ -2,15 +2,32 @@
 
 /**
  * Supplier registration form — 'use client' component for /join-us page.
- * Uses Netlify Forms via public/__forms.html detection (plugin-nextjs v5).
+ * Submits to POST /api/public/intake with submissionType 'supplier_application'.
+ * CANONICAL-AMENDMENT-001
  */
-import { useState, useRef, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
+
+interface FormData {
+  company: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  specialty: string;
+  message: string;
+}
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 export function SupplierForm() {
+  const [formData, setFormData] = useState<FormData>({
+    company: '',
+    contactName: '',
+    email: '',
+    phone: '',
+    specialty: '',
+    message: '',
+  });
   const [status, setStatus] = useState<FormStatus>('idle');
-  const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,17 +35,26 @@ export function SupplierForm() {
 
     try {
       const form = e.currentTarget;
-      const formData = new FormData(form);
+      const honeypot = (form.elements.namedItem('_honeypot') as HTMLInputElement)?.value;
 
-      const res = await fetch('/', {
+      const res = await fetch('/api/public/intake', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as unknown as Record<string, string>).toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionType: 'supplier_application',
+          contactName: formData.contactName,
+          contactEmail: formData.email,
+          contactPhone: formData.phone || undefined,
+          organization: formData.company || undefined,
+          supplierCategory: formData.specialty || undefined,
+          supplierExperience: formData.message || undefined,
+          _honeypot: honeypot || undefined,
+        }),
       });
 
       if (res.ok) {
         setStatus('success');
-        formRef.current?.reset();
+        setFormData({ company: '', contactName: '', email: '', phone: '', specialty: '', message: '' });
       } else {
         setStatus('error');
       }
@@ -74,16 +100,10 @@ export function SupplierForm() {
 
   return (
     <form
-      ref={formRef}
-      name="supplier-registration"
-      method="POST"
       onSubmit={handleSubmit}
       className="space-y-6"
       noValidate
     >
-      {/* Netlify hidden form name field */}
-      <input type="hidden" name="form-name" value="supplier-registration" />
-
       {status === 'error' && (
         <div
           className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-700 text-sm"
@@ -100,9 +120,10 @@ export function SupplierForm() {
         </label>
         <input
           id="supplier-company"
-          name="company"
           type="text"
           required
+          value={formData.company}
+          onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="שם החברה"
         />
@@ -115,9 +136,10 @@ export function SupplierForm() {
         </label>
         <input
           id="supplier-name"
-          name="contactName"
           type="text"
           required
+          value={formData.contactName}
+          onChange={(e) => setFormData((prev) => ({ ...prev, contactName: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="ישראל ישראלי"
         />
@@ -130,10 +152,11 @@ export function SupplierForm() {
         </label>
         <input
           id="supplier-email"
-          name="email"
           type="email"
           required
           dir="ltr"
+          value={formData.email}
+          onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="email@example.com"
         />
@@ -146,10 +169,11 @@ export function SupplierForm() {
         </label>
         <input
           id="supplier-phone"
-          name="phone"
           type="tel"
           required
           dir="ltr"
+          value={formData.phone}
+          onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="050-0000000"
         />
@@ -162,8 +186,9 @@ export function SupplierForm() {
         </label>
         <input
           id="supplier-specialty"
-          name="specialty"
           type="text"
+          value={formData.specialty}
+          onChange={(e) => setFormData((prev) => ({ ...prev, specialty: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="למשל: חשמל, אינסטלציה, שלד, גמר..."
         />
@@ -176,10 +201,23 @@ export function SupplierForm() {
         </label>
         <textarea
           id="supplier-message"
-          name="message"
           rows={4}
+          value={formData.message}
+          onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
           placeholder="מידע נוסף על החברה, ניסיון, פרויקטים מרכזיים..."
+        />
+      </div>
+
+      {/* Honeypot — hidden from humans, bots auto-fill it */}
+      <div aria-hidden="true" className="absolute opacity-0 h-0 w-0 overflow-hidden">
+        <label htmlFor="supplier-honeypot">Leave this empty</label>
+        <input
+          id="supplier-honeypot"
+          name="_honeypot"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
         />
       </div>
 

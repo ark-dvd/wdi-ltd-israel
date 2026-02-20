@@ -2,8 +2,9 @@
 
 /**
  * Mobile bottom bar — DOC-030 §3.2
+ * CRM items replaced with CMS items per CANONICAL-AMENDMENT-001.
  */
-import { BarChart3, FolderOpen, Users, Columns3, Settings } from 'lucide-react';
+import { FolderOpen, Users, Inbox, Briefcase, Settings } from 'lucide-react';
 
 interface MobileNavProps {
   activeTab: string;
@@ -11,10 +12,10 @@ interface MobileNavProps {
 }
 
 const MOBILE_ITEMS = [
-  { label: 'לוח בקרה', icon: BarChart3, tab: 'dashboard' },
+  { label: 'פניות', icon: Inbox, tab: 'intake' },
   { label: 'פרויקטים', icon: FolderOpen, tab: 'projects' },
   { label: 'צוות', icon: Users, tab: 'team' },
-  { label: 'צינור', icon: Columns3, tab: 'pipeline' },
+  { label: 'שירותים', icon: Briefcase, tab: 'services' },
   { label: 'הגדרות', icon: Settings, tab: 'site-settings' },
 ];
 
