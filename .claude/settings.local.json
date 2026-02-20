@@ -16,7 +16,16 @@
       "Bash(npm install:*)",
       "Bash(node -e:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(test:*)",
+      "mcp__Sanity__deploy_schema",
+      "mcp__Sanity__get_schema",
+      "mcp__Sanity__create_documents_from_json",
+      "mcp__Sanity__query_documents",
+      "mcp__Sanity__discard_drafts",
+      "mcp__Sanity__unpublish_documents",
+      "mcp__Sanity__publish_documents",
+      "Bash(git status:*)"
     ]
   }
 }
