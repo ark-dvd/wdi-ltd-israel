@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { getActiveProjects } from '@/lib/data-fetchers';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
+export const revalidate = 3600;
+
 const SECTOR_LABELS: Record<string, string> = {
   security: 'בטחוני',
   commercial: 'מסחרי',

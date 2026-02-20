@@ -1,17 +1,18 @@
 # ── Netlify configuration — DOC-060 §7 (H-07) ──────────────
-# Required environment variables (set in Netlify UI):
-#   NEXTAUTH_URL          — https://wdi-israel.co.il
-#   NEXTAUTH_SECRET       — Random 32+ char secret
-#   GOOGLE_CLIENT_ID      — Google OAuth client ID
-#   GOOGLE_CLIENT_SECRET  — Google OAuth client secret
-#   NEXT_PUBLIC_SANITY_PROJECT_ID — Sanity project ID
-#   NEXT_PUBLIC_SANITY_DATASET    — Sanity dataset name
-#   SANITY_API_TOKEN      — Sanity write token
-#   TURNSTILE_SECRET_KEY  — Cloudflare Turnstile secret
+# Required environment variables (set in Netlify UI, NEVER in code):
+#   NEXTAUTH_URL              — https://wdi-israel.co.il
+#   NEXTAUTH_SECRET           — Random 32+ char secret (openssl rand -base64 32)
+#   GOOGLE_CLIENT_ID          — Google OAuth client ID
+#   GOOGLE_CLIENT_SECRET      — Google OAuth client secret
+#   NEXT_PUBLIC_SANITY_PROJECT_ID — hrkxr0r8
+#   NEXT_PUBLIC_SANITY_DATASET    — production
+#   SANITY_API_TOKEN          — Sanity write token (Editor role)
+#   TURNSTILE_SECRET_KEY      — Cloudflare Turnstile secret
 #   NEXT_PUBLIC_TURNSTILE_SITE_KEY — Turnstile site key
-#   UPSTASH_REDIS_REST_URL    — Upstash Redis URL
+#   UPSTASH_REDIS_REST_URL    — Upstash Redis URL (for rate limiting)
 #   UPSTASH_REDIS_REST_TOKEN  — Upstash Redis token
-#   NEXT_PUBLIC_SITE_URL  — https://wdi-israel.co.il
+#   NEXT_PUBLIC_SITE_URL      — https://wdi-israel.co.il
+#   ADMIN_ALLOWED_EMAILS      — Comma-separated email allowlist (optional)
 
 [build]
   command = "npm run build"
@@ -23,7 +24,7 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Redirect old static HTML paths to new Next.js routes
+# ── Redirects: old static HTML → Next.js routes ─────────────
 [[redirects]]
   from = "/index.html"
   to = "/"
@@ -89,27 +90,51 @@
   to = "/404"
   status = 301
 
-# Old service detail pages (static HTML had different slugs)
+# Old detail pages (wildcard)
 [[redirects]]
   from = "/services/*.html"
   to = "/services/:splat"
   status = 301
 
-# Old project detail pages
 [[redirects]]
   from = "/projects/*.html"
   to = "/projects/:splat"
   status = 301
 
-# Security: block direct access to old backoffice
+# ── Security: block legacy backoffice ────────────────────────
 [[redirects]]
   from = "/wdi-backoffice/*"
   to = "/admin"
   status = 301
 
-# Headers — supplement Next.js headers for static assets
+# ── Security headers (all routes) ───────────────────────────
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-DNS-Prefetch-Control = "on"
+
+# ── Cache control: static assets ─────────────────────────────
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/*.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

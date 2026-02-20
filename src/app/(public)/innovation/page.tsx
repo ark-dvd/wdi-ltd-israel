@@ -7,6 +7,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getInnovationPage } from '@/lib/data-fetchers';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'חדשנות וטכנולוגיה | WDI',
   description:

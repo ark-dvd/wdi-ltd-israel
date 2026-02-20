@@ -12,6 +12,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 import { PortableText } from '@/components/public/PortableText';
 import { ServiceJsonLd, FAQPageJsonLd } from '@/components/public/JsonLd';
 
+export const revalidate = 3600;
+
 /* ── SSG ─────────────────────────────────────────────────────── */
 
 export async function generateStaticParams() {
@@ -152,16 +154,26 @@ export default async function ServiceDetailPage({
                 </h2>
                 <ul className="space-y-4">
                   {service.highlights.map(
-                    (highlight: string, index: number) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <span className="mt-1 flex-shrink-0 w-6 h-6 bg-wdi-secondary text-white rounded-full flex items-center justify-center text-xs font-bold">
-                          {index + 1}
-                        </span>
-                        <span className="text-gray-700 leading-relaxed">
-                          {highlight}
-                        </span>
-                      </li>
-                    ),
+                    (highlight: { _key?: string; title?: string; description?: string } | string, index: number) => {
+                      const title = typeof highlight === 'string' ? highlight : highlight.title;
+                      const description = typeof highlight === 'string' ? undefined : highlight.description;
+                      const key = typeof highlight === 'string' ? index : (highlight._key ?? index);
+                      return (
+                        <li key={key} className="flex items-start gap-3">
+                          <span className="mt-1 flex-shrink-0 w-6 h-6 bg-wdi-secondary text-white rounded-full flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </span>
+                          <div>
+                            <span className="text-gray-700 leading-relaxed font-medium">
+                              {title}
+                            </span>
+                            {description && (
+                              <p className="text-gray-500 text-sm mt-1">{description}</p>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    },
                   )}
                 </ul>
               </div>

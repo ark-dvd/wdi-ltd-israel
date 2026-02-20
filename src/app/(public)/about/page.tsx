@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { getAboutPage } from '@/lib/data-fetchers';
 import { PortableText } from '@/components/public/PortableText';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'אודות | WDI',
   description:

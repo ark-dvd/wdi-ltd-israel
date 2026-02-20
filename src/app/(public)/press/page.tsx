@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { getActivePressItems } from '@/lib/data-fetchers';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'כתבו עלינו',
   description:

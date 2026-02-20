@@ -18,6 +18,8 @@ import {
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { LocalBusinessJsonLd, ReviewJsonLd } from '@/components/public/JsonLd';
 
+export const revalidate = 3600; // ISR: refresh from Sanity every hour
+
 // ─── SEO Metadata ──────────────────────────────────────────
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -7,6 +7,8 @@ import { getActiveClientsContent, getActiveTestimonials } from '@/lib/data-fetch
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { ReviewJsonLd } from '@/components/public/JsonLd';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'לקוחות',
   description:

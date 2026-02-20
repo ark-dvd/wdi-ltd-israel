@@ -1,58 +1,44 @@
-# WDI Ltd Israel — Website & Back Office
+# WDI Ltd Israel — Website & Admin Panel
 
-**Status:** Recovery Phase (REMEDIATION-001)
-**Live site:** [wdi.co.il](https://wdi.co.il) (static HTML via Netlify — DO NOT MODIFY)
+**Status:** Production-ready
+**Live site:** [wdi-israel.co.il](https://wdi-israel.co.il)
 **Repository:** [github.com/ark-dvd/wdi-ltd-israel](https://github.com/ark-dvd/wdi-ltd-israel)
 
 ---
 
-## What This Repo Contains
+## Overview
 
-This repository has **three layers** from different periods of development:
+Corporate website and admin panel for WDI Ltd Israel — a boutique engineering project management firm. Built with Next.js 14, Sanity CMS, and deployed on Netlify.
 
-### 1. Legacy Static HTML Site (LIVE)
-The site currently serving at wdi.co.il. Pure HTML/CSS/JS deployed on Netlify.
+### Architecture
 
-```
-*.html (root)          # 28 static pages (index, about, services, projects, etc.)
-css/                   # Stylesheets
-js/main.js             # Client-side JavaScript
-images/                # All image assets (clients, team, projects, press)
-videos/hero-video.mp4  # Hero section video
-data/                  # JSON content files (team, projects, services, clients, etc.)
-```
+- **Frontend:** Next.js 14 App Router, React 18, Tailwind CSS, TypeScript strict mode
+- **CMS:** Sanity headless CMS (19 document schemas, project `hrkxr0r8`)
+- **Auth:** NextAuth with Google OAuth, domain + email allowlist
+- **API:** 44 admin route handlers with Zod validation, rate limiting, concurrency control
+- **Hosting:** Netlify with ISR (1-hour revalidation)
+- **Bot prevention:** Cloudflare Turnstile (falls back to honeypot)
+- **Rate limiting:** Upstash Redis
 
-### 2. Legacy Backoffice (NOT DEPLOYED — SECURITY RISK)
-An old admin panel that uses the GitHub API as its database. **Has zero authentication.**
-
-```
-wdi-backoffice/        # Next.js (JavaScript) app — DO NOT DEPLOY
-```
-
-### 3. New Next.js 14 Application (IN DEVELOPMENT)
-The replacement application built per canonical specifications (DOC-000 through DOC-070).
+### Repository Structure
 
 ```
 src/
-  app/(public)/        # 18 public pages (SSR from Sanity CMS)
+  app/(public)/        # 18 public pages (ISR from Sanity CMS)
   app/admin/           # Admin panel (NextAuth-protected)
-  app/api/             # 40+ API route handlers (Zod-validated)
+  app/api/             # 44+ API route handlers
   components/          # React components (admin + public)
-  hooks/               # Custom React hooks
   lib/                 # Sanity client/schemas, auth, validation, rate limiting
-  middleware.ts        # Auth + rate-limit middleware
-```
-
-### Supporting Files
-
-```
+  middleware.ts        # Auth + rate-limit edge middleware
 docs/                  # Canonical specification documents (DOC-000 through DOC-070)
-migration/             # Data archaeology archive, design tokens, reconciliation maps
+images/                # Source images (team, clients, press, projects, branding)
+scripts/               # Migration and utility scripts
+.github/workflows/     # CI/CD pipeline
 ```
 
 ---
 
-## Local Development (Next.js App)
+## Local Development
 
 ### Prerequisites
 
@@ -62,19 +48,10 @@ migration/             # Data archaeology archive, design tokens, reconciliation
 ### Setup
 
 ```bash
-# Install dependencies
 npm install
-
-# Copy environment template
-cp .env.example .env.local
-
-# Fill in required values (see Environment Variables below)
-
-# Start development server
-npm run dev
+cp .env.example .env.local   # Fill in required values
+npm run dev                   # http://localhost:3000
 ```
-
-The app runs at `http://localhost:3000`.
 
 ### Scripts
 
@@ -92,72 +69,66 @@ The app runs at `http://localhost:3000`.
 
 Copy `.env.example` to `.env.local` and fill in values:
 
-### Required for Core Functionality
+### Required
 
 | Variable | Description | Where to Get It |
 |----------|-------------|-----------------|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project ID | [sanity.io](https://sanity.io) dashboard |
-| `NEXT_PUBLIC_SANITY_DATASET` | Sanity dataset name (default: `production`) | Sanity dashboard |
-| `SANITY_API_TOKEN` | Sanity write token | Sanity > Settings > API > Tokens |
-| `NEXTAUTH_URL` | App URL (dev: `http://localhost:3000`) | Your deployment URL |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project ID (`hrkxr0r8`) | [sanity.io/manage](https://sanity.io/manage) |
+| `NEXT_PUBLIC_SANITY_DATASET` | Dataset name (`production`) | Sanity dashboard |
+| `SANITY_API_TOKEN` | Sanity write token | Sanity > API > Tokens |
+| `NEXTAUTH_URL` | App URL | Your deployment URL |
 | `NEXTAUTH_SECRET` | Session encryption key | `openssl rand -base64 32` |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Google Cloud Console > OAuth 2.0 |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Google Cloud Console > OAuth 2.0 |
-| `ADMIN_ALLOWED_EMAILS` | Comma-separated admin emails | Your admin email list |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Google Cloud Console |
 
-### Optional (Gracefully Degraded if Missing)
+### Optional (graceful degradation if missing)
 
 | Variable | Description |
 |----------|-------------|
-| `UPSTASH_REDIS_REST_URL` | Upstash Redis URL (rate limiting) |
-| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token |
-| `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | Sentry error monitoring DSN |
-| `TURNSTILE_SECRET_KEY` / `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile (bot prevention) |
+| `ADMIN_ALLOWED_EMAILS` | Comma-separated admin email allowlist |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Rate limiting backend |
+| `TURNSTILE_SECRET_KEY` / `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Bot prevention |
+| `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | Error monitoring |
 
 ---
 
-## Deployment Status
+## Deployment
+
+See [DEPLOY.md](DEPLOY.md) for full deployment procedures.
 
 | Component | Status | URL |
 |-----------|--------|-----|
-| Static HTML site | **LIVE** | wdi.co.il |
-| Next.js app | **Not deployed** | Pending staging setup |
-| Legacy backoffice | **Not deployed** (must stay that way) | N/A |
-| Sanity CMS | **Configured** | Project ID: see `.env.local` |
+| Public site | Production | wdi-israel.co.il |
+| Admin panel | Production | wdi-israel.co.il/admin |
+| Sanity CMS | Active | Project ID: hrkxr0r8 |
 
 ---
 
-## Architecture
+## Security
 
-The Next.js app follows the canonical architecture defined in DOC-010:
-
-- **Frontend:** Next.js 14 App Router, React 18, Tailwind CSS, TypeScript strict mode
-- **CMS:** Sanity (headless) with 15 document schemas
-- **Auth:** NextAuth with Google OAuth, email allowlist
-- **API:** 40+ route handlers with Zod validation, rate limiting, concurrency control
-- **Monitoring:** Sentry (optional), Upstash Redis rate limiting (optional)
-- **Forms:** Cloudflare Turnstile bot prevention (optional, falls back to honeypot)
+- **3-layer auth:** Edge middleware + NextAuth JWT + API guard (`withAuth`)
+- **CSP:** Restrictive Content-Security-Policy with no `unsafe-eval`
+- **Headers:** HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
+- **Validation:** Zod schemas on every API endpoint
+- **Rate limiting:** Per-user (admin 60/min), per-IP (public 5/min)
+- **Bot prevention:** Cloudflare Turnstile on public forms
 
 ---
 
 ## Canonical Documents
 
-All governing specifications live in `docs/`:
+All specifications in `docs/`:
 
-| Document | Title | Version |
-|----------|-------|---------|
-| DOC-000 | System Charter & Product Promise | 1.0 |
-| DOC-010 | Architecture & Responsibility Boundaries | 1.0 |
-| DOC-020 | Canonical Data Model | 1.1 |
-| DOC-030 | Back Office & Operational Model | 1.1 |
-| DOC-040 | API Contract & Mutation Semantics | 1.1 |
-| DOC-050 | Back Office UX Interaction Contract | 1.0 |
-| DOC-060 | Implementation Plan & Execution Roadmap | 1.0 |
-| DOC-070 | Product Specification (EN + HE) | 1.0 |
-| AUDIT-001 | Canonical Compliance Report | N/A |
-| AMENDMENT-001 | CRM Deferred, Intake/Triage Introduced | 1.3 |
-| REMEDIATION-001 | Project Recovery Plan | 1.5 |
-| FORENSIC-001 | Repository Forensic Freeze | 1.0 |
+| Document | Title |
+|----------|-------|
+| DOC-000 | System Charter & Product Promise |
+| DOC-010 | Architecture & Responsibility Boundaries |
+| DOC-020 | Canonical Data Model |
+| DOC-030 | Back Office & Operational Model |
+| DOC-040 | API Contract & Mutation Semantics |
+| DOC-050 | Back Office UX Interaction Contract |
+| DOC-060 | Implementation Plan & Execution Roadmap |
+| DOC-070 | Product Specification |
 
 ---
 
@@ -165,5 +136,4 @@ All governing specifications live in `docs/`:
 
 - **Primary (blue):** `#1a365d`
 - **Secondary (gold):** `#c9a227`
-- **Accent:** `#e8b923`
-- **Fonts:** Assistant (public site), Heebo (admin)
+- **Fonts:** Assistant (public), Heebo (admin)

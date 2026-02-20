@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, Type-check & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript compilation
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Production build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: hrkxr0r8
+          NEXT_PUBLIC_SANITY_DATASET: production
+
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for secrets in code
+        run: |
+          echo "Scanning for potential secrets..."
+          # Check for .env files that shouldn't be committed
+          if git ls-files | grep -E '\.env$|\.env\.local$|\.env\.production$'; then
+            echo "::error::Found .env file(s) in repository!"
+            exit 1
+          fi
+          # Check for hardcoded tokens/keys (common patterns)
+          if grep -rn --include='*.ts' --include='*.tsx' --include='*.js' \
+            -E '(sk[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16}|ghp_[A-Za-z0-9]{36})' \
+            src/ scripts/ 2>/dev/null; then
+            echo "::error::Potential hardcoded secrets found!"
+            exit 1
+          fi
+          echo "No secrets detected."
+
+      - name: Check for prohibited paths
+        run: |
+          echo "Checking for prohibited paths..."
+          VIOLATIONS=0
+          for dir in .next node_modules; do
+            if git ls-files | grep -q "^${dir}/"; then
+              echo "::error::Prohibited path found in git: ${dir}/"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done
+          if [ $VIOLATIONS -gt 0 ]; then
+            exit 1
+          fi
+          echo "No prohibited paths found."
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency audit
+        run: npm audit --audit-level=high || true

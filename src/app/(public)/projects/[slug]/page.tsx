@@ -21,6 +21,8 @@ const SECTOR_LABELS: Record<string, string> = {
   public: 'ציבורי',
 };
 
+export const revalidate = 3600;
+
 /* ── SSG ─────────────────────────────────────────────────────── */
 
 export async function generateStaticParams() {

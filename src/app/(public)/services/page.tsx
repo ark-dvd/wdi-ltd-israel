@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { getActiveServices } from '@/lib/data-fetchers';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'שירותים | WDI',
   description:

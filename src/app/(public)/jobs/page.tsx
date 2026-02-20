@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getActiveJobs } from '@/lib/data-fetchers';
 import { JobPostingJsonLd } from '@/components/public/JsonLd';
+import { PortableText } from '@/components/public/PortableText';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'קריירה',
@@ -114,9 +117,13 @@ export default async function JobsPage() {
 
                       {/* Description */}
                       {job.description && (
-                        <p className="text-gray-600 leading-relaxed mb-6 line-clamp-4">
-                          {job.description}
-                        </p>
+                        <div className="text-gray-600 leading-relaxed mb-6 line-clamp-4">
+                          {Array.isArray(job.description) ? (
+                            <PortableText value={job.description} />
+                          ) : (
+                            <p>{job.description}</p>
+                          )}
+                        </div>
                       )}
 
                       {/* Requirements */}
@@ -125,9 +132,13 @@ export default async function JobsPage() {
                           <h4 className="text-sm font-bold text-gray-700 mb-2">
                             דרישות התפקיד:
                           </h4>
-                          <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                            {job.requirements}
-                          </p>
+                          <div className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                            {Array.isArray(job.requirements) ? (
+                              <PortableText value={job.requirements} />
+                            ) : (
+                              <p>{job.requirements}</p>
+                            )}
+                          </div>
                         </div>
                       )}
 

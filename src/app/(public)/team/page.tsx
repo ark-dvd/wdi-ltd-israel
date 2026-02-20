@@ -8,6 +8,8 @@ import { getTeamMembers } from '@/lib/data-fetchers';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { PersonJsonLd } from '@/components/public/JsonLd';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'הצוות שלנו',
   description:
