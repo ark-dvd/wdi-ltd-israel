@@ -16,10 +16,11 @@ export const GET = withAuth(async (request: NextRequest) => {
     const isActive = url.searchParams.get('isActive');
 
     let filter = `_type == "service"`;
-    if (isActive !== null) filter += ` && isActive == ${isActive === 'true'}`;
+    if (isActive === 'true') filter += ` && isActive != false`;
+    else if (isActive === 'false') filter += ` && isActive == false`;
 
     const [data, total] = await Promise.all([
-      sanityClient.fetch(`*[${filter}] | order(order asc) [${offset}...${offset + limit}]{ _id, name, slug, tagline, isActive, order, updatedAt }`),
+      sanityClient.fetch(`*[${filter}] | order(order asc) [${offset}...${offset + limit}]{ _id, "name": coalesce(name, title), "slug": slug.current, tagline, isActive, order, updatedAt }`),
       sanityClient.fetch(`count(*[${filter}])`),
     ]);
 

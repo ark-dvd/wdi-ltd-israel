@@ -17,6 +17,8 @@ export const GET = withAuth(async (_request: NextRequest, { params }: AuthContex
     const project = await sanityClient.fetch(
       `*[_type == "project" && _id == $id][0]{
         ...,
+        "sector": coalesce(sector, category),
+        "isFeatured": coalesce(isFeatured, featured),
         "linkedTestimonials": *[_type == "testimonial" && projectRef._ref == ^._id]{
           _id, clientName, quote, companyName, role, isFeatured, isActive, order, updatedAt
         }

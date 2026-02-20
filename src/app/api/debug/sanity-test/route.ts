@@ -1,9 +1,9 @@
 /**
  * GET /api/debug/sanity-test — Diagnostic route for Sanity connection
- * Returns connection status and env var availability (no secrets exposed).
+ * Returns connection status, env var availability, type distribution.
  */
 import { NextResponse } from 'next/server';
-import { createClient } from '@sanity/client';
+import { createClient, type SanityClient } from '@sanity/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,9 +42,11 @@ export async function GET() {
     return NextResponse.json(diagnostics);
   }
 
-  // Test read client (with token)
+  let client: SanityClient;
+
+  // Test read + type distribution
   try {
-    const readClient = createClient({
+    client = createClient({
       projectId,
       dataset,
       apiVersion: '2026-02-19',
@@ -52,12 +54,30 @@ export async function GET() {
       token: token || undefined,
     });
 
-    const count = await readClient.fetch('count(*[_type == "lead"])');
+    // Get type distribution — group all documents by _type and count
+    const allTypes: string[] = await client.fetch(
+      `*[!(_type match "system.*") && _type != "sanity.imageAsset"]._type`,
+    );
+
+    const typeDistribution: Record<string, number> = {};
+    for (const t of allTypes) {
+      typeDistribution[t] = (typeDistribution[t] ?? 0) + 1;
+    }
+
+    // Sort by type name
+    const sorted: Record<string, number> = {};
+    for (const key of Object.keys(typeDistribution).sort()) {
+      sorted[key] = typeDistribution[key]!;
+    }
+
+    const totalDocs = allTypes.length;
+
     diagnostics.sanity = {
       connected: true,
       readWorks: true,
       writeClientWorks: false,
-      documentCount: count,
+      totalDocuments: totalDocs,
+      typeDistribution: sorted,
       error: null,
     };
   } catch (err) {
@@ -70,33 +90,34 @@ export async function GET() {
     return NextResponse.json(diagnostics);
   }
 
-  // Test write client
+  // Test write permissions
   try {
-    const writeClient = createClient({
-      projectId,
-      dataset,
-      apiVersion: '2026-02-19',
-      useCdn: false,
-      token: token || undefined,
-    });
-
-    // Test write permissions by doing a no-op patch on a non-existent doc
-    // This will fail with "not found" (which means auth is OK) or with "unauthorized"
-    await writeClient.patch('__test-write-permissions__').set({ _type: 'test' }).commit();
+    await client.patch('__test-write-permissions__').set({ _type: 'test' }).commit();
     (diagnostics.sanity as Record<string, unknown>).writeClientWorks = true;
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    // "Document not found" means write auth works, just the doc doesn't exist
     if (msg.includes('not found') || msg.includes('No document')) {
       (diagnostics.sanity as Record<string, unknown>).writeClientWorks = true;
-      (diagnostics.sanity as Record<string, unknown>).writeNote = 'Token has write permissions (test doc not found, which is expected)';
+      (diagnostics.sanity as Record<string, unknown>).writeNote = 'Token has write permissions (test doc not found — expected)';
     } else if (msg.includes('nauthorized') || msg.includes('nsufficient') || msg.includes('forbidden') || msg.includes('403')) {
       (diagnostics.sanity as Record<string, unknown>).writeClientWorks = false;
-      (diagnostics.sanity as Record<string, unknown>).writeError = 'Token does NOT have write permissions — needs Editor role, not Viewer';
+      (diagnostics.sanity as Record<string, unknown>).writeError = 'Token does NOT have write permissions — needs Editor role';
     } else {
       (diagnostics.sanity as Record<string, unknown>).writeClientWorks = false;
       (diagnostics.sanity as Record<string, unknown>).writeError = msg;
     }
+  }
+
+  // Field mismatch check — verify critical fields exist on each type
+  try {
+    const checks = await client.fetch(`{
+      "services": *[_type == "service"][0..0]{ _id, name, title, slug, description, shortDescription, isActive },
+      "projects": *[_type == "project"][0..0]{ _id, title, slug, sector, category, isActive, isFeatured, featured },
+      "heroSettings": *[_type == "heroSettings"][0..0]{ _id, title, subtitle }
+    }`);
+    (diagnostics as Record<string, unknown>).fieldCheck = checks;
+  } catch {
+    // Non-critical, skip
   }
 
   return NextResponse.json(diagnostics);

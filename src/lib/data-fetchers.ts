@@ -2,6 +2,10 @@
  * Server-side data fetcher functions — DOC-040 §2.10
  * Internal TypeScript functions for Next.js SSR.
  * List fetchers return [] on error. Single-entity fetchers return null.
+ *
+ * GROQ coalesce() handles field name migration:
+ *   coalesce(name, title) — returns `name` if set, otherwise `title`
+ *   coalesce(sector, category) — returns `sector` if set, otherwise `category`
  */
 import { sanityClient } from './sanity/client';
 
@@ -11,7 +15,9 @@ export async function getActiveServices() {
   try {
     return await sanityClient.fetch(
       `*[_type == "service" && isActive == true] | order(order asc){
-        _id, name, slug, description, tagline, icon, highlights, detailContent, image, order
+        _id, "name": coalesce(name, title), "slug": slug.current,
+        "description": coalesce(description, shortDescription), tagline, icon,
+        highlights, detailContent, image, order
       }`,
     );
   } catch (err) {
@@ -23,7 +29,11 @@ export async function getActiveServices() {
 export async function getService(slug: string) {
   try {
     return await sanityClient.fetch(
-      `*[_type == "service" && slug.current == $slug && isActive == true][0]`,
+      `*[_type == "service" && slug.current == $slug && isActive == true][0]{
+        ...,
+        "name": coalesce(name, title),
+        "description": coalesce(description, shortDescription)
+      }`,
       { slug },
     );
   } catch (err) {
@@ -37,8 +47,11 @@ export async function getService(slug: string) {
 export async function getActiveProjects() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "project" && isActive == true] | order(order asc){
-        _id, title, slug, client, sector, description, scope, location, images, featuredImage, isFeatured, startDate, completedAt, order
+      `*[_type == "project" && isActive != false] | order(order asc){
+        _id, title, "slug": slug.current, client,
+        "sector": coalesce(sector, category), description, scope, location,
+        images, featuredImage, "isFeatured": coalesce(isFeatured, featured),
+        startDate, completedAt, year, order
       }`,
     );
   } catch (err) {
@@ -50,8 +63,10 @@ export async function getActiveProjects() {
 export async function getActiveProjectsBySector(sector: string) {
   try {
     return await sanityClient.fetch(
-      `*[_type == "project" && isActive == true && sector == $sector] | order(order asc){
-        _id, title, slug, client, sector, featuredImage, isFeatured, order
+      `*[_type == "project" && isActive != false && (sector == $sector || category == $sector)] | order(order asc){
+        _id, title, "slug": slug.current, client,
+        "sector": coalesce(sector, category), featuredImage,
+        "isFeatured": coalesce(isFeatured, featured), order
       }`,
       { sector },
     );
@@ -64,8 +79,10 @@ export async function getActiveProjectsBySector(sector: string) {
 export async function getProject(slug: string) {
   try {
     return await sanityClient.fetch(
-      `*[_type == "project" && slug.current == $slug && isActive == true][0]{
+      `*[_type == "project" && slug.current == $slug && isActive != false][0]{
         ...,
+        "sector": coalesce(sector, category),
+        "isFeatured": coalesce(isFeatured, featured),
         "linkedTestimonials": *[_type == "testimonial" && projectRef._ref == ^._id && isActive == true] | order(order asc){
           _id, clientName, quote, companyName, role, isFeatured, image, order
         }
@@ -208,7 +225,7 @@ export async function getActiveContentLibraryItems() {
 export async function getHeroSettings() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "heroSettings" && _id == "heroSettings"][0]`,
+      `*[_type == "heroSettings"][0]`,
     );
   } catch (err) {
     console.error('[ssr]', err);
@@ -219,7 +236,7 @@ export async function getHeroSettings() {
 export async function getSiteSettings() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "siteSettings" && _id == "siteSettings"][0]`,
+      `*[_type == "siteSettings"][0]`,
     );
   } catch (err) {
     console.error('[ssr]', err);

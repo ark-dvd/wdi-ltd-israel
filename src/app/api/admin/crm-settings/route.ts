@@ -9,8 +9,6 @@ import { sanityClient, sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, serverError } from '@/lib/api/response';
 import { crmSettingsUpdateSchema } from '@/lib/validation/input-schemas';
 
-const SINGLETON_ID = 'crmSettings';
-
 const DEFAULTS = {
   pipelineStages: [
     { key: 'new', label: 'ליד חדש', color: '#ef4444' },
@@ -38,8 +36,8 @@ const DEFAULTS = {
 
 export const GET = withAuth(async () => {
   try {
-    const doc = await sanityClient.fetch(`*[_type == "crmSettings" && _id == $id][0]`, { id: SINGLETON_ID });
-    return successResponse(doc ?? { _id: SINGLETON_ID, _type: 'crmSettings', ...DEFAULTS });
+    const doc = await sanityClient.fetch(`*[_type == "crmSettings"][0]`);
+    return successResponse(doc ?? { _type: 'crmSettings', ...DEFAULTS });
   } catch (err) {
     console.error('[api]', err);
     return serverError();
@@ -89,14 +87,21 @@ export const PUT = withAuth(async (request: NextRequest) => {
       }
     }
 
+    // Find existing or create new
+    const existing = await sanityClient.fetch(`*[_type == "crmSettings"][0]{ _id }`);
     const now = new Date().toISOString();
-    const doc = await sanityWriteClient.createOrReplace({
-      _id: SINGLETON_ID,
-      _type: 'crmSettings',
-      ...DEFAULTS,
-      ...parsed.data,
-      updatedAt: now,
-    });
+
+    let doc;
+    if (existing) {
+      doc = await sanityWriteClient.patch(existing._id).set({ ...parsed.data, updatedAt: now }).commit();
+    } else {
+      doc = await sanityWriteClient.create({
+        _type: 'crmSettings',
+        ...DEFAULTS,
+        ...parsed.data,
+        updatedAt: now,
+      });
+    }
 
     return successResponse(doc);
   } catch (err) {

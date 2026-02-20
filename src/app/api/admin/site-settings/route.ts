@@ -10,11 +10,9 @@ import { successResponse, validationError, notFoundError, serverError } from '@/
 import { checkConcurrency } from '@/lib/api/concurrency';
 import { siteSettingsUpdateSchema } from '@/lib/validation/input-schemas';
 
-const SINGLETON_ID = 'siteSettings';
-
 export const GET = withAuth(async () => {
   try {
-    const doc = await sanityClient.fetch(`*[_type == "siteSettings" && _id == $id][0]`, { id: SINGLETON_ID });
+    const doc = await sanityClient.fetch(`*[_type == "siteSettings"][0]`);
     if (!doc) return notFoundError('הגדרות אתר לא נמצאו');
     return successResponse(doc);
   } catch (err) {
@@ -33,14 +31,14 @@ export const PUT = withAuth(async (request: NextRequest) => {
       return validationError('נתוני קלט לא תקינים', fieldErrors);
     }
 
-    const existing = await sanityClient.fetch(`*[_type == "siteSettings" && _id == $id][0]`, { id: SINGLETON_ID });
+    const existing = await sanityClient.fetch(`*[_type == "siteSettings"][0]`);
     if (!existing) return notFoundError('הגדרות אתר לא נמצאו');
 
     const conflict = checkConcurrency(parsed.data.updatedAt, existing.updatedAt);
     if (conflict) return conflict;
 
     const { updatedAt: _, ...fields } = parsed.data;
-    const doc = await sanityWriteClient.patch(SINGLETON_ID).set({ ...fields, updatedAt: new Date().toISOString() }).commit();
+    const doc = await sanityWriteClient.patch(existing._id).set({ ...fields, updatedAt: new Date().toISOString() }).commit();
 
     return successResponse(doc);
   } catch (err) {
