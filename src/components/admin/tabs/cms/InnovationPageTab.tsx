@@ -1,32 +1,40 @@
 'use client';
 
+/**
+ * Innovation Page singleton — DOC-030 §11.7
+ * Page title, subtitle, rich content, sections with icon/content, CTA.
+ */
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Plus, Trash2, X } from 'lucide-react';
+import { RefreshCw, Plus, Trash2 } from 'lucide-react';
 import { apiGet, apiPut, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { useToast } from '../../Toast';
 import { ErrorRenderer } from '../../ErrorRenderer';
+import RichTextEditor from '../../RichTextEditor';
 
 interface Section {
   _key?: string;
   title: string;
-  subtitle?: string;
+  icon?: string;
   description?: string;
-  features?: string[];
+  content?: unknown[];
 }
 
 interface InnovationPage {
   _id: string;
-  headline?: string;
-  introduction?: string;
+  pageTitle?: string; subtitle?: string;
+  content?: unknown[];
+  headline?: string; introduction?: string;
+  ctaTitle?: string; ctaSubtitle?: string;
+  ctaButtonText?: string; ctaButtonLink?: string;
+  cta2ButtonText?: string; cta2ButtonLink?: string;
   sections?: Section[];
-  visionTitle?: string;
-  visionText?: string;
   updatedAt: string;
 }
 
 function genKey() { return Math.random().toString(36).slice(2, 10); }
+const inputCls = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary';
 
 export function InnovationPageTab() {
   const [data, setData] = useState<InnovationPage | null>(null);
@@ -37,9 +45,6 @@ export function InnovationPageTab() {
   const { error: mutErr, isLocked, execute, reset } = useRequestLifecycle();
   const { addToast } = useToast();
   useUnsavedChanges(dirty);
-
-  // Feature tag input state per section
-  const [featureInputs, setFeatureInputs] = useState<Record<number, string>>({});
 
   const fetchData = useCallback(async () => {
     setLoading(true); setFetchErr(null);
@@ -60,35 +65,14 @@ export function InnovationPageTab() {
     }
   };
 
-  const set = (key: string, val: unknown) => { setForm((p) => ({ ...p, [key]: val })); setDirty(true); };
+  const set = (key: string, val: unknown) => { setForm(p => ({ ...p, [key]: val })); setDirty(true); };
 
   // Section helpers
-  const addSection = () => set('sections', [...(form.sections || []), { _key: genKey(), title: '', subtitle: '', description: '', features: [] }]);
+  const addSection = () => set('sections', [...(form.sections || []), { _key: genKey(), title: '', icon: '', description: '' }]);
   const updateSection = (idx: number, field: string, val: unknown) => {
-    const sections = [...(form.sections || [])];
-    sections[idx] = { ...sections[idx], [field]: val } as Section;
-    set('sections', sections);
+    const sections = [...(form.sections || [])]; sections[idx] = { ...sections[idx], [field]: val } as Section; set('sections', sections);
   };
   const removeSection = (idx: number) => set('sections', (form.sections || []).filter((_, i) => i !== idx));
-
-  // Feature helpers (tag-style input)
-  const addFeature = (sectionIdx: number) => {
-    const text = (featureInputs[sectionIdx] || '').trim();
-    if (!text) return;
-    const sections = [...(form.sections || [])] as Section[];
-    const section = { ...sections[sectionIdx] } as Section;
-    section.features = [...(section.features || []), text];
-    sections[sectionIdx] = section;
-    set('sections', sections);
-    setFeatureInputs((p) => ({ ...p, [sectionIdx]: '' }));
-  };
-  const removeFeature = (sectionIdx: number, featureIdx: number) => {
-    const sections = [...(form.sections || [])] as Section[];
-    const section = { ...sections[sectionIdx] } as Section;
-    section.features = (section.features || []).filter((_, i) => i !== featureIdx);
-    sections[sectionIdx] = section;
-    set('sections', sections);
-  };
 
   if (loading) return <div className="p-8 text-center text-gray-500">טוען עמוד חדשנות...</div>;
   if (fetchErr) return <div className="p-8"><ErrorRenderer error={fetchErr} onReload={fetchData} /></div>;
@@ -108,26 +92,19 @@ export function InnovationPageTab() {
       <ErrorRenderer error={mutErr} onReload={fetchData} onDismiss={reset} />
 
       <div className="space-y-6">
-        {/* Headline */}
+        {/* Page Header */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">כותרת ראשית</h2>
-          <input
-            type="text"
-            value={form.headline ?? ''}
-            onChange={(e) => set('headline', e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary"
-          />
+          <h2 className="font-semibold text-gray-800">כותרת עמוד</h2>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">כותרת</label>
+            <input type="text" value={form.pageTitle ?? form.headline ?? ''} onChange={e => set('pageTitle', e.target.value)} className={inputCls} /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">תת-כותרת</label>
+            <input type="text" value={form.subtitle ?? ''} onChange={e => set('subtitle', e.target.value)} className={inputCls} /></div>
         </div>
 
-        {/* Introduction */}
+        {/* Content (RT) */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">פסקת מבוא</h2>
-          <textarea
-            value={form.introduction ?? ''}
-            onChange={(e) => set('introduction', e.target.value)}
-            rows={4}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary"
-          />
+          <h2 className="font-semibold text-gray-800">תוכן ראשי</h2>
+          <RichTextEditor label="" value={form.content as unknown[] ?? null} onChange={v => set('content', v)} rows={8} />
         </div>
 
         {/* Sections */}
@@ -142,72 +119,28 @@ export function InnovationPageTab() {
                 <span className="text-sm font-medium text-gray-500">מקטע {idx + 1}</span>
                 <button onClick={() => removeSection(idx)} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
               </div>
-              <input
-                type="text"
-                value={section.title}
-                onChange={(e) => updateSection(idx, 'title', e.target.value)}
-                placeholder="כותרת (חובה)"
-                className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
-              />
-              <input
-                type="text"
-                value={section.subtitle ?? ''}
-                onChange={(e) => updateSection(idx, 'subtitle', e.target.value)}
-                placeholder="כותרת משנה"
-                className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
-              />
-              <textarea
-                value={section.description ?? ''}
-                onChange={(e) => updateSection(idx, 'description', e.target.value)}
-                placeholder="תיאור"
-                rows={3}
-                className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
-              />
-
-              {/* Features tag input */}
-              <div>
-                <span className="text-xs font-medium text-gray-500 mb-1 block">תכונות</span>
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {(section.features || []).map((feature, fIdx) => (
-                    <span key={fIdx} className="inline-flex items-center gap-1 bg-wdi-primary/10 text-wdi-primary text-xs px-2 py-1 rounded-full">
-                      {feature}
-                      <button onClick={() => removeFeature(idx, fIdx)} className="hover:text-red-600" type="button"><X size={12} /></button>
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={featureInputs[idx] ?? ''}
-                    onChange={(e) => setFeatureInputs((p) => ({ ...p, [idx]: e.target.value }))}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addFeature(idx); } }}
-                    placeholder="הקלד תכונה ולחץ Enter"
-                    className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm"
-                  />
-                  <button onClick={() => addFeature(idx)} className="text-sm text-wdi-primary hover:underline" type="button">הוסף</button>
-                </div>
-              </div>
+              <input type="text" value={section.title} onChange={e => updateSection(idx, 'title', e.target.value)} placeholder="כותרת (חובה)" className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm" />
+              <input type="text" value={section.icon ?? ''} onChange={e => updateSection(idx, 'icon', e.target.value)} placeholder="אייקון (fas fa-...)" className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm" dir="ltr" />
+              <textarea value={section.description ?? ''} onChange={e => updateSection(idx, 'description', e.target.value)} placeholder="תיאור" rows={3} className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm" />
             </div>
           ))}
         </div>
 
-        {/* Vision */}
+        {/* CTA */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">חזון</h2>
-          <input
-            type="text"
-            value={form.visionTitle ?? ''}
-            onChange={(e) => set('visionTitle', e.target.value)}
-            placeholder="כותרת חזון"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary"
-          />
-          <textarea
-            value={form.visionText ?? ''}
-            onChange={(e) => set('visionText', e.target.value)}
-            placeholder="טקסט חזון"
-            rows={4}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary"
-          />
+          <h2 className="font-semibold text-gray-800">קריאה לפעולה (CTA)</h2>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">כותרת CTA</label>
+            <input type="text" value={form.ctaTitle ?? ''} onChange={e => set('ctaTitle', e.target.value)} className={inputCls} /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">תת-כותרת CTA</label>
+            <input type="text" value={form.ctaSubtitle ?? ''} onChange={e => set('ctaSubtitle', e.target.value)} className={inputCls} /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">טקסט כפתור ראשי</label>
+            <input type="text" value={form.ctaButtonText ?? ''} onChange={e => set('ctaButtonText', e.target.value)} className={inputCls} /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור כפתור ראשי</label>
+            <input type="text" value={form.ctaButtonLink ?? ''} onChange={e => set('ctaButtonLink', e.target.value)} className={inputCls} dir="ltr" /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">טקסט כפתור שני</label>
+            <input type="text" value={form.cta2ButtonText ?? ''} onChange={e => set('cta2ButtonText', e.target.value)} className={inputCls} /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור כפתור שני</label>
+            <input type="text" value={form.cta2ButtonLink ?? ''} onChange={e => set('cta2ButtonLink', e.target.value)} className={inputCls} dir="ltr" /></div>
         </div>
       </div>
     </div>

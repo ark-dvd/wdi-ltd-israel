@@ -1,6 +1,7 @@
 /**
- * POST /api/admin/upload — Upload image to Sanity
+ * POST /api/admin/upload — Upload image or file to Sanity
  * Accepts multipart/form-data with a single file field named "file".
+ * Query param ?type=file for non-image assets (e.g. video).
  * Returns { success: true, data: { _ref, url } }
  */
 export const runtime = 'nodejs';
@@ -11,11 +12,14 @@ import { sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, serverError } from '@/lib/api/response';
 import { uploadRateLimit, getIdentifier } from '@/lib/rate-limit';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 40 * 1024 * 1024;  // 40 MB
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm'];
 
 export const POST = withAuth(async (request: NextRequest, { session }) => {
   try {
-    // Rate limit upload requests (20/min per user)
     const rl = await uploadRateLimit.limit(getIdentifier(request, session.user.email));
     if (!rl.success) {
       return NextResponse.json(
@@ -24,6 +28,8 @@ export const POST = withAuth(async (request: NextRequest, { session }) => {
       );
     }
 
+    const assetType = request.nextUrl.searchParams.get('type') === 'file' ? 'file' : 'image';
+
     const formData = await request.formData();
     const file = formData.get('file');
 
@@ -31,19 +37,18 @@ export const POST = withAuth(async (request: NextRequest, { session }) => {
       return validationError('קובץ לא נמצא');
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      return validationError('גודל הקובץ חורג מ-10MB');
-    }
-
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
-    if (!allowedTypes.includes(file.type)) {
-      return validationError('סוג קובץ לא נתמך. נתמכים: JPEG, PNG, WebP, GIF, SVG');
+    if (assetType === 'image') {
+      if (file.size > MAX_IMAGE_SIZE) return validationError('גודל הקובץ חורג מ-10MB');
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) return validationError('סוג קובץ לא נתמך. נתמכים: JPEG, PNG, WebP, GIF, SVG');
+    } else {
+      if (file.size > MAX_FILE_SIZE) return validationError('גודל הקובץ חורג מ-40MB');
+      if (!ALLOWED_VIDEO_TYPES.includes(file.type)) return validationError('סוג קובץ לא נתמך. נתמכים: MP4, WebM');
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileName = file instanceof File ? file.name : 'upload';
 
-    const asset = await sanityWriteClient.assets.upload('image', buffer, {
+    const asset = await sanityWriteClient.assets.upload(assetType, buffer, {
       filename: fileName,
       contentType: file.type,
     });

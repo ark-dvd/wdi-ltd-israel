@@ -2,19 +2,61 @@
 
 /**
  * Site Settings singleton — DOC-030 §11.10
+ * Covers ALL global strings: nav labels, page strings, form labels,
+ * footer text, CTA defaults, sector/job-type labels, SEO, branding.
  */
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Plus, Trash2, ChevronDown } from 'lucide-react';
 import { apiGet, apiPut, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { useToast } from '../../Toast';
 import { ErrorRenderer } from '../../ErrorRenderer';
 
+interface LabelPair { _key?: string; value: string; label: string }
+type StringMap = Record<string, string>;
+type PageStringsMap = { [page: string]: StringMap };
 interface SiteSettings {
-  _id: string; companyName?: string; phone?: string; email?: string; address?: string;
-  footerText?: string; socialLinks?: { linkedin?: string; facebook?: string; instagram?: string };
-  seoTitle?: string; seoDescription?: string; seoKeywords?: string; updatedAt: string;
+  _id: string;
+  companyName?: string; companyNameEn?: string; companyDescription?: string;
+  phone?: string; email?: string; address?: string;
+  copyrightText?: string; websiteByText?: string; footerText?: string;
+  footerCompanyLabel?: string; footerServicesLabel?: string;
+  footerContactLabel?: string; footerLeaveDetailsText?: string;
+  socialLinks?: { linkedin?: string; facebook?: string; instagram?: string; youtube?: string };
+  contactFormSubjects?: string[];
+  formLabels?: StringMap;
+  googleMapsEmbed?: string;
+  defaultCtaTitle?: string; defaultCtaSubtitle?: string;
+  defaultCtaButtonText?: string; defaultCtaButtonLink?: string;
+  pageStrings?: PageStringsMap;
+  sectorLabels?: LabelPair[];
+  jobTypeLabels?: LabelPair[];
+  navLabels?: StringMap;
+  footerNavLabels?: StringMap;
+  seoTitle?: string; seoDescription?: string; seoKeywords?: string;
+  updatedAt: string;
+}
+
+function genKey() { return Math.random().toString(36).slice(2, 10); }
+
+const inputCls = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary';
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div><label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>{children}</div>;
+}
+
+function Section({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="bg-white rounded-lg border border-gray-200">
+      <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-4 text-right">
+        <h2 className="font-semibold text-gray-800">{title}</h2>
+        <ChevronDown size={18} className={`text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && <div className="px-6 pb-6 space-y-4">{children}</div>}
+    </div>
+  );
 }
 
 export function SiteSettingsTab() {
@@ -42,13 +84,34 @@ export function SiteSettingsTab() {
     if (r) { const d = (r as { data: SiteSettings }).data; setData(d); setForm(d); setDirty(false); addToast('הגדרות אתר נשמרו', 'success'); }
   };
 
-  const set = (key: string, val: string) => { setForm((p) => ({ ...p, [key]: val })); setDirty(true); };
-  const setSocial = (key: string, val: string) => {
-    setForm((p) => ({ ...p, socialLinks: { ...p.socialLinks, [key]: val } })); setDirty(true);
+  // Setters
+  const set = (key: string, val: unknown) => { setForm(p => ({ ...p, [key]: val })); setDirty(true); };
+  const setSocial = (key: string, val: string) => { setForm(p => ({ ...p, socialLinks: { ...p.socialLinks, [key]: val } })); setDirty(true); };
+  const setFormLabel = (key: string, val: string) => { setForm(p => ({ ...p, formLabels: { ...p.formLabels, [key]: val } })); setDirty(true); };
+  const setNav = (key: string, val: string) => { setForm(p => ({ ...p, navLabels: { ...p.navLabels, [key]: val } })); setDirty(true); };
+  const setFooterNav = (key: string, val: string) => { setForm(p => ({ ...p, footerNavLabels: { ...p.footerNavLabels, [key]: val } })); setDirty(true); };
+  const setPageStr = (page: string, key: string, val: string) => {
+    const prev = (p: Partial<SiteSettings>) => (p.pageStrings as PageStringsMap)?.[page] || {};
+    setForm(p => ({ ...p, pageStrings: { ...p.pageStrings, [page]: { ...prev(p), [key]: val } } }));
+    setDirty(true);
   };
+
+  // Array helpers for contactFormSubjects
+  const addSubject = () => set('contactFormSubjects', [...(form.contactFormSubjects || []), '']);
+  const updateSubject = (i: number, v: string) => { const a = [...(form.contactFormSubjects || [])]; a[i] = v; set('contactFormSubjects', a); };
+  const removeSubject = (i: number) => set('contactFormSubjects', (form.contactFormSubjects || []).filter((_, idx) => idx !== i));
+
+  // Label pair helpers
+  const addLabelPair = (key: 'sectorLabels' | 'jobTypeLabels') => set(key, [...((form[key] as LabelPair[]) || []), { _key: genKey(), value: '', label: '' }]);
+  const updateLabelPair = (key: 'sectorLabels' | 'jobTypeLabels', i: number, field: string, val: string) => {
+    const arr = [...((form[key] as LabelPair[]) || [])]; arr[i] = { ...arr[i], [field]: val } as LabelPair; set(key, arr);
+  };
+  const removeLabelPair = (key: 'sectorLabels' | 'jobTypeLabels', i: number) => set(key, ((form[key] as LabelPair[]) || []).filter((_, idx) => idx !== i));
 
   if (loading) return <div className="p-8 text-center text-gray-500">טוען הגדרות אתר...</div>;
   if (fetchErr) return <div className="p-8"><ErrorRenderer error={fetchErr} onReload={fetchData} /></div>;
+
+  const ps = (form.pageStrings || {}) as PageStringsMap;
 
   return (
     <div className="p-6 max-w-2xl" dir="rtl">
@@ -64,32 +127,180 @@ export function SiteSettingsTab() {
 
       <ErrorRenderer error={mutErr} onReload={fetchData} onDismiss={reset} />
 
-      <div className="space-y-6">
-        {/* General */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">פרטי חברה</h2>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">שם חברה</label><input type="text" value={form.companyName ?? ''} onChange={(e) => set('companyName', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label><input type="tel" value={form.phone ?? ''} onChange={(e) => set('phone', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">אימייל</label><input type="email" value={form.email ?? ''} onChange={(e) => set('email', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">כתובת</label><textarea value={form.address ?? ''} onChange={(e) => set('address', e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">תוכן תחתית</label><textarea value={form.footerText ?? ''} onChange={(e) => set('footerText', e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-        </div>
+      <div className="space-y-4">
+        {/* ── Company Info ── */}
+        <Section title="פרטי חברה" defaultOpen>
+          <Field label="שם חברה"><input type="text" value={form.companyName ?? ''} onChange={e => set('companyName', e.target.value)} className={inputCls} /></Field>
+          <Field label="שם חברה (אנגלית)"><input type="text" value={form.companyNameEn ?? ''} onChange={e => set('companyNameEn', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="תיאור החברה"><textarea value={form.companyDescription ?? ''} onChange={e => set('companyDescription', e.target.value)} rows={2} className={inputCls} /></Field>
+          <Field label="טלפון"><input type="tel" value={form.phone ?? ''} onChange={e => set('phone', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="אימייל"><input type="email" value={form.email ?? ''} onChange={e => set('email', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="כתובת"><textarea value={form.address ?? ''} onChange={e => set('address', e.target.value)} rows={2} className={inputCls} /></Field>
+        </Section>
 
-        {/* Social Links */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">קישורי רשתות חברתיות</h2>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label><input type="url" value={form.socialLinks?.linkedin ?? ''} onChange={(e) => setSocial('linkedin', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label><input type="url" value={form.socialLinks?.facebook ?? ''} onChange={(e) => setSocial('facebook', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label><input type="url" value={form.socialLinks?.instagram ?? ''} onChange={(e) => setSocial('instagram', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-        </div>
+        {/* ── Footer Text ── */}
+        <Section title="טקסטים בפוטר">
+          <Field label="זכויות יוצרים"><input type="text" value={form.copyrightText ?? ''} onChange={e => set('copyrightText', e.target.value)} className={inputCls} /></Field>
+          <Field label="טקסט &quot;עוצב ע&quot;י&quot;"><input type="text" value={form.websiteByText ?? ''} onChange={e => set('websiteByText', e.target.value)} className={inputCls} /></Field>
+          <Field label="כותרת עמודת החברה"><input type="text" value={form.footerCompanyLabel ?? ''} onChange={e => set('footerCompanyLabel', e.target.value)} className={inputCls} /></Field>
+          <Field label="כותרת עמודת שירותים"><input type="text" value={form.footerServicesLabel ?? ''} onChange={e => set('footerServicesLabel', e.target.value)} className={inputCls} /></Field>
+          <Field label="כותרת עמודת צור קשר"><input type="text" value={form.footerContactLabel ?? ''} onChange={e => set('footerContactLabel', e.target.value)} className={inputCls} /></Field>
+          <Field label="טקסט &quot;השאר פרטים&quot;"><input type="text" value={form.footerLeaveDetailsText ?? ''} onChange={e => set('footerLeaveDetailsText', e.target.value)} className={inputCls} /></Field>
+          <Field label="תוכן תחתית (ישן)"><textarea value={form.footerText ?? ''} onChange={e => set('footerText', e.target.value)} rows={2} className={inputCls} /></Field>
+        </Section>
 
-        {/* SEO */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-800">SEO</h2>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">כותרת SEO</label><input type="text" value={form.seoTitle ?? ''} onChange={(e) => set('seoTitle', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">תיאור SEO</label><textarea value={form.seoDescription ?? ''} onChange={(e) => set('seoDescription', e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-          <div><label className="block text-sm font-medium text-gray-700 mb-1">מילות מפתח</label><input type="text" value={form.seoKeywords ?? ''} onChange={(e) => set('seoKeywords', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
-        </div>
+        {/* ── Social Links ── */}
+        <Section title="רשתות חברתיות">
+          <Field label="LinkedIn"><input type="url" value={form.socialLinks?.linkedin ?? ''} onChange={e => setSocial('linkedin', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="Facebook"><input type="url" value={form.socialLinks?.facebook ?? ''} onChange={e => setSocial('facebook', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="Instagram"><input type="url" value={form.socialLinks?.instagram ?? ''} onChange={e => setSocial('instagram', e.target.value)} className={inputCls} dir="ltr" /></Field>
+          <Field label="YouTube"><input type="url" value={form.socialLinks?.youtube ?? ''} onChange={e => setSocial('youtube', e.target.value)} className={inputCls} dir="ltr" /></Field>
+        </Section>
+
+        {/* ── Contact Form Labels ── */}
+        <Section title="תוויות טופס צור קשר">
+          {([
+            ['nameLabel', 'שם מלא'], ['emailLabel', 'אימייל'], ['phoneLabel', 'טלפון'], ['companyLabel', 'חברה'],
+            ['subjectLabel', 'נושא'], ['messageLabel', 'הודעה'], ['submitText', 'טקסט שליחה'], ['submittingText', 'טקסט בזמן שליחה'],
+            ['successTitle', 'כותרת הצלחה'], ['successMessage', 'הודעת הצלחה'], ['errorMessage', 'הודעת שגיאה'], ['sendAgainText', 'שלח שוב'],
+          ] as const).map(([key, label]) => (
+            <Field key={key} label={label}><input type="text" value={form.formLabels?.[key] ?? ''} onChange={e => setFormLabel(key, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        {/* ── Contact Form Subjects ── */}
+        <Section title="נושאים בטופס צור קשר">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-500">רשימת נושאים לדרופדאון</span>
+            <button onClick={addSubject} className="text-sm text-wdi-primary hover:underline flex items-center gap-1" type="button"><Plus size={14} />הוסף</button>
+          </div>
+          {(form.contactFormSubjects || []).map((s, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input type="text" value={s} onChange={e => updateSubject(i, e.target.value)} className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm" />
+              <button onClick={() => removeSubject(i)} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
+            </div>
+          ))}
+        </Section>
+
+        {/* ── Google Maps ── */}
+        <Section title="מפת Google">
+          <Field label="קוד הטמעת iframe"><textarea value={form.googleMapsEmbed ?? ''} onChange={e => set('googleMapsEmbed', e.target.value)} rows={3} className={inputCls} dir="ltr" /></Field>
+        </Section>
+
+        {/* ── Default CTA ── */}
+        <Section title="CTA ברירת מחדל">
+          <Field label="כותרת"><input type="text" value={form.defaultCtaTitle ?? ''} onChange={e => set('defaultCtaTitle', e.target.value)} className={inputCls} /></Field>
+          <Field label="תת-כותרת"><input type="text" value={form.defaultCtaSubtitle ?? ''} onChange={e => set('defaultCtaSubtitle', e.target.value)} className={inputCls} /></Field>
+          <Field label="טקסט כפתור"><input type="text" value={form.defaultCtaButtonText ?? ''} onChange={e => set('defaultCtaButtonText', e.target.value)} className={inputCls} /></Field>
+          <Field label="קישור כפתור"><input type="text" value={form.defaultCtaButtonLink ?? ''} onChange={e => set('defaultCtaButtonLink', e.target.value)} className={inputCls} dir="ltr" /></Field>
+        </Section>
+
+        {/* ── Navigation Labels ── */}
+        <Section title="תוויות ניווט (תפריט עליון)">
+          {([
+            ['about', 'אודות'], ['services', 'שירותים'], ['projects', 'פרויקטים'],
+            ['innovation', 'חדשנות'], ['contentLibrary', 'מאגר מידע'], ['contact', 'צור קשר'],
+            ['aboutCompany', 'אודות החברה'], ['ourTeam', 'הצוות שלנו'], ['pressAboutUs', 'כתבו עלינו'],
+            ['clients', 'לקוחות'], ['allServices', 'כל השירותים'], ['contactForm', 'השאר פרטים'],
+            ['supplierReg', 'הצטרפות למאגר'], ['jobs', 'משרות'],
+          ] as [string, string][]).map(([key, label]) => (
+            <Field key={key} label={label}><input type="text" value={form.navLabels?.[key] ?? ''} onChange={e => setNav(key, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        {/* ── Footer Nav Labels ── */}
+        <Section title="תוויות ניווט בפוטר">
+          {([['about', 'אודות'], ['team', 'הצוות'], ['clients', 'לקוחות'], ['projects', 'פרויקטים']] as [string, string][]).map(([key, label]) => (
+            <Field key={key} label={label}><input type="text" value={form.footerNavLabels?.[key] ?? ''} onChange={e => setFooterNav(key, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        {/* ── Page Strings ── */}
+        <Section title="טקסטים — עמוד שירותים">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['ctaTitle', 'כותרת CTA'], ['ctaSubtitle', 'תת-כותרת CTA'], ['readMoreText', 'טקסט קרא עוד']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.services?.[k] ?? ''} onChange={e => setPageStr('services', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד פרויקטים">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['ctaTitle', 'כותרת CTA'], ['ctaSubtitle', 'תת-כותרת CTA']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.projects?.[k] ?? ''} onChange={e => setPageStr('projects', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד צוות">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['ctaTitle', 'כותרת CTA'], ['ctaSubtitle', 'תת-כותרת CTA'], ['ctaButtonText', 'טקסט כפתור CTA']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.team?.[k] ?? ''} onChange={e => setPageStr('team', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד לקוחות">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['testimonialsTitle', 'כותרת המלצות']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.clients?.[k] ?? ''} onChange={e => setPageStr('clients', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד כתבו עלינו">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.press?.[k] ?? ''} onChange={e => setPageStr('press', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד משרות">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['noJobsTitle', 'כותרת אין משרות'], ['noJobsSubtitle', 'תת-כותרת אין משרות'],
+            ['ctaTitle', 'כותרת CTA'], ['ctaSubtitle', 'תת-כותרת CTA'], ['applyButtonText', 'טקסט הגשת מועמדות'], ['sendCvText', 'טקסט שליחת קו"ח']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.jobs?.[k] ?? ''} onChange={e => setPageStr('jobs', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד מאגר מידע">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['emptyText', 'טקסט ריק']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.contentLibrary?.[k] ?? ''} onChange={e => setPageStr('contentLibrary', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        <Section title="טקסטים — עמוד צור קשר">
+          {([['pageTitle', 'כותרת'], ['subtitle', 'תת-כותרת'], ['infoTitle', 'כותרת פרטי התקשרות']] as [string, string][]).map(([k, l]) => (
+            <Field key={k} label={l}><input type="text" value={ps.contact?.[k] ?? ''} onChange={e => setPageStr('contact', k, e.target.value)} className={inputCls} /></Field>
+          ))}
+        </Section>
+
+        {/* ── Sector Labels ── */}
+        <Section title="תוויות מגזרים (פרויקטים)">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-500">מזהה → תווית בעברית</span>
+            <button onClick={() => addLabelPair('sectorLabels')} className="text-sm text-wdi-primary hover:underline flex items-center gap-1" type="button"><Plus size={14} />הוסף</button>
+          </div>
+          {(form.sectorLabels || []).map((s, i) => (
+            <div key={s._key || i} className="flex items-center gap-2">
+              <input type="text" value={s.value} onChange={e => updateLabelPair('sectorLabels', i, 'value', e.target.value)} placeholder="מזהה (אנגלית)" className="w-32 rounded border border-gray-300 px-2 py-1.5 text-sm" dir="ltr" />
+              <input type="text" value={s.label} onChange={e => updateLabelPair('sectorLabels', i, 'label', e.target.value)} placeholder="תווית" className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm" />
+              <button onClick={() => removeLabelPair('sectorLabels', i)} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
+            </div>
+          ))}
+        </Section>
+
+        {/* ── Job Type Labels ── */}
+        <Section title="תוויות סוגי משרה">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-500">מזהה → תווית בעברית</span>
+            <button onClick={() => addLabelPair('jobTypeLabels')} className="text-sm text-wdi-primary hover:underline flex items-center gap-1" type="button"><Plus size={14} />הוסף</button>
+          </div>
+          {(form.jobTypeLabels || []).map((s, i) => (
+            <div key={s._key || i} className="flex items-center gap-2">
+              <input type="text" value={s.value} onChange={e => updateLabelPair('jobTypeLabels', i, 'value', e.target.value)} placeholder="מזהה (אנגלית)" className="w-32 rounded border border-gray-300 px-2 py-1.5 text-sm" dir="ltr" />
+              <input type="text" value={s.label} onChange={e => updateLabelPair('jobTypeLabels', i, 'label', e.target.value)} placeholder="תווית" className="flex-1 rounded border border-gray-300 px-2 py-1.5 text-sm" />
+              <button onClick={() => removeLabelPair('jobTypeLabels', i)} className="p-1 text-red-400 hover:text-red-600" type="button"><Trash2 size={14} /></button>
+            </div>
+          ))}
+        </Section>
+
+        {/* ── SEO ── */}
+        <Section title="SEO">
+          <Field label="כותרת SEO"><input type="text" value={form.seoTitle ?? ''} onChange={e => set('seoTitle', e.target.value)} className={inputCls} /></Field>
+          <Field label="תיאור SEO"><textarea value={form.seoDescription ?? ''} onChange={e => set('seoDescription', e.target.value)} rows={2} className={inputCls} /></Field>
+          <Field label="מילות מפתח"><input type="text" value={form.seoKeywords ?? ''} onChange={e => set('seoKeywords', e.target.value)} className={inputCls} /></Field>
+        </Section>
       </div>
     </div>
   );

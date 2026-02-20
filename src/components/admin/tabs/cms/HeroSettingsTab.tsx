@@ -11,12 +11,15 @@ import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { useToast } from '../../Toast';
 import { ErrorRenderer } from '../../ErrorRenderer';
 import ImageUpload from '../../ImageUpload';
+import FileUpload from '../../FileUpload';
 
 interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
+interface SanityFile { _type: 'file'; asset: { _type: 'reference'; _ref: string } }
 interface HeroSettings {
   _id: string; headline?: string; subheadline?: string;
-  ctaText?: string; ctaLink?: string; backgroundImage?: SanityImage | null;
-  videoUrl?: string; updatedAt: string;
+  ctaText?: string; ctaLink?: string; cta2Text?: string; cta2Link?: string;
+  backgroundImage?: SanityImage | null;
+  videoUrl?: SanityFile | null; updatedAt: string;
 }
 
 export function HeroSettingsTab() {
@@ -76,9 +79,12 @@ export function HeroSettingsTab() {
           <input type="text" value={form.ctaText ?? ''} onChange={(e) => set('ctaText', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
         <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור כפתור</label>
           <input type="url" value={form.ctaLink ?? ''} onChange={(e) => set('ctaLink', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-        <div><label className="block text-sm font-medium text-gray-700 mb-1">כתובת סרטון</label>
-          <input type="url" value={form.videoUrl ?? ''} onChange={(e) => set('videoUrl', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" placeholder="https://www.youtube.com/..." /></div>
-        <ImageUpload label="תמונת רקע" value={form.backgroundImage ?? null} onChange={(v) => { setForm((p) => ({ ...p, backgroundImage: v })); setDirty(true); }} />
+        <div><label className="block text-sm font-medium text-gray-700 mb-1">טקסט כפתור שני</label>
+          <input type="text" value={form.cta2Text ?? ''} onChange={(e) => set('cta2Text', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+        <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור כפתור שני</label>
+          <input type="url" value={form.cta2Link ?? ''} onChange={(e) => set('cta2Link', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
+        <FileUpload label="וידאו רקע" accept="video/mp4,video/webm" description="גרור קובץ וידאו או לחץ לבחירה. MP4 מומלץ, עד 40MB." value={form.videoUrl ?? null} onChange={(v) => { setForm((p) => ({ ...p, videoUrl: v })); setDirty(true); }} />
+        <ImageUpload label="תמונת רקע (גיבוי)" value={form.backgroundImage ?? null} onChange={(v) => { setForm((p) => ({ ...p, backgroundImage: v })); setDirty(true); }} />
       </div>
     </div>
   );
