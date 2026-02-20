@@ -3,7 +3,7 @@
  * Internal TypeScript functions for Next.js SSR.
  * List fetchers return [] on error. Single-entity fetchers return null.
  *
- * GROQ coalesce() handles field name migration:
+ * GROQ coalesce() handles field name migration for services/projects:
  *   coalesce(name, title) — returns `name` if set, otherwise `title`
  *   coalesce(sector, category) — returns `sector` if set, otherwise `category`
  */
@@ -137,7 +137,7 @@ export async function getTeamMembersByCategory(category: string) {
 export async function getActiveClientsContent() {
   try {
     return await sanityClient.fetch(
-      `*[(_type == "clientContent" || _type == "client") && isActive != false] | order(order asc){
+      `*[_type == "clientContent" && isActive != false] | order(order asc){
         _id, name, logo, websiteUrl, order
       }`,
     );
@@ -180,8 +180,8 @@ export async function getActiveTestimonials() {
 export async function getActivePressItems() {
   try {
     return await sanityClient.fetch(
-      `*[(_type == "pressItem" || _type == "press") && isActive != false] | order(publishDate desc){
-        _id, title, source, publishDate, excerpt, "externalUrl": coalesce(externalUrl, url), image, order
+      `*[_type == "pressItem" && isActive != false] | order(publishDate desc){
+        _id, title, source, publishDate, excerpt, externalUrl, image, order
       }`,
     );
   } catch (err) {
@@ -210,8 +210,8 @@ export async function getActiveJobs() {
 export async function getActiveContentLibraryItems() {
   try {
     return await sanityClient.fetch(
-      `*[(_type == "contentLibraryItem" || _type == "contentItem") && isActive != false] | order(order asc){
-        _id, title, description, category, fileUrl, "externalUrl": coalesce(externalUrl, url), image, order
+      `*[_type == "contentLibraryItem" && isActive != false] | order(order asc){
+        _id, title, description, category, fileUrl, externalUrl, image, order
       }`,
     );
   } catch (err) {
@@ -237,6 +237,28 @@ export async function getSiteSettings() {
   try {
     return await sanityClient.fetch(
       `*[_type == "siteSettings"][0]`,
+    );
+  } catch (err) {
+    console.error('[ssr]', err);
+    return null;
+  }
+}
+
+export async function getAboutPage() {
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "aboutPage"][0]`,
+    );
+  } catch (err) {
+    console.error('[ssr]', err);
+    return null;
+  }
+}
+
+export async function getSupplierFormSettings() {
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "supplierFormSettings"][0]`,
     );
   } catch (err) {
     console.error('[ssr]', err);

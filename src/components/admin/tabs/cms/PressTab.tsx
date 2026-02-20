@@ -8,10 +8,13 @@ import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
 import { ErrorRenderer, FieldError } from '../../ErrorRenderer';
 import { ConfirmDialog } from '../../ConfirmDialog';
+import ImageUpload from '../../ImageUpload';
 
+interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
 interface PressItem {
   _id: string; title: string; source?: string; publishDate?: string;
-  excerpt?: string; externalUrl?: string; isActive: boolean; order: number; updatedAt: string;
+  excerpt?: string; summary?: string; image?: SanityImage | null; externalUrl?: string;
+  isActive: boolean; order: number; updatedAt: string;
 }
 type Filter = 'all' | 'active' | 'hidden';
 
@@ -90,6 +93,8 @@ export function PressTab() {
           <div><label className="block text-sm font-medium text-gray-700 mb-1">מקור</label><input type="text" value={form.source ?? ''} onChange={(e) => setForm((p) => ({ ...p, source: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תאריך פרסום</label><input type="date" value={form.publishDate ?? ''} onChange={(e) => setForm((p) => ({ ...p, publishDate: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תקציר</label><textarea value={form.excerpt ?? ''} onChange={(e) => setForm((p) => ({ ...p, excerpt: e.target.value }))} rows={3} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">סיכום</label><textarea value={form.summary ?? ''} onChange={(e) => setForm((p) => ({ ...p, summary: e.target.value }))} rows={2} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <ImageUpload label="תמונה" value={form.image ?? null} onChange={(v) => setForm((p) => ({ ...p, image: v }))} />
           <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור</label><input type="url" value={form.externalUrl ?? ''} onChange={(e) => setForm((p) => ({ ...p, externalUrl: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
           <div className="flex items-center justify-between"><label className="text-sm font-medium text-gray-700">פעיל</label>
             <button onClick={() => setForm((p) => ({ ...p, isActive: !p.isActive }))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${form.isActive ? 'bg-wdi-primary' : 'bg-gray-300'}`} type="button" style={{ direction: 'ltr' }}><span className={`inline-block h-4 w-4 rounded-full bg-white transition ${form.isActive ? 'translate-x-6' : 'translate-x-1'}`} /></button>

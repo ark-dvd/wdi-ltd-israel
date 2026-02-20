@@ -11,11 +11,13 @@ import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
 import { ErrorRenderer, FieldError } from '../../ErrorRenderer';
 import { ConfirmDialog } from '../../ConfirmDialog';
+import ImageUpload from '../../ImageUpload';
 
+interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
 interface Project {
   _id: string; title: string; slug: { current: string } | string; client: string; sector: string;
-  scope?: string[]; location?: string; isFeatured?: boolean;
-  startDate?: string; completedAt?: string; isActive: boolean; order: number; updatedAt: string;
+  description?: string; scope?: string[]; location?: string; featuredImage?: SanityImage | null;
+  isFeatured?: boolean; startDate?: string; completedAt?: string; isActive: boolean; order: number; updatedAt: string;
 }
 interface Testimonial {
   _id: string; clientName: string; quote: string; companyName?: string; role?: string;
@@ -176,7 +178,9 @@ export function ProjectsTab() {
             <select value={form.sector ?? 'commercial'} onChange={(e) => setForm((p) => ({ ...p, sector: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary">
               {Object.entries(SECTORS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select></div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label><textarea value={(form as Record<string, unknown>).description as string ?? ''} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value } as typeof p))} rows={3} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">מיקום</label><input type="text" value={form.location ?? ''} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <ImageUpload label="תמונה ראשית" value={(form as Record<string, unknown>).featuredImage as SanityImage | null ?? null} onChange={(v) => setForm((p) => ({ ...p, featuredImage: v } as typeof p))} />
           <div className="grid grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">תאריך התחלה</label><input type="date" value={form.startDate ?? ''} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
             <div><label className="block text-sm font-medium text-gray-700 mb-1">תאריך סיום</label><input type="date" value={form.completedAt ?? ''} onChange={(e) => setForm((p) => ({ ...p, completedAt: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>

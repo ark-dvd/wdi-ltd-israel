@@ -22,6 +22,7 @@ export const teamMemberCreateSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
   category: teamCategoryEnum,
+  image: z.any().optional(),
   bio: z.string().optional(),
   qualifications: z.string().optional(),
   degrees: z.array(degreeInput).optional(),
@@ -37,6 +38,7 @@ export const teamMemberUpdateSchema = z.object({
   name: z.string().min(1).optional(),
   role: z.string().min(1).optional(),
   category: teamCategoryEnum.optional(),
+  image: z.any().optional(),
   bio: z.string().optional(),
   qualifications: z.string().optional(),
   degrees: z.array(degreeInput).optional(),
@@ -54,8 +56,11 @@ export const projectCreateSchema = z.object({
   slug: z.string().min(1),
   client: z.string().min(1),
   sector: projectSectorEnum,
+  description: z.string().optional(),
   scope: z.array(z.string()).optional(),
   location: z.string().optional(),
+  featuredImage: z.any().optional(),
+  images: z.array(z.any()).optional(),
   isFeatured: z.boolean().optional().default(false),
   startDate: z.string().optional(),
   completedAt: z.string().optional(),
@@ -69,8 +74,11 @@ export const projectUpdateSchema = z.object({
   slug: z.string().min(1).optional(),
   client: z.string().min(1).optional(),
   sector: projectSectorEnum.optional(),
+  description: z.string().optional(),
   scope: z.array(z.string()).optional(),
   location: z.string().optional(),
+  featuredImage: z.any().optional(),
+  images: z.array(z.any()).optional(),
   isFeatured: z.boolean().optional(),
   startDate: z.string().optional(),
   completedAt: z.string().optional(),
@@ -91,7 +99,9 @@ export const serviceCreateSchema = z.object({
   description: z.string().min(1),
   tagline: z.string().optional(),
   icon: z.string().optional(),
+  image: z.any().optional(),
   highlights: z.array(highlightInput).optional(),
+  detailContent: z.any().optional(),
   isActive: z.boolean().optional().default(true),
   order: z.number().int(),
 });
@@ -103,7 +113,9 @@ export const serviceUpdateSchema = z.object({
   description: z.string().min(1).optional(),
   tagline: z.string().optional(),
   icon: z.string().optional(),
+  image: z.any().optional(),
   highlights: z.array(highlightInput).optional(),
+  detailContent: z.any().optional(),
   isActive: z.boolean().optional(),
   order: z.number().int().optional(),
 });
@@ -112,7 +124,9 @@ export const serviceUpdateSchema = z.object({
 
 export const clientContentCreateSchema = z.object({
   name: z.string().min(1),
+  logo: z.any().optional(),
   websiteUrl: z.string().url().optional().or(z.literal('')),
+  sector: z.string().optional(),
   isActive: z.boolean().optional().default(true),
   order: z.number().int(),
 });
@@ -120,7 +134,9 @@ export const clientContentCreateSchema = z.object({
 export const clientContentUpdateSchema = z.object({
   updatedAt: z.string().min(1),
   name: z.string().min(1).optional(),
+  logo: z.any().optional(),
   websiteUrl: z.string().url().optional().or(z.literal('')),
+  sector: z.string().optional(),
   isActive: z.boolean().optional(),
   order: z.number().int().optional(),
 });
@@ -155,6 +171,8 @@ export const pressCreateSchema = z.object({
   source: z.string().optional(),
   publishDate: z.string().optional(),
   excerpt: z.string().optional(),
+  summary: z.string().optional(),
+  image: z.any().optional(),
   externalUrl: z.string().url().optional().or(z.literal('')),
   isActive: z.boolean().optional().default(true),
   order: z.number().int().optional().default(0),
@@ -166,6 +184,8 @@ export const pressUpdateSchema = z.object({
   source: z.string().optional(),
   publishDate: z.string().optional(),
   excerpt: z.string().optional(),
+  summary: z.string().optional(),
+  image: z.any().optional(),
   externalUrl: z.string().url().optional().or(z.literal('')),
   isActive: z.boolean().optional(),
   order: z.number().int().optional(),
@@ -175,10 +195,16 @@ export const pressUpdateSchema = z.object({
 
 export const jobCreateSchema = z.object({
   title: z.string().min(1),
+  description: z.any().optional(),
+  requirements: z.any().optional(),
   location: z.string().optional(),
   type: z.string().optional(),
   department: z.string().optional(),
   contactEmail: z.string().optional(),
+  jobNumber: z.string().optional(),
+  region: z.string().optional(),
+  workplace: z.string().optional(),
+  isNew: z.boolean().optional(),
   isActive: z.boolean().optional().default(true),
   order: z.number().int().optional().default(0),
 });
@@ -186,10 +212,16 @@ export const jobCreateSchema = z.object({
 export const jobUpdateSchema = z.object({
   updatedAt: z.string().min(1),
   title: z.string().min(1).optional(),
+  description: z.any().optional(),
+  requirements: z.any().optional(),
   location: z.string().optional(),
   type: z.string().optional(),
   department: z.string().optional(),
   contactEmail: z.string().optional(),
+  jobNumber: z.string().optional(),
+  region: z.string().optional(),
+  workplace: z.string().optional(),
+  isNew: z.boolean().optional(),
   isActive: z.boolean().optional(),
   order: z.number().int().optional(),
 });
@@ -225,6 +257,8 @@ export const heroSettingsUpdateSchema = z.object({
   subheadline: z.string().optional(),
   ctaText: z.string().optional(),
   ctaLink: z.string().optional(),
+  backgroundImage: z.any().optional(),
+  videoUrl: z.any().optional(),
 });
 
 // ─── Site Settings (singleton) ──────────────────────────────
@@ -400,6 +434,36 @@ export const bulkOperationSchema = z.object({
   ids: z.array(z.string().min(1)).min(1),
   concurrencyTokens: z.record(z.string(), z.string()),
   targetStatus: z.string().optional(),
+});
+
+// ─── About Page (singleton) ─────────────────────────────────
+
+const statInput = z.object({
+  label: z.string().min(1),
+  value: z.string().min(1),
+});
+
+const valueInput = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+});
+
+export const aboutPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  vision: z.string().optional(),
+  storyContent: z.any().optional(),
+  stats: z.array(statInput).optional(),
+  values: z.array(valueInput).optional(),
+});
+
+// ─── Supplier Form Settings (singleton) ─────────────────────
+
+export const supplierFormSettingsUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  formTitle: z.string().optional(),
+  specialtyOptions: z.array(z.string().min(1)).optional(),
+  regionOptions: z.array(z.string().min(1)).optional(),
 });
 
 // ─── CRM Search ─────────────────────────────────────────────

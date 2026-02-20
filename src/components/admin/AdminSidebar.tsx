@@ -7,7 +7,7 @@
 import {
   Users, FolderOpen, Briefcase, Building, Newspaper, BriefcaseBusiness,
   Library, Play, Settings, BarChart3, UserPlus, UserCheck, Handshake,
-  Columns3, SlidersHorizontal, Search, LogOut, type LucideIcon,
+  Columns3, SlidersHorizontal, Search, LogOut, Info, ClipboardList, type LucideIcon,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -42,6 +42,8 @@ const CMS_ITEMS: NavItem[] = [
   { label: 'משרות', icon: BriefcaseBusiness, tab: 'jobs' },
   { label: 'מאגר מידע', icon: Library, tab: 'content-library' },
   { label: 'Hero', icon: Play, tab: 'hero' },
+  { label: 'עמוד אודות', icon: Info, tab: 'about-page' },
+  { label: 'טופס ספקים', icon: ClipboardList, tab: 'supplier-form-settings' },
   { label: 'הגדרות אתר', icon: Settings, tab: 'site-settings' },
 ];
 

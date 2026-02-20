@@ -32,6 +32,8 @@ import { JobsTab } from './tabs/cms/JobsTab';
 import { ContentLibraryTab } from './tabs/cms/ContentLibraryTab';
 import { HeroSettingsTab } from './tabs/cms/HeroSettingsTab';
 import { SiteSettingsTab } from './tabs/cms/SiteSettingsTab';
+import { AboutPageTab } from './tabs/cms/AboutPageTab';
+import { SupplierFormSettingsTab } from './tabs/cms/SupplierFormSettingsTab';
 
 const TAB_MAP: Record<string, React.ComponentType> = {
   // CRM
@@ -52,6 +54,8 @@ const TAB_MAP: Record<string, React.ComponentType> = {
   'content-library': ContentLibraryTab,
   hero: HeroSettingsTab,
   'site-settings': SiteSettingsTab,
+  'about-page': AboutPageTab,
+  'supplier-form-settings': SupplierFormSettingsTab,
 };
 
 function AdminContent({ userEmail }: { userEmail: string }) {

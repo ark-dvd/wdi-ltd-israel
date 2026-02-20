@@ -8,10 +8,13 @@ import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
 import { ErrorRenderer, FieldError } from '../../ErrorRenderer';
 import { ConfirmDialog } from '../../ConfirmDialog';
+import RichTextEditor from '../../RichTextEditor';
 
 interface Job {
-  _id: string; title: string; location?: string; type?: string;
-  department?: string; contactEmail?: string; isActive: boolean; order: number; updatedAt: string;
+  _id: string; title: string; description?: unknown[]; requirements?: unknown[];
+  location?: string; type?: string; department?: string; contactEmail?: string;
+  jobNumber?: string; region?: string; workplace?: string; isNew?: boolean;
+  isActive: boolean; order: number; updatedAt: string;
 }
 type Filter = 'all' | 'active' | 'hidden';
 
@@ -93,7 +96,17 @@ export function JobsTab() {
               <option value="">בחר סוג</option><option value="משרה מלאה">משרה מלאה</option><option value="משרה חלקית">משרה חלקית</option><option value="פרילנס">פרילנס</option>
             </select></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">מחלקה</label><input type="text" value={form.department ?? ''} onChange={(e) => setForm((p) => ({ ...p, department: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <RichTextEditor label="תיאור משרה" value={form.description as unknown[] ?? null} onChange={(v) => setForm((p) => ({ ...p, description: v }))} />
+          <RichTextEditor label="דרישות" value={form.requirements as unknown[] ?? null} onChange={(v) => setForm((p) => ({ ...p, requirements: v }))} />
+          <div className="grid grid-cols-2 gap-4">
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">מספר משרה</label><input type="text" value={form.jobNumber ?? ''} onChange={(e) => setForm((p) => ({ ...p, jobNumber: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">אזור</label><input type="text" value={form.region ?? ''} onChange={(e) => setForm((p) => ({ ...p, region: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          </div>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">מקום עבודה</label><input type="text" value={form.workplace ?? ''} onChange={(e) => setForm((p) => ({ ...p, workplace: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">אימייל ליצירת קשר</label><input type="email" value={form.contactEmail ?? ''} onChange={(e) => setForm((p) => ({ ...p, contactEmail: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
+          <div className="flex items-center justify-between"><label className="text-sm font-medium text-gray-700">חדשה</label>
+            <button onClick={() => setForm((p) => ({ ...p, isNew: !p.isNew }))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${form.isNew ? 'bg-wdi-secondary' : 'bg-gray-300'}`} type="button" style={{ direction: 'ltr' }}><span className={`inline-block h-4 w-4 rounded-full bg-white transition ${form.isNew ? 'translate-x-6' : 'translate-x-1'}`} /></button>
+          </div>
           <div className="flex items-center justify-between"><label className="text-sm font-medium text-gray-700">פעילה</label>
             <button onClick={() => setForm((p) => ({ ...p, isActive: !p.isActive }))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${form.isActive ? 'bg-wdi-primary' : 'bg-gray-300'}`} type="button" style={{ direction: 'ltr' }}><span className={`inline-block h-4 w-4 rounded-full bg-white transition ${form.isActive ? 'translate-x-6' : 'translate-x-1'}`} /></button>
           </div>

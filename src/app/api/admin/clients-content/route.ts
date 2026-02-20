@@ -15,7 +15,7 @@ export const GET = withAuth(async (request: NextRequest) => {
     const { page, limit, offset } = parsePagination(url);
     const isActive = url.searchParams.get('isActive');
 
-    let filter = `(_type == "clientContent" || _type == "client")`;
+    let filter = `_type == "clientContent"`;
     if (isActive === 'true') filter += ` && isActive != false`;
     else if (isActive === 'false') filter += ` && isActive == false`;
 

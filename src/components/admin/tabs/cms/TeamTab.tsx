@@ -8,10 +8,12 @@ import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
 import { ErrorRenderer, FieldError } from '../../ErrorRenderer';
 import { ConfirmDialog } from '../../ConfirmDialog';
+import ImageUpload from '../../ImageUpload';
 
+interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
 interface TeamMember {
   _id: string; name: string; role: string; category: string;
-  bio?: string; qualifications?: string; linkedin?: string;
+  image?: SanityImage | null; bio?: string; qualifications?: string; linkedin?: string;
   email?: string; phone?: string; isActive: boolean; order: number;
   updatedAt: string;
 }
@@ -133,6 +135,7 @@ export function TeamTab() {
       }>
         <ErrorRenderer error={mutErr} onReload={fetchItems} onDismiss={reset} />
         <div className="space-y-4">
+          <ImageUpload label="תמונה" value={form.image ?? null} onChange={(v) => { setForm((p) => ({ ...p, image: v })); }} />
           <div><label className="block text-sm font-medium text-gray-700 mb-1">שם *</label>
             <input type="text" value={form.name ?? ''} onChange={(e) => set('name', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" />
             <FieldError error={mutErr?.fieldErrors?.name} /></div>

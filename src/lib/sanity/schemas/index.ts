@@ -1,9 +1,10 @@
 /**
- * All 15 Sanity schema definitions per DOC-020 §3.1–3.15.
+ * All 17 Sanity schema definitions.
  *
  * CRM Entities (5): Lead, ClientCRM, Engagement, Activity, CrmSettings
- * Content Entities (10): Service, Project, TeamMember, ClientContent,
- *   Testimonial, PressItem, Job, ContentLibraryItem, HeroSettings, SiteSettings
+ * Content Entities (12): Service, Project, TeamMember, ClientContent,
+ *   Testimonial, PressItem, Job, ContentLibraryItem, HeroSettings, SiteSettings,
+ *   AboutPage, SupplierFormSettings
  */
 
 // CRM Entities
@@ -24,6 +25,8 @@ import { jobSchema } from './job';
 import { contentLibraryItemSchema } from './content-library-item';
 import { heroSettingsSchema } from './hero-settings';
 import { siteSettingsSchema } from './site-settings';
+import { aboutPageSchema } from './about-page';
+import { supplierFormSettingsSchema } from './supplier-form-settings';
 
 // Re-export everything
 export { leadSchema, LEAD_STATUS, LEAD_PRIORITY, LEAD_TRANSITIONS } from './lead';
@@ -59,6 +62,8 @@ export { jobSchema } from './job';
 export { contentLibraryItemSchema } from './content-library-item';
 export { heroSettingsSchema, HERO_SETTINGS_ID } from './hero-settings';
 export { siteSettingsSchema, SITE_SETTINGS_ID } from './site-settings';
+export { aboutPageSchema, ABOUT_PAGE_ID } from './about-page';
+export { supplierFormSettingsSchema, SUPPLIER_FORM_SETTINGS_ID } from './supplier-form-settings';
 
 /** All schema objects for Sanity Studio configuration */
 export const allSchemas = [
@@ -77,4 +82,6 @@ export const allSchemas = [
   contentLibraryItemSchema,
   heroSettingsSchema,
   siteSettingsSchema,
+  aboutPageSchema,
+  supplierFormSettingsSchema,
 ];

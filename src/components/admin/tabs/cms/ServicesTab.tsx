@@ -8,11 +8,14 @@ import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
 import { ErrorRenderer, FieldError } from '../../ErrorRenderer';
 import { ConfirmDialog } from '../../ConfirmDialog';
+import ImageUpload from '../../ImageUpload';
+import RichTextEditor from '../../RichTextEditor';
 
+interface SanityImage { _type: 'image'; asset: { _type: 'reference'; _ref: string } }
 interface Service {
   _id: string; name: string; slug: { current: string } | string; description: string;
-  tagline?: string; icon?: string; highlights?: { title: string; description?: string }[];
-  isActive: boolean; order: number; updatedAt: string;
+  tagline?: string; icon?: string; image?: SanityImage | null; highlights?: { title: string; description?: string }[];
+  detailContent?: unknown[]; isActive: boolean; order: number; updatedAt: string;
 }
 type Filter = 'all' | 'active' | 'hidden';
 
@@ -112,6 +115,8 @@ export function ServicesTab() {
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תת-כותרת</label><input type="text" value={form.tagline ?? ''} onChange={(e) => setForm((p) => ({ ...p, tagline: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">תיאור *</label><textarea value={form.description ?? ''} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /><FieldError error={mutErr?.fieldErrors?.description} /></div>
           <div><label className="block text-sm font-medium text-gray-700 mb-1">אייקון</label><input type="text" value={form.icon ?? ''} onChange={(e) => setForm((p) => ({ ...p, icon: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
+          <ImageUpload label="תמונה" value={(form as Record<string, unknown>).image as SanityImage | null ?? null} onChange={(v) => setForm((p) => ({ ...p, image: v } as typeof p))} />
+          <RichTextEditor label="תוכן מפורט" value={(form as Record<string, unknown>).detailContent as unknown[] ?? null} onChange={(v) => setForm((p) => ({ ...p, detailContent: v } as typeof p))} />
           <div className="flex items-center justify-between"><label className="text-sm font-medium text-gray-700">פעיל</label>
             <button onClick={() => setForm((p) => ({ ...p, isActive: !p.isActive }))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${form.isActive ? 'bg-wdi-primary' : 'bg-gray-300'}`} type="button" style={{ direction: 'ltr' }}><span className={`inline-block h-4 w-4 rounded-full bg-white transition ${form.isActive ? 'translate-x-6' : 'translate-x-1'}`} /></button>
           </div>
