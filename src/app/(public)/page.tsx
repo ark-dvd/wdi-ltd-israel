@@ -3,6 +3,7 @@
  * ONLY Hero section + Footer (Footer is from layout).
  * Full-screen video background, headline, subheadline, two CTA buttons.
  * All content from heroSettings singleton in Sanity.
+ * INV-P01: NO hardcoded Hebrew. INV-P02: NO local media fallback.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -15,10 +16,8 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
-    title: settings?.seoTitle ?? 'WDI | מאתגר להצלחה',
-    description:
-      settings?.seoDescription ??
-      'WDI - חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי',
+    title: settings?.seoTitle ?? 'WDI',
+    description: settings?.seoDescription ?? '',
     alternates: { canonical: '/' },
   };
 }
@@ -29,33 +28,37 @@ export default async function HomePage() {
     getSiteSettings(),
   ]);
 
-  // Video URL: from Sanity file reference (resolved via GROQ), fallback to local static
-  const videoUrl = hero?.videoFileUrl ?? '/videos/hero-video.mp4';
+  // Video URL: from Sanity file upload only — NO local fallback (INV-P02)
+  const videoUrl = hero?.videoFileUrl ?? '';
 
   return (
     <>
       <LocalBusinessJsonLd settings={settings} />
 
       {/* Hero — DOC-070 §3.1: full-screen video, headline, subheadline, 2 CTAs */}
-      <section className="hero" id="hero" aria-label="מסך פתיחה">
-        <HeroVideo videoUrl={videoUrl} />
+      <section className="hero" id="hero" aria-label="hero">
+        {videoUrl && <HeroVideo videoUrl={videoUrl} />}
         <div className="hero-overlay" aria-hidden="true" />
         <div className="hero-content">
-          <h1>{hero?.headline ?? 'מאתגר להצלחה'}</h1>
+          <h1>{hero?.headline ?? ''}</h1>
           {hero?.subheadline && <p>{hero.subheadline}</p>}
           <div className="hero-buttons">
-            <Link
-              href={hero?.ctaLink ?? '/contact'}
-              className="btn btn-primary"
-            >
-              {hero?.ctaText ?? 'צור קשר'}
-            </Link>
-            <Link
-              href={hero?.cta2Link ?? '/services'}
-              className="btn btn-outline-light"
-            >
-              {hero?.cta2Text ?? 'תחומי עיסוק'}
-            </Link>
+            {hero?.ctaText && (
+              <Link
+                href={hero.ctaLink ?? '/contact'}
+                className="btn btn-primary"
+              >
+                {hero.ctaText}
+              </Link>
+            )}
+            {hero?.cta2Text && (
+              <Link
+                href={hero.cta2Link ?? '/services'}
+                className="btn btn-outline-light"
+              >
+                {hero.cta2Text}
+              </Link>
+            )}
           </div>
         </div>
       </section>

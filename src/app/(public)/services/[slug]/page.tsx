@@ -2,12 +2,13 @@
  * Service detail — ORIGINAL_DESIGN_SPEC §7, DOC-070 §3.6
  * PageHeader with service name, detail content, highlights, sidebar with other services.
  * Share buttons (WhatsApp, Facebook, email).
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getService, getActiveServices } from '@/lib/data-fetchers';
+import { getService, getActiveServices, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const service = await getService(slug);
   return {
-    title: service?.name ?? 'שירות',
+    title: service?.name ?? '',
     description: service?.tagline ?? service?.description ?? '',
     alternates: { canonical: `/services/${slug}` },
   };
@@ -31,9 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [service, allServices] = await Promise.all([
+  const [service, allServices, settings] = await Promise.all([
     getService(slug),
     getActiveServices(),
+    getSiteSettings(),
   ]);
 
   if (!service) notFound();
@@ -53,13 +55,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         <div className="container">
           {/* Share buttons */}
           <div className="share-buttons" style={{ marginBottom: 32 }}>
-            <a className="share-btn whatsapp" href={`https://wa.me/?text=${encodeURIComponent(service.name + ' - WDI')}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <a className="share-btn whatsapp" href={`https://wa.me/?text=${encodeURIComponent(service.name + ' - ' + (settings?.companyName ?? 'WDI'))}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
               <i className="fab fa-whatsapp" />
             </a>
             <a className="share-btn facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`/services/${slug}`)}`} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <i className="fab fa-facebook-f" />
             </a>
-            <a className="share-btn email" href={`mailto:?subject=${encodeURIComponent(service.name)}&body=${encodeURIComponent('WDI - ' + service.name)}`} aria-label="Email">
+            <a className="share-btn email" href={`mailto:?subject=${encodeURIComponent(service.name)}&body=${encodeURIComponent((settings?.companyName ?? 'WDI') + ' - ' + service.name)}`} aria-label="Email">
               <i className="fas fa-envelope" />
             </a>
           </div>
@@ -81,7 +83,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
               {/* Highlights */}
               {service.highlights && service.highlights.length > 0 && (
                 <div style={{ marginTop: 40 }}>
-                  <h3 style={{ marginBottom: 20 }}>נקודות מפתח</h3>
                   {service.highlights.map((h: { _key?: string; title?: string; description?: string }, i: number) => (
                     <div key={h._key ?? i} className="animate-on-scroll" style={{ marginBottom: 16, paddingRight: 16, borderRight: '3px solid var(--secondary)' }}>
                       {h.title && <h4 style={{ marginBottom: 4 }}>{h.title}</h4>}
@@ -94,7 +95,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
             {/* Sidebar — other services */}
             <aside style={{ position: 'sticky', top: 100 }}>
-              <h4 style={{ marginBottom: 16 }}>שירותים נוספים</h4>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {otherServices.map((s: { _id: string; name: string; slug: string }) => (
                   <li key={s._id} style={{ marginBottom: 8 }}>
@@ -110,13 +110,17 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       </section>
 
       {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>מעוניינים בשירות זה?</h2>
-          <p>צוות WDI ישמח לסייע לכם</p>
-          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
-        </div>
-      </section>
+      {(service.ctaText || settings?.defaultCtaButtonText) && (
+        <section className="cta-section">
+          <div className="container">
+            {settings?.defaultCtaTitle && <h2>{settings.defaultCtaTitle}</h2>}
+            {settings?.defaultCtaSubtitle && <p>{settings.defaultCtaSubtitle}</p>}
+            <Link href={settings?.defaultCtaButtonLink ?? '/contact'} className="btn btn-primary">
+              {service.ctaText ?? settings?.defaultCtaButtonText ?? ''}
+            </Link>
+          </div>
+        </section>
+      )}
     </>
   );
 }

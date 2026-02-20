@@ -1,27 +1,32 @@
 /**
  * Press page — ORIGINAL_DESIGN_SPEC §13.3, DOC-070 §3.9
  * PageHeader, press items list with images, source, date, excerpt.
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActivePressItems } from '@/lib/data-fetchers';
+import { getActivePressItems, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'כתבו עלינו',
-  description: 'כתבות ופרסומים על WDI בתקשורת',
+  title: 'Press',
   alternates: { canonical: '/press' },
 };
 
 export default async function PressPage() {
-  const press = await getActivePressItems();
+  const [press, settings] = await Promise.all([
+    getActivePressItems(),
+    getSiteSettings(),
+  ]);
+
+  const ps = settings?.pageStrings?.press;
 
   return (
     <>
-      <PageHeader title="כתבו עלינו" subtitle="WDI בתקשורת" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -70,11 +75,7 @@ export default async function PressPage() {
                 );
               })}
             </div>
-          ) : (
-            <p style={{ textAlign: 'center', color: 'var(--gray-500)', padding: '40px 0' }}>
-              כתבות יעודכנו בקרוב
-            </p>
-          )}
+          ) : null}
         </div>
       </section>
     </>

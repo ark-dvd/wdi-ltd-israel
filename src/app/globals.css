@@ -1139,6 +1139,12 @@ a { text-decoration: none; color: inherit; }
 .share-btn.facebook { background: #1877f2; color: white; }
 .share-btn.email { background: var(--gray-200); color: var(--gray-700); }
 
+/* ─── Responsive: Team 900px breakpoint — DOC-070 ──────── */
+
+@media (max-width: 900px) {
+  .team-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+
 /* ─── Responsive: Tablet ────────────────────────────────── */
 
 @media (max-width: 768px) {
@@ -1151,7 +1157,6 @@ a { text-decoration: none; color: inherit; }
 
   .footer-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
-  .team-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
   .section { padding: 60px 0; }
   .page-header { padding: 100px 0 50px; }

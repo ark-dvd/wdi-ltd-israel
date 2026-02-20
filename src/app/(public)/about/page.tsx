@@ -1,6 +1,7 @@
 /**
  * About page — ORIGINAL_DESIGN_SPEC §13, DOC-070 §3.2
  * PageHeader, company description (rich text), values grid, press items, CTA.
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -13,8 +14,7 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'אודות החברה',
-  description: 'WDI - חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל',
+  title: 'About',
   alternates: { canonical: '/about' },
 };
 
@@ -26,30 +26,39 @@ export default async function AboutPage() {
 
   return (
     <>
-      <PageHeader title={about?.pageTitle ?? 'אודות החברה'} subtitle="מאתגר להצלחה" />
+      <PageHeader title={about?.pageTitle ?? ''} subtitle={about?.subtitle ?? ''} />
 
       {/* Company Story — §13.1 */}
-      <section className="section">
-        <div className="container">
-          <div className="company-story animate-on-scroll">
-            {about?.companyDescription ? (
+      {about?.companyDescription && (
+        <section className="section">
+          <div className="container">
+            <div className="company-story animate-on-scroll">
               <PortableText value={about.companyDescription} />
-            ) : (
-              <p>WDI הנדסה היא חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. החברה הוקמה מתוך חזון לספק שירותי ניהול פרויקטים ברמה הגבוהה ביותר.</p>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Vision text (old field, show if populated and no companyDescription) */}
+      {!about?.companyDescription && about?.vision && (
+        <section className="section">
+          <div className="container">
+            <div className="company-story animate-on-scroll">
+              <p>{about.vision}</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Values Grid — §13.2 */}
       {about?.values && about.values.length > 0 && (
         <section className="section bg-light">
           <div className="container">
             <div className="section-header">
-              <h2>הערכים שלנו</h2>
+              {about.valuesTitle && <h2>{about.valuesTitle}</h2>}
             </div>
             <div className="values-grid">
-              {about.values.map((v: { _key?: string; icon?: string; title?: string; description?: string }, i: number) => (
+              {about.values.map((v: { _key?: string; icon?: string; title?: string; description?: any }, i: number) => (
                 <div key={v._key ?? i} className="value-card animate-on-scroll">
                   {v.icon && (
                     <div className="value-icon">
@@ -57,7 +66,11 @@ export default async function AboutPage() {
                     </div>
                   )}
                   {v.title && <h3>{v.title}</h3>}
-                  {v.description && <p>{v.description}</p>}
+                  {v.description && (
+                    typeof v.description === 'string'
+                      ? <p>{v.description}</p>
+                      : <PortableText value={v.description} />
+                  )}
                 </div>
               ))}
             </div>
@@ -70,7 +83,7 @@ export default async function AboutPage() {
         <section className="section">
           <div className="container">
             <div className="section-header">
-              <h2>כתבו עלינו</h2>
+              {about?.pressTitle && <h2>{about.pressTitle}</h2>}
             </div>
             <div className="press-grid">
               {press.slice(0, 3).map((item: { _id: string; title: string; source?: string; publishDate?: string; excerpt?: string; externalUrl?: string; image?: { asset?: { _ref?: string } } }) => {
@@ -93,13 +106,17 @@ export default async function AboutPage() {
       )}
 
       {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>רוצים לשמוע עוד?</h2>
-          <p>צוות WDI ישמח לספר לכם עוד על החברה והשירותים שלנו</p>
-          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
-        </div>
-      </section>
+      {(about?.ctaTitle || about?.ctaButtonText) && (
+        <section className="cta-section">
+          <div className="container">
+            {about.ctaTitle && <h2>{about.ctaTitle}</h2>}
+            {about.ctaSubtitle && <p>{about.ctaSubtitle}</p>}
+            {about.ctaButtonText && (
+              <Link href={about.ctaButtonLink ?? '/contact'} className="btn btn-primary">{about.ctaButtonText}</Link>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 }

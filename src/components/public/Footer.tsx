@@ -3,11 +3,11 @@
  * 4-column grid: about+social, company links, services (auto-populated), contact.
  * Footer-bottom with copyright, daflash logo, duns100 badge.
  * Background: var(--gray-900) = #1a1a2e
+ * INV-P01: ALL text from CMS. INV-P02: ALL media from CMS.
  */
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSiteSettings, getActiveServices } from '@/lib/data-fetchers';
-import { sanityImageUrl } from '@/lib/sanity/image';
 
 export async function Footer() {
   const [settings, services] = await Promise.all([
@@ -15,11 +15,13 @@ export async function Footer() {
     getActiveServices(),
   ]);
 
-  const daflashUrl = settings?.daflashLogo ? sanityImageUrl(settings.daflashLogo) : '/images/daflash-logo.png';
-  const dunsUrl = settings?.duns100Image ? sanityImageUrl(settings.duns100Image) : '/images/duns100.webp';
-  const dunsLink = settings?.duns100Url ?? '#';
-  const year = new Date().getFullYear();
-  const copyright = settings?.copyrightText ?? `© ${year} WDI בע"מ. כל הזכויות שמורות.`;
+  const logoWhiteUrl = settings?.logoWhiteUrl ?? '';
+  const daflashUrl = settings?.daflashLogoUrl ?? '';
+  const dunsUrl = settings?.duns100ImageUrl ?? '';
+  const dunsLink = settings?.duns100Url ?? '';
+  const copyright = settings?.copyrightText ?? '';
+  const websiteBy = settings?.websiteByText ?? '';
+  const fnl = settings?.footerNavLabels;
 
   return (
     <footer className="footer" role="contentinfo">
@@ -27,14 +29,16 @@ export async function Footer() {
         <div className="footer-grid">
           {/* Column 1: Logo + description + social */}
           <div className="footer-about">
-            <Image
-              src="/images/wdi-logo-white.png"
-              alt="WDI"
-              width={160}
-              height={45}
-              className="footer-logo"
-            />
-            <p>{settings?.footerText ?? 'חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל'}</p>
+            {logoWhiteUrl && (
+              <Image
+                src={logoWhiteUrl}
+                alt={settings?.companyName ?? ''}
+                width={160}
+                height={45}
+                className="footer-logo"
+              />
+            )}
+            {settings?.footerText && <p>{settings.footerText}</p>}
             <div className="social-links">
               {settings?.socialLinks?.linkedin && (
                 <a href={settings.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
@@ -61,19 +65,19 @@ export async function Footer() {
 
           {/* Column 2: Company links */}
           <div className="footer-links">
-            <h4>החברה</h4>
+            {settings?.footerCompanyLabel && <h4>{settings.footerCompanyLabel}</h4>}
             <ul>
-              <li><Link href="/about">אודות</Link></li>
-              <li><Link href="/team">הצוות</Link></li>
-              <li><Link href="/clients">לקוחות</Link></li>
-              <li><Link href="/projects">פרויקטים</Link></li>
+              <li><Link href="/about">{fnl?.about ?? ''}</Link></li>
+              <li><Link href="/team">{fnl?.team ?? ''}</Link></li>
+              <li><Link href="/clients">{fnl?.clients ?? ''}</Link></li>
+              <li><Link href="/projects">{fnl?.projects ?? ''}</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Services (auto-populated from CMS) — INV-P06 */}
+          {/* Column 3: Services (auto-populated from CMS) — two-column */}
           <div className="footer-links footer-services">
-            <h4>שירותים</h4>
-            <ul>
+            {settings?.footerServicesLabel && <h4>{settings.footerServicesLabel}</h4>}
+            <ul className="two-column">
               {services.map((s: { _id: string; name: string; slug: string }) => (
                 <li key={s._id}>
                   <Link href={`/services/${typeof s.slug === 'string' ? s.slug : ''}`}>
@@ -86,7 +90,7 @@ export async function Footer() {
 
           {/* Column 4: Contact info with FA icons */}
           <div className="footer-contact">
-            <h4>צור קשר</h4>
+            {settings?.footerContactLabel && <h4>{settings.footerContactLabel}</h4>}
             {settings?.address && (
               <p>
                 <i className="fas fa-map-marker-alt" />
@@ -105,34 +109,38 @@ export async function Footer() {
                 <a href={`mailto:${settings.email}`} dir="ltr" style={{ color: 'inherit' }}>{settings.email}</a>
               </p>
             )}
-            <div style={{ marginTop: 16 }}>
-              <Link href="/contact" className="btn btn-primary" style={{ fontSize: '0.85rem', padding: '10px 20px' }}>
-                השאר פרטים
-              </Link>
-            </div>
+            {settings?.footerLeaveDetailsText && (
+              <div style={{ marginTop: 16 }}>
+                <Link href="/contact" className="btn btn-primary" style={{ fontSize: '0.85rem', padding: '10px 20px' }}>
+                  {settings.footerLeaveDetailsText}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer bottom */}
         <div className="footer-bottom">
-          <p>{copyright}</p>
+          {copyright && <p>{copyright}</p>}
           <div className="footer-badges">
-            {/* Daflash credit */}
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Website by</span>
-            <Image
-              src={daflashUrl}
-              alt="daflash"
-              width={80}
-              height={24}
-              style={{ opacity: 0.7 }}
-            />
-            {/* Duns 100 badge */}
-            {dunsLink !== '#' ? (
-              <a href={dunsLink} target="_blank" rel="noopener noreferrer">
+            {websiteBy && <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>{websiteBy}</span>}
+            {daflashUrl && (
+              <Image
+                src={daflashUrl}
+                alt="daflash"
+                width={80}
+                height={24}
+                style={{ opacity: 0.7 }}
+              />
+            )}
+            {dunsUrl && (
+              dunsLink ? (
+                <a href={dunsLink} target="_blank" rel="noopener noreferrer">
+                  <Image src={dunsUrl} alt="Duns 100" width={60} height={30} style={{ opacity: 0.7 }} />
+                </a>
+              ) : (
                 <Image src={dunsUrl} alt="Duns 100" width={60} height={30} style={{ opacity: 0.7 }} />
-              </a>
-            ) : (
-              <Image src={dunsUrl} alt="Duns 100" width={60} height={30} style={{ opacity: 0.7 }} />
+              )
             )}
           </div>
         </div>

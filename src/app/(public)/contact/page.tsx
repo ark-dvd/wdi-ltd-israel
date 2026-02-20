@@ -1,6 +1,7 @@
 /**
  * Contact page — ORIGINAL_DESIGN_SPEC §11, DOC-070 §3.13
  * PageHeader, two-column: contact form + info sidebar with map.
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/data-fetchers';
@@ -11,30 +12,30 @@ import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'צור קשר',
-  description: 'צור קשר עם WDI — ניהול פרויקטים, פיקוח וייעוץ הנדסי',
+  title: 'Contact',
   alternates: { canonical: '/contact' },
 };
 
 export default async function ContactPage() {
   const settings = await getSiteSettings();
+  const ps = settings?.pageStrings?.contact;
 
   return (
     <>
       <LocalBusinessJsonLd settings={settings} />
-      <PageHeader title="צור קשר" subtitle="נשמח לשמוע מכם" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
           <div className="contact-grid">
-            {/* Contact Form */}
+            {/* Contact Form — subject dropdown from CMS */}
             <div className="contact-form-card animate-on-scroll">
-              <ContactForm />
+              <ContactForm subjects={settings?.contactFormSubjects} labels={settings?.formLabels} />
             </div>
 
             {/* Contact Info */}
             <div className="animate-on-scroll">
-              <h3 style={{ marginBottom: 24 }}>פרטי התקשרות</h3>
+              {ps?.infoTitle && <h3 style={{ marginBottom: 24 }}>{ps.infoTitle}</h3>}
               {settings?.phone && (
                 <p style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                   <i className="fas fa-phone" style={{ color: 'var(--secondary)', width: 20, textAlign: 'center' }} />

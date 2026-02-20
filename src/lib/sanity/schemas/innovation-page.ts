@@ -1,7 +1,10 @@
 /**
- * InnovationPage (Content Entity — Singleton)
- * Stores dynamic content for the Innovation page.
+ * InnovationPage (Content Entity — Singleton) — DOC-070 §3.10
+ * INV-P01: All visible text from CMS. INV-P07: icons from icon bank.
+ * Fields: pageTitle, subtitle, content (RT), image, sections (icon bank + RT + image),
+ *         CTA text.
  */
+import { ICON_OPTIONS } from '../icon-bank';
 
 export const INNOVATION_PAGE_ID = 'innovationPage';
 
@@ -10,8 +13,18 @@ export const innovationPageSchema = {
   title: 'עמוד חדשנות',
   type: 'document' as const,
   fields: [
-    { name: 'headline', title: 'כותרת ראשית', type: 'string' as const },
-    { name: 'introduction', title: 'פסקת מבוא', type: 'text' as const },
+    { name: 'pageTitle', title: 'כותרת העמוד', type: 'string' as const },
+    { name: 'subtitle', title: 'תת-כותרת', type: 'string' as const },
+    {
+      name: 'content',
+      title: 'תוכן ראשי',
+      type: 'array' as const,
+      of: [{ type: 'block' as const }],
+    },
+    { name: 'image', title: 'תמונה ראשית', type: 'image' as const, options: { hotspot: true } },
+    // Keep old fields for migration
+    { name: 'headline', title: 'כותרת (ישן)', type: 'string' as const, hidden: true },
+    { name: 'introduction', title: 'מבוא (ישן)', type: 'text' as const, hidden: true },
     {
       name: 'sections',
       title: 'מקטעי חדשנות',
@@ -26,20 +39,31 @@ export const innovationPageSchema = {
               type: 'string' as const,
               validation: (Rule: { required: () => unknown }) => Rule.required(),
             },
-            { name: 'subtitle', title: 'כותרת משנה', type: 'string' as const },
-            { name: 'description', title: 'תיאור', type: 'text' as const },
             {
-              name: 'features',
-              title: 'תכונות',
-              type: 'array' as const,
-              of: [{ type: 'string' as const }],
+              name: 'icon',
+              title: 'אייקון',
+              type: 'string' as const,
+              options: { list: ICON_OPTIONS },
+              description: 'בחר אייקון מהבנק',
             },
+            {
+              name: 'content',
+              title: 'תוכן',
+              type: 'array' as const,
+              of: [{ type: 'block' as const }],
+            },
+            { name: 'image', title: 'תמונה', type: 'image' as const, options: { hotspot: true } },
           ],
         },
       ],
     },
-    { name: 'visionTitle', title: 'כותרת חזון', type: 'string' as const },
-    { name: 'visionText', title: 'טקסט חזון', type: 'text' as const },
+    // CTA section
+    { name: 'ctaTitle', title: 'כותרת CTA', type: 'string' as const },
+    { name: 'ctaSubtitle', title: 'תת-כותרת CTA', type: 'string' as const },
+    { name: 'ctaButtonText', title: 'טקסט כפתור CTA ראשי', type: 'string' as const },
+    { name: 'ctaButtonLink', title: 'קישור כפתור CTA ראשי', type: 'string' as const },
+    { name: 'cta2ButtonText', title: 'טקסט כפתור CTA שני', type: 'string' as const },
+    { name: 'cta2ButtonLink', title: 'קישור כפתור CTA שני', type: 'string' as const },
     { name: 'createdAt', title: 'נוצר בתאריך', type: 'datetime' as const, readOnly: true },
     { name: 'updatedAt', title: 'עודכן בתאריך', type: 'datetime' as const, readOnly: true },
   ],

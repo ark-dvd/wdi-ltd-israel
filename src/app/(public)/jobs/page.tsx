@@ -1,34 +1,41 @@
 /**
  * Jobs / Careers — DOC-070 §3.14
  * PageHeader, job listings with tags, descriptions, apply buttons.
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
+ * Job type labels from siteSettings.jobTypeLabels.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getActiveJobs } from '@/lib/data-fetchers';
+import { getActiveJobs, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'משרות',
-  description: 'משרות פתוחות ב-WDI — הצטרפו לצוות',
+  title: 'Jobs',
   alternates: { canonical: '/jobs' },
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  'full-time': 'משרה מלאה',
-  'part-time': 'חלקית',
-  freelance: 'פרילנס',
-  contract: 'חוזה',
-};
-
 export default async function JobsPage() {
-  const jobs = await getActiveJobs();
+  const [jobs, settings] = await Promise.all([
+    getActiveJobs(),
+    getSiteSettings(),
+  ]);
+
+  const ps = settings?.pageStrings?.jobs;
+
+  // Build type labels from CMS
+  const typeLabels: Record<string, string> = {};
+  if (settings?.jobTypeLabels) {
+    for (const item of settings.jobTypeLabels) {
+      if (item.value && item.label) typeLabels[item.value] = item.label;
+    }
+  }
 
   return (
     <>
-      <PageHeader title="משרות פתוחות" subtitle="הצטרפו לצוות WDI" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container" style={{ maxWidth: 800 }}>
@@ -49,7 +56,7 @@ export default async function JobsPage() {
                         background: 'var(--secondary)', color: 'var(--primary-dark)',
                         fontSize: '0.75rem', fontWeight: 600, padding: '4px 12px', borderRadius: 20,
                       }}>
-                        {TYPE_LABELS[job.type] ?? job.type}
+                        {typeLabels[job.type] ?? job.type}
                       </span>
                     )}
                   </div>
@@ -78,7 +85,6 @@ export default async function JobsPage() {
                   {/* Requirements */}
                   {job.requirements && (
                     <div style={{ marginBottom: 20 }}>
-                      <h4 style={{ fontSize: '1rem', marginBottom: 8 }}>דרישות</h4>
                       <div style={{ color: 'var(--gray-600)', fontSize: '0.9rem', lineHeight: 1.7 }}>
                         {typeof job.requirements === 'string' ? (
                           <p>{job.requirements}</p>
@@ -89,16 +95,27 @@ export default async function JobsPage() {
                     </div>
                   )}
 
-                  {/* Apply */}
+                  {/* Apply + Share */}
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    <Link href="/job-application" className="btn btn-primary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
-                      הגשת מועמדות
-                    </Link>
-                    {job.contactEmail && (
-                      <a href={`mailto:${job.contactEmail}?subject=מועמדות: ${job.title}`} className="btn btn-secondary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
-                        <i className="fas fa-envelope" /> שלח CV
+                    {ps?.applyButtonText && (
+                      <Link href="/job-application" className="btn btn-primary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
+                        {ps.applyButtonText}
+                      </Link>
+                    )}
+                    {job.contactEmail && ps?.sendCvText && (
+                      <a href={`mailto:${job.contactEmail}?subject=${job.title}`} className="btn btn-secondary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
+                        <i className="fas fa-envelope" /> {ps.sendCvText}
                       </a>
                     )}
+                    {/* Share buttons */}
+                    <div className="share-buttons" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <a className="share-btn whatsapp" href={`https://wa.me/?text=${encodeURIComponent(job.title)}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style={{ width: 36, height: 36, fontSize: '0.85rem' }}>
+                        <i className="fab fa-whatsapp" />
+                      </a>
+                      <a className="share-btn email" href={`mailto:?subject=${encodeURIComponent(job.title)}`} aria-label="Email" style={{ width: 36, height: 36, fontSize: '0.85rem' }}>
+                        <i className="fas fa-envelope" />
+                      </a>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -106,21 +123,25 @@ export default async function JobsPage() {
           ) : (
             <div style={{ textAlign: 'center', padding: '60px 0' }}>
               <i className="fas fa-briefcase" style={{ fontSize: '3rem', color: 'var(--gray-300)', marginBottom: 16, display: 'block' }} />
-              <h3 style={{ color: 'var(--gray-500)', fontWeight: 500 }}>אין משרות פתוחות כרגע</h3>
-              <p style={{ color: 'var(--gray-400)' }}>אנחנו תמיד שמחים לקבל קורות חיים</p>
+              {ps?.noJobsTitle && <h3 style={{ color: 'var(--gray-500)', fontWeight: 500 }}>{ps.noJobsTitle}</h3>}
+              {ps?.noJobsSubtitle && <p style={{ color: 'var(--gray-400)' }}>{ps.noJobsSubtitle}</p>}
             </div>
           )}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>לא מצאתם משרה מתאימה?</h2>
-          <p>שלחו לנו קורות חיים ונחזור אליכם</p>
-          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
-        </div>
-      </section>
+      {(ps?.ctaTitle || settings?.defaultCtaTitle) && (
+        <section className="cta-section">
+          <div className="container">
+            <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
+            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <Link href="/contact" className="btn btn-primary">
+              {settings?.defaultCtaButtonText ?? ''}
+            </Link>
+          </div>
+        </section>
+      )}
     </>
   );
 }

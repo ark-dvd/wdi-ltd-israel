@@ -1,31 +1,34 @@
 /**
  * Clients page — ORIGINAL_DESIGN_SPEC §10, DOC-070 §3.4
- * PageHeader, client logo grid (grayscale→color on hover),
+ * PageHeader, client logo grid (grayscale->color on hover),
  * featured testimonials (isFeatured=true) below.
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActiveClientsContent, getFeaturedTestimonials } from '@/lib/data-fetchers';
+import { getActiveClientsContent, getFeaturedTestimonials, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'לקוחות',
-  description: 'הלקוחות שסומכים על WDI בניהול הפרויקטים שלהם',
+  title: 'Clients',
   alternates: { canonical: '/clients' },
 };
 
 export default async function ClientsPage() {
-  const [clients, testimonials] = await Promise.all([
+  const [clients, testimonials, settings] = await Promise.all([
     getActiveClientsContent(),
     getFeaturedTestimonials(),
+    getSiteSettings(),
   ]);
+
+  const ps = settings?.pageStrings?.clients;
 
   return (
     <>
-      <PageHeader title="הלקוחות שלנו" subtitle="גאים לעבוד עם הארגונים המובילים בישראל" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       {/* Client Logos Grid — §10.2 */}
       <section className="section">
@@ -55,7 +58,7 @@ export default async function ClientsPage() {
         <section className="section bg-light">
           <div className="container">
             <div className="section-header">
-              <h2>מה הלקוחות אומרים</h2>
+              {ps?.testimonialsTitle && <h2>{ps.testimonialsTitle}</h2>}
             </div>
             <div className="testimonials-grid">
               {testimonials.map((t: { _id: string; clientName: string; quote: string; companyName?: string; role?: string; projectTitle?: string }) => (

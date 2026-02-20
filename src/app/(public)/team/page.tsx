@@ -1,34 +1,36 @@
 /**
  * Team page — ORIGINAL_DESIGN_SPEC §9, DOC-070 §3.3
  * PageHeader, team members grouped by category in fixed order:
- * founders → management → department-heads → project-managers
+ * founders -> management -> department-heads -> project-managers
  * Square cards with hover overlay (navy 92% opacity).
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
+ * Category labels from TEAM_CATEGORY (schema-defined).
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getTeamMembers } from '@/lib/data-fetchers';
+import { getTeamMembers, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
+import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { TEAM_CATEGORY } from '@/lib/sanity/schemas/team-member';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'הצוות שלנו',
-  description: 'הכירו את צוות WDI — מהנדסים, מנהלי פרויקטים ומומחים בתחום הבנייה',
+  title: 'Team',
   alternates: { canonical: '/team' },
 };
 
 const CATEGORY_ORDER = ['founders', 'management', 'department-heads', 'project-managers'] as const;
-const CATEGORY_LABELS: Record<string, string> = {
-  founders: 'מייסדים',
-  management: 'הנהלה',
-  'department-heads': 'ראשי תחומים',
-  'project-managers': 'מנהלי פרויקטים',
-};
 
 export default async function TeamPage() {
-  const members = await getTeamMembers();
+  const [members, settings] = await Promise.all([
+    getTeamMembers(),
+    getSiteSettings(),
+  ]);
+
+  const ps = settings?.pageStrings?.team;
 
   // Group by category
   const grouped: Record<string, typeof members> = {};
@@ -40,7 +42,7 @@ export default async function TeamPage() {
 
   return (
     <>
-      <PageHeader title="הצוות שלנו" subtitle="אנשי המקצוע שמובילים את הפרויקטים שלכם" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       {CATEGORY_ORDER.map((cat) => {
         const group = grouped[cat];
@@ -49,22 +51,29 @@ export default async function TeamPage() {
           <section key={cat} className="section" id={`team-${cat}`}>
             <div className="container">
               <div className="section-header">
-                <h2>{CATEGORY_LABELS[cat] ?? cat}</h2>
+                <h2>{TEAM_CATEGORY[cat] ?? cat}</h2>
               </div>
               <div className="team-grid">
                 {group.map((member: {
                   _id: string; name: string; role?: string; image?: { asset?: { _ref?: string } };
-                  bio?: string; linkedin?: string;
+                  bio?: any; linkedin?: string;
                 }) => {
-                  const imgUrl = member.image ? sanityImageUrl(member.image) : '/images/placeholder-person.jpg';
+                  const imgUrl = member.image ? sanityImageUrl(member.image) : '';
                   return (
                     <div key={member._id} className="team-card animate-on-scroll">
                       <div className="team-card-image">
-                        <Image src={imgUrl} alt={member.name} width={400} height={400} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {imgUrl && <Image src={imgUrl} alt={member.name} width={400} height={400} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                         <div className="team-card-overlay">
                           <h4>{member.name}</h4>
                           <p className="team-card-position">{member.role}</p>
-                          {member.bio && <p className="team-card-bio">{member.bio}</p>}
+                          {member.bio && (
+                            <div className="team-card-bio">
+                              {typeof member.bio === 'string'
+                                ? <p>{member.bio}</p>
+                                : <PortableText value={member.bio} />
+                              }
+                            </div>
+                          )}
                           {member.linkedin && (
                             <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="team-card-linkedin">
                               <i className="fab fa-linkedin" /> LinkedIn
@@ -84,13 +93,17 @@ export default async function TeamPage() {
       })}
 
       {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>רוצים להצטרף לצוות?</h2>
-          <p>אנחנו תמיד מחפשים אנשי מקצוע מצטיינים</p>
-          <Link href="/jobs" className="btn btn-primary">משרות פתוחות</Link>
-        </div>
-      </section>
+      {(ps?.ctaTitle || settings?.defaultCtaTitle) && (
+        <section className="cta-section">
+          <div className="container">
+            <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
+            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <Link href="/jobs" className="btn btn-primary">
+              {ps?.ctaButtonText ?? settings?.defaultCtaButtonText ?? ''}
+            </Link>
+          </div>
+        </section>
+      )}
     </>
   );
 }

@@ -1,11 +1,11 @@
 /**
- * Server-side data fetcher functions — DOC-040 §2.10
+ * Server-side data fetcher functions — DOC-070
  * Internal TypeScript functions for Next.js SSR.
  * List fetchers return [] on error. Single-entity fetchers return null.
  *
- * GROQ coalesce() handles field name migration for services/projects:
+ * GROQ coalesce() handles field name migration:
  *   coalesce(name, title) — returns `name` if set, otherwise `title`
- *   coalesce(sector, category) — returns `sector` if set, otherwise `category`
+ *   coalesce(pageTitle, headline, formTitle) — new→old field migration
  */
 import { sanityClient } from './sanity/client';
 
@@ -17,7 +17,7 @@ export async function getActiveServices() {
       `*[_type == "service" && isActive != false] | order(order asc){
         _id, "name": coalesce(name, title), "slug": slug.current,
         "description": coalesce(description, shortDescription), tagline, icon,
-        highlights, detailContent, image, order
+        highlights, detailContent, image, order, ctaText, howWdiDoesIt
       }`,
     );
   } catch (err) {
@@ -32,6 +32,7 @@ export async function getService(slug: string) {
       `*[_type == "service" && slug.current == $slug && isActive != false][0]{
         ...,
         "name": coalesce(name, title),
+        "slug": slug.current,
         "description": coalesce(description, shortDescription)
       }`,
       { slug },
@@ -109,7 +110,8 @@ export async function getTeamMembers() {
           4
         ) asc, order asc
       ){
-        _id, name, role, category, image, bio, qualifications, degrees, linkedin, email, phone, order
+        _id, name, role, category, image, bio, qualifications,
+        birthYear, residence, degrees, linkedin, email, phone, order
       }`,
     );
   } catch (err) {
@@ -122,7 +124,8 @@ export async function getTeamMembersByCategory(category: string) {
   try {
     return await sanityClient.fetch(
       `*[_type == "teamMember" && isActive != false && category == $category] | order(order asc){
-        _id, name, role, category, image, bio, qualifications, degrees, linkedin, email, phone, order
+        _id, name, role, category, image, bio, qualifications,
+        birthYear, residence, degrees, linkedin, email, phone, order
       }`,
       { category },
     );
@@ -211,7 +214,9 @@ export async function getActiveContentLibraryItems() {
   try {
     return await sanityClient.fetch(
       `*[_type == "contentLibraryItem" && isActive != false] | order(order asc){
-        _id, title, description, category, fileUrl, externalUrl, image, order
+        _id, title, description, category, icon,
+        "fileDownloadUrl": file.asset->url,
+        fileUrl, externalUrl, image, order
       }`,
     );
   } catch (err) {
@@ -239,7 +244,13 @@ export async function getHeroSettings() {
 export async function getSiteSettings() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "siteSettings"][0]`,
+      `*[_type == "siteSettings"][0]{
+        ...,
+        "logoWhiteUrl": logoWhite.asset->url,
+        "logoDarkUrl": logoDark.asset->url,
+        "daflashLogoUrl": daflashLogo.asset->url,
+        "duns100ImageUrl": duns100Image.asset->url
+      }`,
     );
   } catch (err) {
     console.error('[ssr]', err);
@@ -250,7 +261,11 @@ export async function getSiteSettings() {
 export async function getAboutPage() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "aboutPage"][0]`,
+      `*[_type == "aboutPage"][0]{
+        ...,
+        "pageTitle": coalesce(pageTitle, ""),
+        "companyDescription": coalesce(companyDescription, storyContent),
+      }`,
     );
   } catch (err) {
     console.error('[ssr]', err);
@@ -261,7 +276,10 @@ export async function getAboutPage() {
 export async function getSupplierFormSettings() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "supplierFormSettings"][0]`,
+      `*[_type == "supplierFormSettings"][0]{
+        ...,
+        "pageTitle": coalesce(pageTitle, formTitle),
+      }`,
     );
   } catch (err) {
     console.error('[ssr]', err);
@@ -272,7 +290,11 @@ export async function getSupplierFormSettings() {
 export async function getInnovationPage() {
   try {
     return await sanityClient.fetch(
-      `*[_type == "innovationPage"][0]`,
+      `*[_type == "innovationPage"][0]{
+        ...,
+        "pageTitle": coalesce(pageTitle, headline),
+        "content": coalesce(content, []),
+      }`,
     );
   } catch (err) {
     console.error('[ssr]', err);

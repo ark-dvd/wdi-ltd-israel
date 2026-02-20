@@ -1,8 +1,10 @@
 /**
- * Service (Content Entity) — DOC-020 §3.6
+ * Service (Content Entity) — DOC-070 §3.5/§3.6
  * Professional service offering with dedicated page.
  * INV-016: slug must be unique across all Services.
+ * INV-P07: icon from icon bank, NOT free text.
  */
+import { ICON_OPTIONS } from '../icon-bank';
 
 export const serviceSchema = {
   name: 'service',
@@ -19,7 +21,13 @@ export const serviceSchema = {
     },
     { name: 'description', title: 'תיאור', type: 'text' as const, validation: (Rule: { required: () => unknown }) => Rule.required() },
     { name: 'tagline', title: 'תת-כותרת', type: 'string' as const },
-    { name: 'icon', title: 'אייקון', type: 'string' as const },
+    {
+      name: 'icon',
+      title: 'אייקון',
+      type: 'string' as const,
+      options: { list: ICON_OPTIONS },
+      description: 'בחר אייקון מהבנק',
+    },
     {
       name: 'highlights',
       title: 'נקודות מפתח',

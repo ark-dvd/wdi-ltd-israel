@@ -1,26 +1,31 @@
 /**
  * Services listing — ORIGINAL_DESIGN_SPEC §7, DOC-070 §3.5
  * PageHeader, grid of service cards (icon, name, description, "read more" link).
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getActiveServices } from '@/lib/data-fetchers';
+import { getActiveServices, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'שירותים',
-  description: 'השירותים שלנו — ניהול פרויקטים, פיקוח, ייעוץ הנדסי ועוד',
+  title: 'Services',
   alternates: { canonical: '/services' },
 };
 
 export default async function ServicesPage() {
-  const services = await getActiveServices();
+  const [services, settings] = await Promise.all([
+    getActiveServices(),
+    getSiteSettings(),
+  ]);
+
+  const ps = settings?.pageStrings?.services;
 
   return (
     <>
-      <PageHeader title="השירותים שלנו" subtitle="פתרונות מקצועיים לניהול פרויקטי בנייה" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -35,7 +40,7 @@ export default async function ServicesPage() {
                 <h3>{s.name}</h3>
                 {s.description && <p>{s.description}</p>}
                 <span className="service-card-link">
-                  קרא עוד <i className="fas fa-arrow-left" />
+                  {ps?.readMoreText ?? ''} <i className="fas fa-arrow-left" />
                 </span>
               </Link>
             ))}
@@ -44,13 +49,17 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="cta-section">
-        <div className="container">
-          <h2>צריכים שירות מקצועי?</h2>
-          <p>נשמח לשמוע על הפרויקט שלכם ולהציע את הפתרון המתאים</p>
-          <Link href="/contact" className="btn btn-primary">צור קשר</Link>
-        </div>
-      </section>
+      {(ps?.ctaTitle || settings?.defaultCtaButtonText) && (
+        <section className="cta-section">
+          <div className="container">
+            {(ps?.ctaTitle || settings?.defaultCtaTitle) && <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle}</h2>}
+            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <Link href={settings?.defaultCtaButtonLink ?? '/contact'} className="btn btn-primary">
+              {settings?.defaultCtaButtonText ?? ''}
+            </Link>
+          </div>
+        </section>
+      )}
     </>
   );
 }

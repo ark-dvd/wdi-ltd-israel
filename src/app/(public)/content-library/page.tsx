@@ -1,27 +1,33 @@
 /**
  * Content Library — DOC-070 §3.11
  * PageHeader, grid of resource cards (icon, title, description, external link).
+ * INV-P01: ALL text from CMS — no hardcoded Hebrew.
+ * INV-P02: file download from CMS file upload, not URL.
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActiveContentLibraryItems } from '@/lib/data-fetchers';
+import { getActiveContentLibraryItems, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'מאגר מידע',
-  description: 'מאגר מסמכים ומקורות מקצועיים בתחום הבנייה וניהול הפרויקטים',
+  title: 'Content Library',
   alternates: { canonical: '/content-library' },
 };
 
 export default async function ContentLibraryPage() {
-  const items = await getActiveContentLibraryItems();
+  const [items, settings] = await Promise.all([
+    getActiveContentLibraryItems(),
+    getSiteSettings(),
+  ]);
+
+  const ps = settings?.pageStrings?.contentLibrary;
 
   return (
     <>
-      <PageHeader title="מאגר מידע" subtitle="מסמכים ומקורות מקצועיים" />
+      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -29,11 +35,12 @@ export default async function ContentLibraryPage() {
             <div className="content-library-grid">
               {items.map((item: {
                 _id: string; title: string; description?: string; category?: string;
-                icon?: string; externalUrl?: string; fileUrl?: string;
+                icon?: string; externalUrl?: string; fileUrl?: string; fileDownloadUrl?: string;
                 image?: { asset?: { _ref?: string } };
               }) => {
                 const imgUrl = item.image ? sanityImageUrl(item.image) : '';
-                const href = item.externalUrl || item.fileUrl || '#';
+                // Prefer uploaded file, then legacy fileUrl, then external link
+                const href = item.fileDownloadUrl || item.externalUrl || item.fileUrl || '#';
                 return (
                   <a
                     key={item._id}
@@ -59,16 +66,18 @@ export default async function ContentLibraryPage() {
                     <h3>{item.title}</h3>
                     {item.description && <p>{item.description}</p>}
                     <span className="service-card-link">
-                      צפה <i className="fas fa-external-link-alt" style={{ fontSize: '0.8rem' }} />
+                      <i className="fas fa-external-link-alt" style={{ fontSize: '0.8rem' }} />
                     </span>
                   </a>
                 );
               })}
             </div>
           ) : (
-            <p style={{ textAlign: 'center', color: 'var(--gray-500)', padding: '40px 0' }}>
-              מאגר המידע יעודכן בקרוב
-            </p>
+            ps?.emptyText ? (
+              <p style={{ textAlign: 'center', color: 'var(--gray-500)', padding: '40px 0' }}>
+                {ps.emptyText}
+              </p>
+            ) : null
           )}
         </div>
       </section>

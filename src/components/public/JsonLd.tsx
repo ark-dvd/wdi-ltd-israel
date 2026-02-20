@@ -1,6 +1,7 @@
 /**
  * JSON-LD structured data components — DOC-060 §6.2, §6.3
  * Rich Schema.org markup for SEO + GEO optimization.
+ * INV-P01: org name + description from CMS siteSettings.
  */
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
@@ -15,7 +16,7 @@ function JsonLdScript({ data }: { data: Record<string, any> }) {
 }
 
 /** Organization — all pages (global) */
-export function OrganizationJsonLd({ settings }: { settings?: { socialLinks?: { linkedin?: string; facebook?: string; instagram?: string } } }) {
+export function OrganizationJsonLd({ settings }: { settings?: { companyName?: string; companyNameEn?: string; companyDescription?: string; socialLinks?: { linkedin?: string; facebook?: string; instagram?: string } } }) {
   const sameAs = [
     settings?.socialLinks?.linkedin,
     settings?.socialLinks?.facebook,
@@ -27,21 +28,11 @@ export function OrganizationJsonLd({ settings }: { settings?: { socialLinks?: { 
       data={{
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'WDI Ltd Israel',
-        alternateName: 'ו.ד.י בע"מ',
-        legalName: 'WDI Ltd',
+        name: settings?.companyNameEn ?? settings?.companyName ?? '',
         url: SITE_URL,
         logo: `${SITE_URL}/logo.png`,
-        foundingDate: '2013',
-        description: 'חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל',
+        description: settings?.companyDescription ?? '',
         areaServed: { '@type': 'Country', name: 'Israel' },
-        knowsAbout: [
-          'ניהול פרויקטי בנייה',
-          'פיקוח הנדסי',
-          'ייעוץ הנדסי',
-          'Construction Project Management',
-          'Engineering Supervision',
-        ],
         ...(sameAs.length > 0 ? { sameAs } : {}),
         contactPoint: {
           '@type': 'ContactPoint',
@@ -54,15 +45,14 @@ export function OrganizationJsonLd({ settings }: { settings?: { socialLinks?: { 
 }
 
 /** LocalBusiness — homepage + contact page */
-export function LocalBusinessJsonLd({ settings }: { settings?: { phone?: string; email?: string; address?: string } }) {
+export function LocalBusinessJsonLd({ settings }: { settings?: { companyName?: string; companyNameEn?: string; phone?: string; email?: string; address?: string } }) {
   return (
     <JsonLdScript
       data={{
         '@context': 'https://schema.org',
         '@type': 'LocalBusiness',
         '@id': `${SITE_URL}/#localbusiness`,
-        name: 'WDI Ltd Israel',
-        alternateName: 'ו.ד.י בע"מ',
+        name: settings?.companyNameEn ?? settings?.companyName ?? '',
         url: SITE_URL,
         telephone: settings?.phone,
         email: settings?.email,
@@ -71,14 +61,13 @@ export function LocalBusinessJsonLd({ settings }: { settings?: { phone?: string;
           : undefined,
         areaServed: { '@type': 'Country', name: 'Israel' },
         priceRange: '$$$$',
-        foundingDate: '2013',
       }}
     />
   );
 }
 
 /** Service — /services/[slug] */
-export function ServiceJsonLd({ service }: { service: any }) {
+export function ServiceJsonLd({ service, companyName }: { service: any; companyName?: string }) {
   return (
     <JsonLdScript
       data={{
@@ -88,7 +77,7 @@ export function ServiceJsonLd({ service }: { service: any }) {
         description: service.tagline || service.description,
         provider: {
           '@type': 'Organization',
-          name: 'WDI Ltd Israel',
+          name: companyName ?? '',
           url: SITE_URL,
         },
         areaServed: { '@type': 'Country', name: 'Israel' },
@@ -100,7 +89,7 @@ export function ServiceJsonLd({ service }: { service: any }) {
 }
 
 /** Project — /projects/[slug] */
-export function ProjectJsonLd({ project }: { project: any }) {
+export function ProjectJsonLd({ project, companyName }: { project: any; companyName?: string }) {
   return (
     <JsonLdScript
       data={{
@@ -110,7 +99,7 @@ export function ProjectJsonLd({ project }: { project: any }) {
         description: project.scope || project.description,
         creator: {
           '@type': 'Organization',
-          name: 'WDI Ltd Israel',
+          name: companyName ?? '',
           url: SITE_URL,
         },
         locationCreated: project.location
@@ -126,7 +115,7 @@ export function ProjectJsonLd({ project }: { project: any }) {
 }
 
 /** Person — /team */
-export function PersonJsonLd({ person }: { person: any }) {
+export function PersonJsonLd({ person, companyName }: { person: any; companyName?: string }) {
   return (
     <JsonLdScript
       data={{
@@ -136,38 +125,26 @@ export function PersonJsonLd({ person }: { person: any }) {
         jobTitle: person.role,
         worksFor: {
           '@type': 'Organization',
-          name: 'WDI Ltd Israel',
+          name: companyName ?? '',
           url: SITE_URL,
         },
         ...(person.linkedin ? { sameAs: [person.linkedin] } : {}),
-        ...(person.qualifications ? { knowsAbout: person.qualifications } : {}),
-        ...(person.degrees?.length
-          ? {
-              alumniOf: person.degrees.map((d: string) => ({
-                '@type': 'EducationalOrganization',
-                name: d,
-              })),
-            }
-          : {}),
-        ...(person.qualifications ? { hasCredential: { '@type': 'EducationalOccupationalCredential', credentialCategory: person.qualifications } } : {}),
       }}
     />
   );
 }
 
 /** JobPosting — /jobs */
-export function JobPostingJsonLd({ job }: { job: any }) {
+export function JobPostingJsonLd({ job, companyName }: { job: any; companyName?: string }) {
   return (
     <JsonLdScript
       data={{
         '@context': 'https://schema.org',
         '@type': 'JobPosting',
         title: job.title,
-        description: job.description || job.title,
-        employmentType: job.type === 'משרה מלאה' ? 'FULL_TIME' : job.type === 'משרה חלקית' ? 'PART_TIME' : 'CONTRACTOR',
         hiringOrganization: {
           '@type': 'Organization',
-          name: 'WDI Ltd Israel',
+          name: companyName ?? '',
           url: SITE_URL,
         },
         jobLocation: job.location
@@ -215,7 +192,7 @@ export function ReviewJsonLd({ testimonial, itemReviewed }: { testimonial: any; 
         reviewBody: testimonial.quote,
         itemReviewed: {
           '@type': 'Organization',
-          name: itemReviewed ?? 'WDI Ltd Israel',
+          name: itemReviewed ?? '',
         },
       }}
     />

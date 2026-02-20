@@ -1,7 +1,15 @@
 /**
- * Job (Content Entity) — DOC-020 §3.12
+ * Job (Content Entity) — DOC-070 §3.14
  * Open position at WDI.
+ * INV-P01: type field is dropdown, not free text.
  */
+
+const JOB_TYPES = [
+  { title: 'משרה מלאה', value: 'full-time' },
+  { title: 'חלקית', value: 'part-time' },
+  { title: 'פרילנס', value: 'freelance' },
+  { title: 'חוזה', value: 'contract' },
+];
 
 export const jobSchema = {
   name: 'job',
@@ -22,7 +30,12 @@ export const jobSchema = {
       of: [{ type: 'block' as const }],
     },
     { name: 'location', title: 'מיקום', type: 'string' as const },
-    { name: 'type', title: 'סוג משרה', type: 'string' as const },
+    {
+      name: 'type',
+      title: 'סוג משרה',
+      type: 'string' as const,
+      options: { list: JOB_TYPES },
+    },
     { name: 'department', title: 'מחלקה', type: 'string' as const },
     { name: 'contactEmail', title: 'אימייל ליצירת קשר', type: 'string' as const },
     { name: 'order', title: 'סדר', type: 'number' as const },
