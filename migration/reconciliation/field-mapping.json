@@ -1,0 +1,69 @@
+{
+  "_description": "Maps legacy field names to DOC-020 canonical field names",
+  "_extractedAt": "2026-02-19",
+  "_source": "DOC-020 Invariants INV-024, INV-025 + data/ JSON analysis",
+  "TeamMember": {
+    "position": {
+      "canonicalName": "role",
+      "invariant": "INV-024",
+      "note": "16 of 18 files use 'position', 4 files also have 'role'. Canonical: only 'role' allowed."
+    },
+    "bio": {
+      "canonicalName": "bio",
+      "note": "Field exists but is plain string. Canonical spec may require Portable Text."
+    },
+    "birthYear": {
+      "canonicalName": "birthYear",
+      "note": "Some files use numeric, some string. Normalize to number."
+    },
+    "linkedin": {
+      "canonicalName": "linkedinUrl",
+      "note": "Field name 'linkedin' → canonical 'linkedinUrl' per DOC-020"
+    }
+  },
+  "Project": {
+    "category": {
+      "canonicalName": "sector",
+      "invariant": "INV-026",
+      "note": "Field 'category' must become 'sector'. Values also need mapping (see category-mapping.json)"
+    },
+    "image": {
+      "canonicalName": "heroImage",
+      "note": "Single image string → Sanity image reference"
+    },
+    "services": {
+      "canonicalName": "services",
+      "note": "Array of Hebrew strings → should become array of Service references"
+    }
+  },
+  "Testimonial": {
+    "author": {
+      "canonicalName": "clientName",
+      "note": "'author' → 'clientName' per DOC-020"
+    },
+    "position": {
+      "canonicalName": "role",
+      "note": "'position' → 'role' per DOC-020"
+    },
+    "letterUrl": {
+      "canonicalName": "letterUrl",
+      "note": "References /documents/*.pdf files — all MISSING from repo. Empty documents/ directory."
+    }
+  },
+  "Client": {
+    "name": {
+      "canonicalName": "name",
+      "note": "Already canonical"
+    },
+    "logo": {
+      "canonicalName": "logo",
+      "note": "String path → Sanity image reference"
+    }
+  },
+  "Job": {
+    "active": {
+      "canonicalName": "isActive",
+      "note": "'active' → 'isActive' per DOC-020"
+    }
+  }
+}

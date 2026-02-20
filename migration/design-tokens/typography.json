@@ -1,0 +1,19 @@
+{
+  "_source": "css/style.css :root + index.html Google Fonts + wdi-backoffice/app/layout.js",
+  "_extractedAt": "2026-02-19",
+  "publicSite": {
+    "fontHebrew": "Assistant, Rubik, sans-serif",
+    "fontEnglish": "Assistant, sans-serif",
+    "googleFontsImport": "Assistant:wght@200;300;400;500;600;700;800",
+    "baseFontSize": "16px",
+    "bodyLineHeight": 1.7,
+    "h1Size": "clamp(2.5rem, 5vw, 4rem)",
+    "h1LetterSpacing": "-0.02em",
+    "headingWeight": 700,
+    "headingLineHeight": 1.3
+  },
+  "backoffice": {
+    "fontFamily": "Heebo, sans-serif",
+    "googleFontsImport": "Heebo:wght@300;400;500;700"
+  }
+}

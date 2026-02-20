@@ -1,0 +1,18 @@
+{
+  "gender": "female",
+  "residence": "חיפה",
+  "degrees": [
+    {
+      "title": "הנדסה אזרחית",
+      "degree": "MSc",
+      "institution": "Moscow State University of Civil Engineering",
+      "year": "2008"
+    }
+  ],
+  "position": "מנהלת פרוייקט",
+  "name": "אנה ליבורקין",
+  "order": 98,
+  "image": "/images/team/gemini_generated_image_mjb0kjmjb0kjmjb0.png",
+  "birthYear": 1986,
+  "category": "team"
+}

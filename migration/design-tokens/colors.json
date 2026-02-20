@@ -1,0 +1,29 @@
+{
+  "_source": "css/style.css :root variables + wdi-backoffice/tailwind.config.js",
+  "_extractedAt": "2026-02-19",
+  "brand": {
+    "primary": "#1a365d",
+    "primaryLight": "#2d4a7c",
+    "primaryDark": "#0f2744",
+    "secondary": "#c9a227",
+    "secondaryLight": "#dbb84a",
+    "accent": "#e8b923"
+  },
+  "backoffice": {
+    "wdiBlue": "#1a365d",
+    "wdiGold": "#c9a961"
+  },
+  "neutrals": {
+    "white": "#ffffff",
+    "gray50": "#f9fafb",
+    "gray100": "#f3f4f6",
+    "gray200": "#e5e7eb",
+    "gray300": "#d1d5db",
+    "gray400": "#9ca3af",
+    "gray500": "#6b7280",
+    "gray600": "#4b5563",
+    "gray700": "#374151",
+    "gray800": "#1f2937",
+    "gray900": "#111827"
+  }
+}

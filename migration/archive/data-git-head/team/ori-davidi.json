@@ -1,0 +1,21 @@
+{
+  "gender": "male",
+  "educationType": "",
+  "residence": "ראשון לציון",
+  "degrees": [
+    {
+      "degree": "סטודנט",
+      "title": "הנדסה אזרחית",
+      "institution": "סמי שמעון"
+    }
+  ],
+  "birthPlace": "",
+  "position": "מתאם פרויקט",
+  "name": "אורי דוידי",
+  "order": 95,
+  "id": "ori-davidi",
+  "image": "/images/team/ori-davidi.jpg",
+  "birthYear": 2000,
+  "linkedin": "https://www.linkedin.com/in/ori-davidi/",
+  "category": "team"
+}

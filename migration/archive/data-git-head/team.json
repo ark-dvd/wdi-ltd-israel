@@ -1,0 +1,112 @@
+{
+  "team": [
+    {
+      "id": "arik-davidi",
+      "name": "אריק דוידי",
+      "position": "מייסד, שותף",
+      "image": "/images/team/arik-davidi.jpg",
+      "linkedin": "https://www.linkedin.com/in/arikdavidi/",
+      "category": "founders",
+      "order": 1
+    },
+    {
+      "id": "guy-golan",
+      "name": "גיא גולן",
+      "position": "מנכ\"ל WDI",
+      "image": "/images/team/guy-golan.jpg",
+      "linkedin": "https://www.linkedin.com/in/guy-golan-82793463/",
+      "category": "founders",
+      "order": 2
+    },
+    {
+      "id": "ilan-weiss",
+      "name": "אילן וייס",
+      "position": "מייסד, שותף",
+      "image": "/images/team/ilan-weiss.jpg",
+      "linkedin": "https://www.linkedin.com/in/i-w-2a18671a/",
+      "category": "founders",
+      "order": 3
+    },
+    {
+      "id": "yarden-weiss",
+      "name": "ירדן וייס",
+      "position": "אדמיניסטרציה",
+      "image": "/images/team/yarden-weiss.jpg",
+      "linkedin": "",
+      "category": "admin",
+      "order": 10
+    },
+    {
+      "id": "eyal-nir",
+      "name": "איל ניר",
+      "position": "ראש תחום פרויקטים תעשייתיים",
+      "image": "/images/team/eyal-nir.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 20
+    },
+    {
+      "id": "yossi-elisha",
+      "name": "יוסי אלישע",
+      "position": "ראש תחום פרויקטים מסחריים",
+      "image": "/images/team/yossi-elisha.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 21
+    },
+    {
+      "id": "victor-lifshitz",
+      "name": "ויקטור ליפשיץ",
+      "position": "ראש תחום פרויקטים ביטחוניים",
+      "image": "/images/team/victor-lifshitz.jpg",
+      "linkedin": "",
+      "category": "heads",
+      "order": 22
+    },
+    {
+      "id": "rotem-glick",
+      "name": "רותם גליק",
+      "position": "מנהלת תכנון ורישוי",
+      "image": "/images/team/rotem-glick.jpg",
+      "linkedin": "",
+      "category": "team",
+      "order": 100
+    },
+    {
+      "id": "ori-davidi",
+      "name": "אורי דוידי",
+      "position": "מנהל פרויקט",
+      "image": "/images/team/ori-davidi.jpg",
+      "linkedin": "https://www.linkedin.com/in/ori-davidi/",
+      "category": "team",
+      "order": 101
+    },
+    {
+      "id": "ido-kuri",
+      "name": "עידו כורי",
+      "position": "מנהל פרויקט",
+      "image": "/images/team/ido-kuri.jpg",
+      "linkedin": "",
+      "category": "team",
+      "order": 102
+    },
+    {
+      "id": "tamir-lederman",
+      "name": "תמיר לדרמן",
+      "position": "מנהל פרויקט",
+      "image": "/images/team/tamir-lederman.jpg",
+      "linkedin": "https://www.linkedin.com/in/tamir-lederman-6081bb56/",
+      "category": "team",
+      "order": 103
+    },
+    {
+      "id": "yonatan-raymond",
+      "name": "יונתן ריימונד",
+      "position": "מנהל פרויקט",
+      "image": "/images/team/yonatan-raymond.jpg",
+      "linkedin": "",
+      "category": "team",
+      "order": 104
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "נסי ניסיון",
+  "role": "מתאם פרוייקט",
+  "category": "project-managers",
+  "gender": "male",
+  "birthYear": 2000,
+  "birthPlace": "קווקז",
+  "residence": "אור יהודה",
+  "linkedin": "",
+  "degrees": [
+    {
+      "degree": "B.Sc",
+      "title": "הנדסה אזרחית",
+      "institution": "הטכניון",
+      "year": "2024"
+    }
+  ],
+  "image": "/images/team/1768790606386-IrisShuv.jpeg",
+  "order": 100,
+  "id": "נסי-ניסיון"
+}

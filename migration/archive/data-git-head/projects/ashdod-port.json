@@ -1,0 +1,11 @@
+{
+  "id": "ashdod-port",
+  "title": "נמל אשדוד",
+  "client": "נמלי ישראל/אפקון בניה + אפקון חשמל",
+  "category": "תשתיות",
+  "image": "/images/projects/ashdod-port.jpg",
+  "description": "הרחבת נמל אשדוד",
+  "services": ["ניהול ביצוע", "פיקוח", "הבטחת איכות"],
+  "year": "2021",
+  "featured": true
+}

@@ -1,0 +1,11 @@
+{
+  "id": "msc-jerusalem",
+  "title": "מרגלית סטארטאפ סיטי ירושלים",
+  "client": "MSC אראל מרגלית",
+  "category": "תעשייה ומסחר",
+  "image": "/images/projects/msc-jerusalem.jpg",
+  "description": "מרכז חדשנות בירושלים",
+  "services": ["ניהול תכנון", "ייצוג בעלי עניין"],
+  "year": "2023",
+  "featured": true
+}

@@ -1,0 +1,11 @@
+{
+  "id": "intel-kg",
+  "title": "אינטל קרית גת FOH",
+  "client": "סולל בונה",
+  "category": "תעשייה ומסחר",
+  "image": "/images/projects/intel-kg.jpg",
+  "description": "מפעל ייצור שבבים מתקדם",
+  "services": ["ניהול תכנון", "פיקוח"],
+  "year": "2022",
+  "featured": true
+}

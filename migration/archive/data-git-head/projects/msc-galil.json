@@ -1,0 +1,11 @@
+{
+  "id": "msc-galil",
+  "title": "מרגלית סטארט-אפ סיטי גליל",
+  "client": "MSC אראל מרגלית",
+  "category": "תעשייה ומסחר",
+  "image": "/images/projects/msc-galil.jpg",
+  "description": "קמפוס הייטק בצפון הארץ",
+  "services": ["ניהול תכנון", "ייצוג בעלי עניין"],
+  "year": "2022",
+  "featured": true
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "design-management.json",
+    "spec.json",
+    "supervision.json",
+    "client-rep.json",
+    "pmo.json",
+    "qa.json",
+    "doc-control.json",
+    "permits.json"
+  ]
+}

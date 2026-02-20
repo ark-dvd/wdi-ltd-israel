@@ -1,0 +1,21 @@
+{
+  "_source": "css/style.css :root variables",
+  "_extractedAt": "2026-02-19",
+  "layout": {
+    "sectionPadding": "100px",
+    "containerMax": "1200px",
+    "direction": "rtl",
+    "textAlign": "right"
+  },
+  "transitions": {
+    "fast": "0.2s ease",
+    "normal": "0.3s ease",
+    "slow": "0.5s ease"
+  },
+  "shadows": {
+    "sm": "0 1px 2px rgba(0, 0, 0, 0.05)",
+    "md": "0 4px 6px rgba(0, 0, 0, 0.07)",
+    "lg": "0 10px 25px rgba(0, 0, 0, 0.1)",
+    "xl": "0 20px 40px rgba(0, 0, 0, 0.15)"
+  }
+}

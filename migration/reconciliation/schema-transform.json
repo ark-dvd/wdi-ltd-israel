@@ -1,0 +1,148 @@
+{
+  "_description": "Full transformation rules: legacy JSON → DOC-020 Sanity schema",
+  "_extractedAt": "2026-02-19",
+  "transforms": {
+    "TeamMember": {
+      "sourceFolder": "data/team/",
+      "consolidatedFile": "data/team.json",
+      "fieldTransforms": {
+        "id": { "action": "keep", "targetField": "_id_slug" },
+        "name": { "action": "keep", "targetField": "name", "required": true },
+        "position": { "action": "rename", "targetField": "role", "required": true },
+        "role": { "action": "keep_if_exists", "targetField": "role", "note": "Some files have both; prefer 'role' over 'position'" },
+        "image": { "action": "transform", "targetField": "photo", "transform": "string_path → Sanity image asset" },
+        "linkedin": { "action": "rename", "targetField": "linkedinUrl" },
+        "category": { "action": "map", "targetField": "category", "mappingRef": "category-mapping.json → TeamCategory" },
+        "order": { "action": "keep", "targetField": "order", "type": "number" },
+        "bio": { "action": "transform", "targetField": "bio", "transform": "plain string → Portable Text" },
+        "birthYear": { "action": "keep", "targetField": "birthYear", "type": "number" },
+        "birthPlace": { "action": "keep", "targetField": "birthPlace" },
+        "residence": { "action": "keep", "targetField": "residence" },
+        "gender": { "action": "keep", "targetField": "gender" },
+        "educationType": { "action": "keep", "targetField": "educationType" },
+        "degrees": { "action": "keep", "targetField": "degrees", "type": "array of objects" },
+        "phone": { "action": "keep", "targetField": "phone" },
+        "email": { "action": "keep", "targetField": "email" }
+      },
+      "fieldsToAdd": {
+        "isActive": { "type": "boolean", "default": true },
+        "updatedAt": { "type": "datetime", "default": "migration timestamp" }
+      }
+    },
+    "Project": {
+      "sourceFolder": "data/projects/",
+      "consolidatedFile": "data/projects.json",
+      "fieldTransforms": {
+        "id": { "action": "keep", "targetField": "_id_slug" },
+        "title": { "action": "keep", "targetField": "title", "required": true },
+        "client": { "action": "keep", "targetField": "client" },
+        "category": { "action": "rename_and_map", "targetField": "sector", "mappingRef": "category-mapping.json → ProjectSector" },
+        "image": { "action": "transform", "targetField": "heroImage", "transform": "string path → Sanity image asset" },
+        "description": { "action": "transform", "targetField": "description", "transform": "plain string → Portable Text" },
+        "services": { "action": "keep", "targetField": "services", "note": "Hebrew string array → reference array in future" },
+        "year": { "action": "keep", "targetField": "year", "type": "string or number" },
+        "featured": { "action": "keep", "targetField": "featured", "type": "boolean" }
+      },
+      "fieldsToAdd": {
+        "slug": { "type": "slug", "source": "id field" },
+        "isActive": { "type": "boolean", "default": true },
+        "updatedAt": { "type": "datetime", "default": "migration timestamp" }
+      },
+      "htmlOnlyContent": {
+        "metaDescription": "Extract from HTML <meta> tag — pattern: '{title} - פרויקט WDI'",
+        "pageTitle": "Extract from HTML <title> — pattern: '{title} | WDI'"
+      }
+    },
+    "Service": {
+      "sourceFolder": "data/services/",
+      "consolidatedFile": "data/services.json",
+      "fieldTransforms": {
+        "id": { "action": "keep", "targetField": "_id_slug" },
+        "title": { "action": "keep", "targetField": "title", "required": true },
+        "description": { "action": "transform", "targetField": "description", "transform": "plain string → Portable Text" },
+        "icon": { "action": "keep", "targetField": "icon" },
+        "order": { "action": "keep", "targetField": "order", "type": "number" }
+      },
+      "fieldsToAdd": {
+        "slug": { "type": "slug", "source": "id field" },
+        "isActive": { "type": "boolean", "default": true },
+        "fullDescription": { "type": "Portable Text", "source": "HTML service detail pages — extensive content" }
+      }
+    },
+    "Client": {
+      "sourceFolder": "data/clients-items/",
+      "consolidatedFile": "data/clients.json → .clients[]",
+      "fieldTransforms": {
+        "name": { "action": "keep", "targetField": "name", "required": true },
+        "logo": { "action": "transform", "targetField": "logo", "transform": "string path → Sanity image asset" }
+      },
+      "fieldsToAdd": {
+        "isActive": { "type": "boolean", "default": true },
+        "order": { "type": "number" }
+      }
+    },
+    "Testimonial": {
+      "sourceFolder": "data/testimonials/",
+      "consolidatedFile": "data/clients.json → .testimonials[]",
+      "fieldTransforms": {
+        "quote": { "action": "keep", "targetField": "quote", "required": true },
+        "author": { "action": "rename", "targetField": "clientName", "required": true },
+        "position": { "action": "rename", "targetField": "role" },
+        "company": { "action": "keep", "targetField": "company" },
+        "logo": { "action": "transform", "targetField": "logo", "transform": "string path → Sanity image asset" },
+        "letterUrl": { "action": "keep", "targetField": "letterUrl", "note": "Referenced PDFs do NOT exist in repo — documents/ is empty" }
+      },
+      "fieldsToAdd": {
+        "projectRef": { "type": "reference", "note": "Per DOC-020 — link testimonial to project" },
+        "isActive": { "type": "boolean", "default": true }
+      }
+    },
+    "Job": {
+      "sourceFolder": "data/jobs/",
+      "fieldTransforms": {
+        "title": { "action": "keep", "targetField": "title", "required": true },
+        "location": { "action": "keep", "targetField": "location" },
+        "type": { "action": "keep", "targetField": "type" },
+        "description": { "action": "transform", "targetField": "description", "transform": "plain string → Portable Text" },
+        "requirements": { "action": "transform", "targetField": "requirements", "transform": "markdown-like string → Portable Text" },
+        "active": { "action": "rename", "targetField": "isActive", "type": "boolean" },
+        "date": { "action": "keep", "targetField": "publishedAt", "type": "date" }
+      }
+    },
+    "Press": {
+      "sourceFolder": "data/press/",
+      "fieldTransforms": {
+        "title": { "action": "keep", "targetField": "title", "required": true },
+        "source": { "action": "keep", "targetField": "source" },
+        "date": { "action": "keep", "targetField": "date" },
+        "url": { "action": "keep", "targetField": "url" },
+        "image": { "action": "transform", "targetField": "image", "transform": "string path → Sanity image asset" },
+        "excerpt": { "action": "keep", "targetField": "excerpt" }
+      }
+    },
+    "ContentLibrary": {
+      "sourceFolder": "data/content-library/",
+      "fieldTransforms": {
+        "title": { "action": "keep", "targetField": "title", "required": true },
+        "description": { "action": "keep", "targetField": "description" },
+        "url": { "action": "keep", "targetField": "url" },
+        "category": { "action": "keep", "targetField": "category" },
+        "order": { "action": "keep", "targetField": "order" }
+      }
+    },
+    "HeroSettings": {
+      "sourceFolder": "data/hero/",
+      "fieldTransforms": {
+        "_note": "Singleton — combine hero.json + hero-settings.json into SiteSettings or standalone HeroSettings"
+      }
+    }
+  },
+  "missingEntities": {
+    "SiteSettings": "Not implemented. Contact info, footer text, SEO — currently hardcoded in HTML.",
+    "Lead": "CRM entity — does not exist yet.",
+    "ClientCRM": "CRM entity — does not exist yet.",
+    "Engagement": "CRM entity — does not exist yet.",
+    "Activity": "CRM entity — does not exist yet.",
+    "Note": "CRM entity — does not exist yet."
+  }
+}

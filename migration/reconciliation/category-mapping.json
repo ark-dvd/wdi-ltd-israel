@@ -1,0 +1,41 @@
+{
+  "_description": "Maps legacy category/sector values to DOC-020 canonical enum values",
+  "_extractedAt": "2026-02-19",
+  "_source": "DOC-020 §3.2 Project.sector + §3.1 TeamMember.category",
+  "ProjectSector": {
+    "_canonicalValues": ["ביטחוני", "מסחרי", "תעשייתי", "תשתיות", "מגורים", "ציבורי"],
+    "mapping": {
+      "בטחוני": "ביטחוני",
+      "מסחרי": "מסחרי",
+      "תעשייה": "תעשייתי",
+      "תעשייה ומסחר": "תעשייתי",
+      "תשתיות": "תשתיות",
+      "מגורים": "מגורים",
+      "ממשלתי": "ציבורי"
+    },
+    "missing": ["ציבורי — no projects have this category yet"]
+  },
+  "TeamCategory": {
+    "_canonicalValues": ["founders", "management", "administration", "department-heads", "project-managers"],
+    "mapping": {
+      "founders": "founders",
+      "management": "management",
+      "admin": "administration",
+      "administration": "administration",
+      "heads": "department-heads",
+      "department-heads": "department-heads",
+      "team": "project-managers",
+      "project-managers": "project-managers"
+    },
+    "notes": "Back office UI currently missing 'founders' category filter"
+  },
+  "ContentLibraryCategory": {
+    "_canonicalValues": ["specs", "regulations", "guides", "templates", "reference"],
+    "mapping": {
+      "מפרטים ותקנות": "specs",
+      "מדריכים": "guides",
+      "reference": "reference"
+    },
+    "notes": "Need to verify exact categories from content-library JSON files"
+  }
+}

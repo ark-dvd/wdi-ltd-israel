@@ -1,0 +1,35 @@
+{
+  "gender": "male",
+  "educationType": "",
+  "residence": "הושעיה",
+  "degrees": [
+    {
+      "degree": "BSc",
+      "title": "הנדסה אזרחית וסביבתית",
+      "institution": "University of Technology, Sidney",
+      "year": "2003"
+    },
+    {
+      "degree": "Master ",
+      "title": "Environmental Eng.. ",
+      "institution": "University of Technology, Sidney",
+      "year": "2005"
+    },
+    {
+      "degree": "MBA",
+      "title": "מנהל עסקים",
+      "institution": "אונ' חיפה",
+      "year": "2015"
+    }
+  ],
+  "birthPlace": "1971",
+  "position": "מייסד, שותף",
+  "name": "אילן וייס",
+  "order": 1,
+  "id": "ilan-weiss",
+  "image": "/images/team/ilan-weiss.jpg",
+  "birthYear": "",
+  "linkedin": "https://www.linkedin.com/in/i-w-2a18671a/",
+  "category": "founders",
+  "role": "מייסד שותף"
+}
