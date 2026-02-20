@@ -1,204 +1,169 @@
-# WDI Israel Website
+# WDI Ltd Israel — Website & Back Office
 
-אתר סטטי מבוסס HTML/CSS/JavaScript להטמעה ב-Netlify.
-
-## עדכון אחרון: ינואר 2026
+**Status:** Recovery Phase (REMEDIATION-001)
+**Live site:** [wdi.co.il](https://wdi.co.il) (static HTML via Netlify — DO NOT MODIFY)
+**Repository:** [github.com/ark-dvd/wdi-ltd-israel](https://github.com/ark-dvd/wdi-ltd-israel)
 
 ---
 
-## מבנה התיקיות
+## What This Repo Contains
+
+This repository has **three layers** from different periods of development:
+
+### 1. Legacy Static HTML Site (LIVE)
+The site currently serving at wdi.co.il. Pure HTML/CSS/JS deployed on Netlify.
 
 ```
-wdi-israel/
-├── index.html              # דף הבית
-├── about.html              # אודות + כתבו עלינו
-├── team.html               # צוות
-├── clients.html            # לקוחות
-├── services.html           # שירותים
-├── projects.html           # פרויקטים
-├── contact.html            # צור קשר
-├── jobs.html               # משרות
-├── job-application.html    # טופס הגשת מועמדות
-├── join-us.html            # הצטרפות למאגר
-├── innovation.html         # חדשנות וטכנולוגיה
-├── content-library.html    # מאגר מידע
-├── admin.html              # פאנל ניהול
-├── 404.html                # דף שגיאה
-├── sitemap.xml             # מפת אתר
-├── robots.txt              # הנחיות לסורקים
-├── netlify.toml            # הגדרות Netlify
-├── css/
-│   └── style.css           # עיצוב ראשי
-├── js/
-│   └── main.js             # JavaScript ראשי
-├── data/
-│   ├── projects.json       # מאגר פרויקטים ⭐
-│   ├── team.json           # מאגר צוות ⭐
-│   ├── services.json       # מאגר שירותים
-│   └── clients.json        # לקוחות והמלצות
-├── services/               # 8 עמודי שירות פרטניים
-├── projects/               # 13 עמודי פרויקט פרטניים
-├── images/
-│   ├── wdi-logo.png        # לוגו רגיל (רקע בהיר)
-│   ├── wdi-logo-white.png  # לוגו לבן (רקע כהה)
-│   ├── favicon.png         # אייקון לשונית
-│   ├── duns100.webp        # תג Duns 100
-│   ├── projects/           # תמונות פרויקטים
-│   ├── team/               # תמונות צוות
-│   └── clients/            # לוגואים של לקוחות
-├── videos/
-│   └── hero-video.mp4      # סרטון דף הבית
-└── documents/              # מסמכי המלצה
+*.html (root)          # 28 static pages (index, about, services, projects, etc.)
+css/                   # Stylesheets
+js/main.js             # Client-side JavaScript
+images/                # All image assets (clients, team, projects, press)
+videos/hero-video.mp4  # Hero section video
+data/                  # JSON content files (team, projects, services, clients, etc.)
+```
+
+### 2. Legacy Backoffice (NOT DEPLOYED — SECURITY RISK)
+An old admin panel that uses the GitHub API as its database. **Has zero authentication.**
+
+```
+wdi-backoffice/        # Next.js (JavaScript) app — DO NOT DEPLOY
+```
+
+### 3. New Next.js 14 Application (IN DEVELOPMENT)
+The replacement application built per canonical specifications (DOC-000 through DOC-070).
+
+```
+src/
+  app/(public)/        # 18 public pages (SSR from Sanity CMS)
+  app/admin/           # Admin panel (NextAuth-protected)
+  app/api/             # 40+ API route handlers (Zod-validated)
+  components/          # React components (admin + public)
+  hooks/               # Custom React hooks
+  lib/                 # Sanity client/schemas, auth, validation, rate limiting
+  middleware.ts        # Auth + rate-limit middleware
+```
+
+### Supporting Files
+
+```
+docs/                  # Canonical specification documents (DOC-000 through DOC-070)
+migration/             # Data archaeology archive, design tokens, reconciliation maps
 ```
 
 ---
 
-## 🚀 התקנה ב-Netlify
+## Local Development (Next.js App)
 
-1. העלה את כל התיקייה ל-GitHub או גרור ישירות ל-Netlify
-2. הגדרות בילד - לא נדרשות (אתר סטטי)
-3. הטפסים יעבדו אוטומטית (Netlify Forms)
+### Prerequisites
 
----
+- Node.js 20+
+- npm
 
-## ⭐ איך להוסיף פרויקט חדש
+### Setup
 
-### שלב 1: הוסף לקובץ data/projects.json
+```bash
+# Install dependencies
+npm install
 
-```json
-{
-  "id": "project-id",
-  "title": "שם הפרויקט",
-  "client": "שם הלקוח",
-  "category": "תעשייה ומסחר",  // או: "תשתיות" / "ממשלתי"
-  "image": "images/projects/project-id.jpg",
-  "description": "תיאור קצר של הפרויקט",
-  "services": ["ניהול תכנון", "פיקוח"],
-  "year": "2024",
-  "featured": true  // האם להציג בדף הבית
-}
+# Copy environment template
+cp .env.example .env.local
+
+# Fill in required values (see Environment Variables below)
+
+# Start development server
+npm run dev
 ```
 
-### שלב 2: צור עמוד פרויקט
+The app runs at `http://localhost:3000`.
 
-צור קובץ `projects/project-id.html` (העתק עמוד קיים ושנה את הפרטים).
+### Scripts
 
-### שלב 3: הוסף תמונה
-
-שמור תמונת הפרויקט ב: `images/projects/project-id.jpg`
-- גודל מומלץ: 1200x900 פיקסלים
-- פורמט: JPG או WebP
-
----
-
-## ⭐ איך להוסיף/לעדכן חבר צוות
-
-### עדכן data/team.json
-
-```json
-{
-  "id": "first-last",
-  "name": "שם מלא",
-  "role": "תפקיד",
-  "image": "images/team/first-last.jpg",
-  "linkedin": "https://linkedin.com/in/...",
-  "bio": "ביוגרפיה קצרה",
-  "category": "team",  // או: "leadership" / "management"
-  "order": 15  // סדר הצגה
-}
-```
-
-### קטגוריות צוות:
-- `leadership` - הנהלה
-- `management` - ראשי תחומים  
-- `team` - צוות
-
-### הוסף תמונה
-
-שמור תמונת הצוות ב: `images/team/first-last.jpg`
-- גודל מומלץ: 400x400 פיקסלים (ריבוע)
-- פורמט: JPG או WebP
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Next.js dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run type-check` | TypeScript type checking |
 
 ---
 
-## 📝 טפסים (Netlify Forms)
+## Environment Variables
 
-הטפסים מוגדרים אוטומטית:
-- **contact** - טופס יצירת קשר
-- **join-us** - הצטרפות למאגר קבלנים
-- **job-application** - הגשת מועמדות למשרות
+Copy `.env.example` to `.env.local` and fill in values:
 
-ההודעות יופיעו ב-Netlify Dashboard > Forms.
+### Required for Core Functionality
 
----
+| Variable | Description | Where to Get It |
+|----------|-------------|-----------------|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project ID | [sanity.io](https://sanity.io) dashboard |
+| `NEXT_PUBLIC_SANITY_DATASET` | Sanity dataset name (default: `production`) | Sanity dashboard |
+| `SANITY_API_TOKEN` | Sanity write token | Sanity > Settings > API > Tokens |
+| `NEXTAUTH_URL` | App URL (dev: `http://localhost:3000`) | Your deployment URL |
+| `NEXTAUTH_SECRET` | Session encryption key | `openssl rand -base64 32` |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Google Cloud Console > OAuth 2.0 |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Google Cloud Console > OAuth 2.0 |
+| `ADMIN_ALLOWED_EMAILS` | Comma-separated admin emails | Your admin email list |
 
-## 📁 תמונות נדרשות להשלמה
+### Optional (Gracefully Degraded if Missing)
 
-### תמונות צוות (images/team/)
-- guy-golan.jpg
-- arik-davidi.jpg
-- ilan-weiss.jpg
-- eyal-nir.jpg
-- yossi-elisha.jpg
-- victor-lifshitz.jpg
-- itamar-shapiro.jpg
-- rotem-glick.jpg
-- li-chen-koren.jpg
-- tamir-lederman.jpg
-- shai-klartag.jpg
-- ido-kuri.jpg
-- yarden-weiss.jpg
-- yonatan-raymond.jpg
-- ori-davidi.jpg
-
-### תמונות פרויקטים (images/projects/)
-- ashdod-desal.jpg
-- msc-galil.jpg
-- msc-hanamal17.jpg
-- msc-hanamal59.jpg
-- msc-jerusalem.jpg
-- mobileye.jpg
-- msc-rothschild.jpg
-- intel-kg.jpg
-- alon-tavor.jpg
-- eshkol.jpg
-- ashdod-port.jpg
-- marhas.jpg
-- campus-merkaz.jpg
-
-### לוגואים של לקוחות (images/clients/)
-- shapir.png
-- electra.jpg
-- minrav.jpg
-- chevron.png
-- pmo.jpg (משרד רה"מ)
-- mod.jpg (משה"ב)
-- mof.jpg (משרד האוצר)
-- iaf.jpg (חיל האוויר)
-- libeskind.jpg
-- skorka.jpg
-- aurbach-halevy.jpg
-- kimmel.jpg
-- afcon.jpg
-- menolid.jpg
-- tahal.jpg
-- tmng.jpg
-- beer-sheva.jpg
-- ide.jpg
-
-### סרטון (videos/)
-- hero-video.mp4 - סרטון לדף הבית
+| Variable | Description |
+|----------|-------------|
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis URL (rate limiting) |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token |
+| `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | Sentry error monitoring DSN |
+| `TURNSTILE_SECRET_KEY` / `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile (bot prevention) |
 
 ---
 
-## 🎨 צבעים
+## Deployment Status
 
-- Primary (כחול): `#1a365d`
-- Secondary (זהב): `#c9a227`
-- Gray shades: `#f9fafb` to `#111827`
+| Component | Status | URL |
+|-----------|--------|-----|
+| Static HTML site | **LIVE** | wdi.co.il |
+| Next.js app | **Not deployed** | Pending staging setup |
+| Legacy backoffice | **Not deployed** (must stay that way) | N/A |
+| Sanity CMS | **Configured** | Project ID: see `.env.local` |
 
 ---
 
-## 📱 תמיכה טכנית
+## Architecture
 
-Website by [daflash.com](https://daflash.com)
+The Next.js app follows the canonical architecture defined in DOC-010:
+
+- **Frontend:** Next.js 14 App Router, React 18, Tailwind CSS, TypeScript strict mode
+- **CMS:** Sanity (headless) with 15 document schemas
+- **Auth:** NextAuth with Google OAuth, email allowlist
+- **API:** 40+ route handlers with Zod validation, rate limiting, concurrency control
+- **Monitoring:** Sentry (optional), Upstash Redis rate limiting (optional)
+- **Forms:** Cloudflare Turnstile bot prevention (optional, falls back to honeypot)
+
+---
+
+## Canonical Documents
+
+All governing specifications live in `docs/`:
+
+| Document | Title | Version |
+|----------|-------|---------|
+| DOC-000 | System Charter & Product Promise | 1.0 |
+| DOC-010 | Architecture & Responsibility Boundaries | 1.0 |
+| DOC-020 | Canonical Data Model | 1.1 |
+| DOC-030 | Back Office & Operational Model | 1.1 |
+| DOC-040 | API Contract & Mutation Semantics | 1.1 |
+| DOC-050 | Back Office UX Interaction Contract | 1.0 |
+| DOC-060 | Implementation Plan & Execution Roadmap | 1.0 |
+| DOC-070 | Product Specification (EN + HE) | 1.0 |
+| AUDIT-001 | Canonical Compliance Report | N/A |
+| AMENDMENT-001 | CRM Deferred, Intake/Triage Introduced | 1.3 |
+| REMEDIATION-001 | Project Recovery Plan | 1.5 |
+| FORENSIC-001 | Repository Forensic Freeze | 1.0 |
+
+---
+
+## Brand
+
+- **Primary (blue):** `#1a365d`
+- **Secondary (gold):** `#c9a227`
+- **Accent:** `#e8b923`
+- **Fonts:** Assistant (public site), Heebo (admin)
