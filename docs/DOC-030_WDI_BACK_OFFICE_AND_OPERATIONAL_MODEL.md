@@ -671,7 +671,7 @@ HeroSettings singleton (DOC-020 §3.14). Single editable record. No create/delet
 | subheadline | כותרת משנית | Text | |
 | ctaText | טקסט כפתור | Text | |
 | ctaLink | קישור כפתור | URL input | |
-| videoUrl | וידאו | Video upload | Mandatory per DOC-000. Max 25MB. Compression required. |
+| videoUrl | וידאו | Video upload | Mandatory per DOC-000. Max 40MB. Compression required. |
 | backgroundImage | תמונת רקע | Image upload | Fallback if video unavailable |
 
 **API:** `GET /api/admin/hero` (load), `PUT /api/admin/hero` (save).

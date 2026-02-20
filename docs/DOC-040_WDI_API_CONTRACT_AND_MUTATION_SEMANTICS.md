@@ -608,7 +608,7 @@ Singleton. No POST (create) or DELETE.
 | subheadline | string | No | |
 | ctaText | string | No | |
 | ctaLink | string | No | |
-| videoUrl | file reference | No | Video upload. Max 25MB. |
+| videoUrl | file reference | No | Video upload. Max 40MB. |
 | backgroundImage | image reference | No | |
 
 **Singleton enforcement:** INV-036.

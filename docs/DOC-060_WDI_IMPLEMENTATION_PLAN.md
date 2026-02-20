@@ -4,7 +4,7 @@
 **Effective Date:** February 19, 2026
 **Version:** 1.0
 **Timestamp:** 20260219-1830 (CST)
-**Governing Documents:** DOC-000 (v1.0); DOC-010 (v1.0); DOC-020 (v1.1); DOC-030 (v1.1); DOC-040 (v1.1); DOC-050 (v1.0)
+**Governing Documents:** DOC-000 (v1.0); DOC-010 (v1.0); DOC-020 (v1.1); DOC-030 (v1.1); DOC-040 (v1.1); DOC-050 (v1.0); DOC-070 (v1.0)
 **Input:** AUDIT-001 — Canonical Compliance Report (20260219)
 
 ---
@@ -426,7 +426,7 @@ The homepage hero video is the biggest performance risk. Strategy:
 2. Video loaded with `loading="lazy"` and `preload="none"`
 3. IntersectionObserver triggers video load only when hero is visible
 4. Video served from Sanity CDN or dedicated CDN with proper caching headers
-5. Video compressed: H.264, max 25MB (DOC-020 §3.14), 720p sufficient for background
+5. Video compressed: H.264, max 40MB (DOC-020 §3.14, DOC-070 §3.1), 720p sufficient for background
 6. Fallback: if video fails to load, poster frame remains — no broken UI
 
 ### 6.5 Definition of Done

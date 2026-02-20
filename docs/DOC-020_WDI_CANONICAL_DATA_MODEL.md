@@ -612,7 +612,7 @@ These are the only permitted category values. The team listing page displays mem
 
 **Singleton Rule:** Only one HeroSettings record may exist (INV-036). Deletion is prohibited.
 
-**Video Upload:** Video upload is mandatory per DOC-000 requirements. Videos must be compressed. Maximum upload size: 25MB.
+**Video Upload:** Video upload is mandatory per DOC-000 requirements. Videos must be compressed. Maximum upload size: 40MB.
 
 ### 3.15 SiteSettings (Content Entity — Singleton)
 

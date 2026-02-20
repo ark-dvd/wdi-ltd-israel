@@ -4,7 +4,7 @@
 **Effective Date:** February 19, 2026
 **Version:** 1.0
 **Timestamp:** 20260219-1717 (CST)
-**Governing Documents:** DOC-000 (v1.0); DOC-010 (v1.0); DOC-020 (v1.1); DOC-030 (v1.1); DOC-040 (v1.1)
+**Governing Documents:** DOC-000 (v1.0); DOC-010 (v1.0); DOC-020 (v1.1); DOC-030 (v1.1); DOC-040 (v1.1); DOC-070 (v1.0)
 
 ---
 
@@ -1000,7 +1000,7 @@ This document operationalizes DOC-030 behavioral requirements and DOC-040 API co
 
 ### 29.3 Subordination
 
-Subordinate to DOC-000 (v1.0), DOC-010 (v1.0), DOC-020 (v1.1), DOC-030 (v1.1), DOC-040 (v1.1). Governing documents prevail on conflict.
+Subordinate to DOC-000 (v1.0), DOC-010 (v1.0), DOC-020 (v1.1), DOC-030 (v1.1), DOC-040 (v1.1), DOC-070 (v1.0). Governing documents prevail on conflict.
 
 ---
 
