@@ -20,7 +20,7 @@ export default function TermsPage() {
           תנאי שימוש
         </h1>
 
-        <article className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed">
+        <article className="prose prose-lg max-w-3xl mx-auto text-[#343a40] leading-relaxed">
           {/* ── הקדמה ──────────────────────────────────────── */}
           <section className="mb-10">
             <h2 className="text-2xl font-bold text-wdi-primary mb-4">הקדמה</h2>
@@ -111,7 +111,7 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <p className="text-sm text-gray-400 mt-12">
+          <p className="text-sm text-[#adb5bd] mt-12">
             עדכון אחרון: פברואר 2026
           </p>
         </article>

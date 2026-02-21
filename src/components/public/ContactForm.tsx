@@ -136,7 +136,7 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
 
       {/* Name */}
       <div>
-        <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="contact-name" className="block text-sm font-medium text-[#343a40] mb-1">
           {labels?.nameLabel ?? ''} <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -145,13 +145,13 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
           required
           value={formData.name}
           onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
         />
       </div>
 
       {/* Email */}
       <div>
-        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="contact-email" className="block text-sm font-medium text-[#343a40] mb-1">
           {labels?.emailLabel ?? ''} <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -161,14 +161,14 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
           dir="ltr"
           value={formData.email}
           onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="email@example.com"
         />
       </div>
 
       {/* Phone */}
       <div>
-        <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="contact-phone" className="block text-sm font-medium text-[#343a40] mb-1">
           {labels?.phoneLabel ?? ''}
         </label>
         <input
@@ -177,14 +177,14 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
           dir="ltr"
           value={formData.phone}
           onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="050-0000000"
         />
       </div>
 
       {/* Company */}
       <div>
-        <label htmlFor="contact-company" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="contact-company" className="block text-sm font-medium text-[#343a40] mb-1">
           {labels?.companyLabel ?? ''}
         </label>
         <input
@@ -192,21 +192,21 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
           type="text"
           value={formData.company}
           onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
         />
       </div>
 
       {/* Subject dropdown — from CMS contactFormSubjects */}
       {subjects && subjects.length > 0 && (
         <div>
-          <label htmlFor="contact-subject" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="contact-subject" className="block text-sm font-medium text-[#343a40] mb-1">
             {labels?.subjectLabel ?? ''}
           </label>
           <select
             id="contact-subject"
             value={formData.subject}
             onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
-            className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+            className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           >
             <option value="">---</option>
             {subjects.map((s) => (
@@ -218,7 +218,7 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
 
       {/* Message */}
       <div>
-        <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="contact-message" className="block text-sm font-medium text-[#343a40] mb-1">
           {labels?.messageLabel ?? ''} <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <textarea
@@ -227,7 +227,7 @@ export function ContactForm({ subjects, labels }: ContactFormProps) {
           rows={5}
           value={formData.message}
           onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
         />
       </div>
 

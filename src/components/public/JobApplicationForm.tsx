@@ -114,7 +114,7 @@ export function JobApplicationForm() {
 
       {/* Name */}
       <div>
-        <label htmlFor="job-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="job-name" className="block text-sm font-medium text-[#343a40] mb-1">
           שם מלא <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -123,14 +123,14 @@ export function JobApplicationForm() {
           required
           value={formData.name}
           onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="ישראל ישראלי"
         />
       </div>
 
       {/* Email */}
       <div>
-        <label htmlFor="job-email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="job-email" className="block text-sm font-medium text-[#343a40] mb-1">
           אימייל <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -140,14 +140,14 @@ export function JobApplicationForm() {
           dir="ltr"
           value={formData.email}
           onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="email@example.com"
         />
       </div>
 
       {/* Phone */}
       <div>
-        <label htmlFor="job-phone" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="job-phone" className="block text-sm font-medium text-[#343a40] mb-1">
           טלפון <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -157,14 +157,14 @@ export function JobApplicationForm() {
           dir="ltr"
           value={formData.phone}
           onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="050-0000000"
         />
       </div>
 
       {/* Position */}
       <div>
-        <label htmlFor="job-position" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="job-position" className="block text-sm font-medium text-[#343a40] mb-1">
           תפקיד מבוקש
         </label>
         <input
@@ -172,14 +172,14 @@ export function JobApplicationForm() {
           type="text"
           value={formData.position}
           onChange={(e) => setFormData((prev) => ({ ...prev, position: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="למשל: מהנדס פיקוח, מנהל פרויקטים..."
         />
       </div>
 
       {/* Message */}
       <div>
-        <label htmlFor="job-message" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="job-message" className="block text-sm font-medium text-[#343a40] mb-1">
           מכתב מקדים / הערות
         </label>
         <textarea
@@ -187,13 +187,13 @@ export function JobApplicationForm() {
           rows={4}
           value={formData.message}
           onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
           placeholder="ספרו לנו קצת על עצמכם, הניסיון שלכם ומה מעניין אתכם..."
         />
       </div>
 
       {/* CV note */}
-      <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-blue-700 text-sm">
+      <div className="rounded-lg bg-wdi-primary/5 border border-wdi-primary/20 p-4 text-wdi-primary-light text-sm">
         לצירוף קורות חיים, אנא שלחו אותם בדוא&quot;ל לכתובת: <strong dir="ltr">hr@wdi.co.il</strong>
       </div>
 

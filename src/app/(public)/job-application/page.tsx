@@ -24,7 +24,7 @@ export default function JobApplicationPage() {
           <h1 className="text-4xl lg:text-5xl font-bold text-wdi-primary mb-4">
             הגשת מועמדות
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#495057] max-w-2xl mx-auto">
             רוצים להצטרף לצוות WDI? מלאו את הטופס ונחזור אליכם בהקדם.
             תוכלו גם לעיין ב<Link href="/jobs" className="text-wdi-primary font-medium hover:text-wdi-primary-light transition underline">משרות הפתוחות</Link> שלנו.
           </p>
@@ -33,7 +33,7 @@ export default function JobApplicationPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           {/* Form — right side (RTL) */}
           <div className="lg:col-span-3">
-            <div className="rounded-2xl bg-white border border-gray-200 shadow-wdi-sm p-6 sm:p-8">
+            <div className="rounded-2xl bg-white border border-[#e9ecef] shadow-wdi-sm p-6 sm:p-8">
               <h2 className="text-2xl font-bold text-wdi-primary mb-6">
                 פרטי המועמדות
               </h2>
@@ -72,7 +72,7 @@ export default function JobApplicationPage() {
               </div>
 
               {/* Process */}
-              <div className="rounded-2xl bg-gray-50 border border-gray-200 p-6">
+              <div className="rounded-2xl bg-[#f8f9fa] border border-[#e9ecef] p-6">
                 <h2 className="text-xl font-bold text-wdi-primary mb-5">
                   תהליך הגיוס
                 </h2>
@@ -82,8 +82,8 @@ export default function JobApplicationPage() {
                       1
                     </span>
                     <div>
-                      <p className="font-medium text-gray-800">שליחת מועמדות</p>
-                      <p className="text-sm text-gray-500">מילוי הטופס וצירוף קורות חיים</p>
+                      <p className="font-medium text-[#212529]">שליחת מועמדות</p>
+                      <p className="text-sm text-[#868e96]">מילוי הטופס וצירוף קורות חיים</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
@@ -91,8 +91,8 @@ export default function JobApplicationPage() {
                       2
                     </span>
                     <div>
-                      <p className="font-medium text-gray-800">סינון ראשוני</p>
-                      <p className="text-sm text-gray-500">בחינת ההתאמה לדרישות התפקיד</p>
+                      <p className="font-medium text-[#212529]">סינון ראשוני</p>
+                      <p className="text-sm text-[#868e96]">בחינת ההתאמה לדרישות התפקיד</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
@@ -100,8 +100,8 @@ export default function JobApplicationPage() {
                       3
                     </span>
                     <div>
-                      <p className="font-medium text-gray-800">ראיון אישי</p>
-                      <p className="text-sm text-gray-500">פגישת היכרות עם הצוות</p>
+                      <p className="font-medium text-[#212529]">ראיון אישי</p>
+                      <p className="text-sm text-[#868e96]">פגישת היכרות עם הצוות</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
@@ -109,16 +109,16 @@ export default function JobApplicationPage() {
                       4
                     </span>
                     <div>
-                      <p className="font-medium text-gray-800">קבלה לצוות</p>
-                      <p className="text-sm text-gray-500">הצטרפות למשפחת WDI</p>
+                      <p className="font-medium text-[#212529]">קבלה לצוות</p>
+                      <p className="text-sm text-[#868e96]">הצטרפות למשפחת WDI</p>
                     </div>
                   </li>
                 </ol>
               </div>
 
               {/* Open positions link */}
-              <div className="rounded-2xl bg-gray-50 border border-gray-200 p-6 text-center">
-                <p className="text-gray-600 mb-4">
+              <div className="rounded-2xl bg-[#f8f9fa] border border-[#e9ecef] p-6 text-center">
+                <p className="text-[#495057] mb-4">
                   מחפשים משרה ספציפית?
                 </p>
                 <Link

@@ -115,7 +115,7 @@ export function SupplierForm() {
 
       {/* Company Name */}
       <div>
-        <label htmlFor="supplier-company" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-company" className="block text-sm font-medium text-[#343a40] mb-1">
           שם החברה / העסק <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -124,14 +124,14 @@ export function SupplierForm() {
           required
           value={formData.company}
           onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="שם החברה"
         />
       </div>
 
       {/* Contact Name */}
       <div>
-        <label htmlFor="supplier-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-name" className="block text-sm font-medium text-[#343a40] mb-1">
           שם איש קשר <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -140,14 +140,14 @@ export function SupplierForm() {
           required
           value={formData.contactName}
           onChange={(e) => setFormData((prev) => ({ ...prev, contactName: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="ישראל ישראלי"
         />
       </div>
 
       {/* Email */}
       <div>
-        <label htmlFor="supplier-email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-email" className="block text-sm font-medium text-[#343a40] mb-1">
           אימייל <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -157,14 +157,14 @@ export function SupplierForm() {
           dir="ltr"
           value={formData.email}
           onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="email@example.com"
         />
       </div>
 
       {/* Phone */}
       <div>
-        <label htmlFor="supplier-phone" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-phone" className="block text-sm font-medium text-[#343a40] mb-1">
           טלפון <span className="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
@@ -174,14 +174,14 @@ export function SupplierForm() {
           dir="ltr"
           value={formData.phone}
           onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition text-left"
           placeholder="050-0000000"
         />
       </div>
 
       {/* Specialty / Field */}
       <div>
-        <label htmlFor="supplier-specialty" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-specialty" className="block text-sm font-medium text-[#343a40] mb-1">
           תחום התמחות
         </label>
         <input
@@ -189,14 +189,14 @@ export function SupplierForm() {
           type="text"
           value={formData.specialty}
           onChange={(e) => setFormData((prev) => ({ ...prev, specialty: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition"
           placeholder="למשל: חשמל, אינסטלציה, שלד, גמר..."
         />
       </div>
 
       {/* Message */}
       <div>
-        <label htmlFor="supplier-message" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="supplier-message" className="block text-sm font-medium text-[#343a40] mb-1">
           הערות נוספות
         </label>
         <textarea
@@ -204,7 +204,7 @@ export function SupplierForm() {
           rows={4}
           value={formData.message}
           onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
+          className="w-full rounded-lg border border-[#dee2e6] px-4 py-3 text-[#1a1a2e] placeholder:text-[#adb5bd] focus:border-wdi-primary focus:ring-2 focus:ring-wdi-primary/20 transition resize-y"
           placeholder="מידע נוסף על החברה, ניסיון, פרויקטים מרכזיים..."
         />
       </div>

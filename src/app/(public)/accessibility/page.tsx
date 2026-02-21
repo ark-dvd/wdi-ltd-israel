@@ -20,7 +20,7 @@ export default function AccessibilityPage() {
           הצהרת נגישות
         </h1>
 
-        <article className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed">
+        <article className="prose prose-lg max-w-3xl mx-auto text-[#343a40] leading-relaxed">
           {/* ── מחויבות לנגישות ────────────────────────────── */}
           <section className="mb-10">
             <h2 className="text-2xl font-bold text-wdi-primary mb-4">מחויבות לנגישות</h2>
@@ -81,7 +81,7 @@ export default function AccessibilityPage() {
               אם נתקלתם בבעיית נגישות באתר, או אם יש לכם הצעות לשיפור הנגישות,
               אנא פנו אלינו ונטפל בכך בהקדם:
             </p>
-            <ul className="list-none mt-4 space-y-2 bg-gray-50 rounded-xl p-6">
+            <ul className="list-none mt-4 space-y-2 bg-[#f8f9fa] rounded-xl p-6">
               <li>
                 <strong>רכז/ת נגישות:</strong> WDI Ltd Israel
               </li>
