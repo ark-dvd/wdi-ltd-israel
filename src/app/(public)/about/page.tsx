@@ -29,6 +29,20 @@ export default async function AboutPage() {
       <PageHeader title={about?.pageTitle ?? ''} subtitle={about?.subtitle ?? ''} />
       <div className="about-content">
 
+      {/* Vision Section — FIRST content section on about page */}
+      {about?.visionContent && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              {about.visionTitle && <h2>{about.visionTitle}</h2>}
+            </div>
+            <div className="company-story animate-on-scroll">
+              <PortableText value={about.visionContent} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Company Story — §13.1 */}
       {about?.companyDescription && (
         <section className="section">
@@ -46,20 +60,6 @@ export default async function AboutPage() {
           <div className="container">
             <div className="company-story animate-on-scroll">
               <p>{about.vision}</p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Vision Section — "החזון שלנו" — before values */}
-      {about?.visionContent && (
-        <section className="section">
-          <div className="container">
-            <div className="section-header">
-              {about.visionTitle && <h2>{about.visionTitle}</h2>}
-            </div>
-            <div className="company-story animate-on-scroll">
-              <PortableText value={about.visionContent} />
             </div>
           </div>
         </section>

@@ -971,7 +971,7 @@ a { text-decoration: none; color: inherit; }
 .company-story {
   max-width: 900px;
   margin: 0 auto;
-  text-align: center;
+  /* text-align controlled by Portable Text inline styles; RTL default is right */
 }
 
 .company-story p {

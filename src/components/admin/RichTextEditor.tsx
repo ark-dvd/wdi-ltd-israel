@@ -89,7 +89,7 @@ function ptBlocksToHtml(blocks: unknown[] | null | undefined): string {
 
     // Normal blocks
     const tag = styleToTag(block.style || 'normal');
-    const alignAttr = block.textAlign && block.textAlign !== 'right' ? ` style="text-align:${block.textAlign}"` : '';
+    const alignAttr = block.textAlign ? ` style="text-align:${block.textAlign}"` : '';
     result.push(`<${tag}${alignAttr}>${renderSpans(block)}</${tag}>`);
     i++;
   }
@@ -257,7 +257,7 @@ function htmlToPtBlocks(html: string): PortableTextBlock[] {
 
 function applyTextAlign(el: HTMLElement, block: PortableTextBlock) {
   const align = el.style?.textAlign;
-  if (align === 'center' || align === 'left') {
+  if (align === 'center' || align === 'left' || align === 'right') {
     block.textAlign = align;
   }
 }

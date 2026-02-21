@@ -6,7 +6,7 @@ import { PortableText as PortableTextRenderer, type PortableTextComponents } fro
 
 function blockStyle(node: any) {
   const align = node?.textAlign;
-  return align && align !== 'right' ? { textAlign: align as 'center' | 'left' } : undefined;
+  return align ? { textAlign: align as 'right' | 'center' | 'left' } : undefined;
 }
 
 const components: PortableTextComponents = {
