@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { sanityBrowserClient } from '@/lib/sanity/browser-client';
+import { createClient } from '@sanity/client';
 
 interface SanityFileValue {
   _type: 'file';
@@ -16,27 +16,42 @@ interface FileUploadProps {
   onChange: (value: SanityFileValue | null) => void;
 }
 
+/**
+ * Fetch a short-lived Sanity write token from the authenticated admin endpoint,
+ * then upload the file directly to Sanity — bypasses Netlify's ~6 MB function limit.
+ */
 export default function FileUpload({ label, accept, description, value, onChange }: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = useCallback(async (file: File) => {
     setError('');
     setUploading(true);
-    setProgress(0);
     try {
-      // Upload directly to Sanity from the browser — bypasses Netlify function size limit
-      const asset = await sanityBrowserClient.assets.upload('file', file, {
+      // 1. Get Sanity credentials from the authenticated admin endpoint
+      const res = await fetch('/api/admin/upload-token');
+      if (!res.ok) throw new Error('Failed to get upload credentials');
+      const { data } = await res.json();
+
+      // 2. Create a temporary Sanity client in memory (token never stored)
+      const client = createClient({
+        projectId: data.projectId,
+        dataset: data.dataset,
+        token: data.token,
+        apiVersion: '2026-02-19',
+        useCdn: false,
+      });
+
+      // 3. Upload directly to Sanity — no Netlify function size limit
+      const asset = await client.assets.upload('file', file, {
         filename: file.name,
         contentType: file.type,
       });
-      // Simulate progress since the SDK doesn't expose it natively
-      setProgress(100);
+
       onChange({ _type: 'file', asset: { _type: 'reference', _ref: asset._id } });
     } catch {
-      setError('שגיאה בהעלאת הקובץ. ודא שטוקן NEXT_PUBLIC_SANITY_WRITE_TOKEN מוגדר.');
+      setError('שגיאה בהעלאת הקובץ');
     } finally {
       setUploading(false);
     }
@@ -78,12 +93,7 @@ export default function FileUpload({ label, accept, description, value, onChange
           className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${uploading ? 'border-blue-300 bg-blue-50' : 'border-gray-300 cursor-pointer hover:border-blue-400'}`}
         >
           {uploading ? (
-            <div className="space-y-2">
-              <p className="text-sm text-blue-600 font-medium">מעלה...</p>
-              <div className="w-full bg-blue-100 rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
-              </div>
-            </div>
+            <p className="text-sm text-blue-600 font-medium">מעלה ישירות ל-Sanity...</p>
           ) : (
             <p className="text-sm text-gray-500">{description || 'גרור קובץ או לחץ לבחירה'}</p>
           )}
