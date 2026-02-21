@@ -18,9 +18,16 @@ const nextConfig = {
   // ── Security headers — DOC-060 §7 (H-01) ──────────────────
   async headers() {
     return [
-      // Cache-busting for all pages — force revalidation
+      // Static assets: browser-cacheable (images, fonts, etc.)
       {
-        source: '/:path*',
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+        ],
+      },
+      // Pages + API: force revalidation (no stale HTML/API responses)
+      {
+        source: '/((?!_next/static|_next/image|images|favicon).*)',
         headers: [
           {
             key: 'Cache-Control',

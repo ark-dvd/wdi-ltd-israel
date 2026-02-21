@@ -27,6 +27,7 @@ export default async function AboutPage() {
   return (
     <>
       <PageHeader title={about?.pageTitle ?? ''} subtitle={about?.subtitle ?? ''} />
+      <div className="about-content">
 
       {/* Company Story — §13.1 */}
       {about?.companyDescription && (
@@ -131,6 +132,7 @@ export default async function AboutPage() {
           </div>
         </section>
       )}
+      </div>
     </>
   );
 }

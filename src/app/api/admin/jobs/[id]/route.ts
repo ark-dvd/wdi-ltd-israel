@@ -53,15 +53,19 @@ export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext
 export const DELETE = withAuth(async (request: NextRequest, { params }: AuthContext<{ id: string }>) => {
   try {
     const { id } = params;
-    const body = await request.json();
-    const { updatedAt } = body;
+
+    // Safe body parse — do NOT crash on empty or malformed body
+    let body: Record<string, unknown> = {};
+    try { body = await request.json(); } catch { /* empty body is OK */ }
+    const updatedAt = typeof body.updatedAt === 'string' ? body.updatedAt : undefined;
 
     const existing = await sanityClient.fetch(`*[_type == "job" && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
-    // Concurrency check: require updatedAt only when the document has one.
-    // Legacy jobs created before the updatedAt field was added may lack it;
-    // in that case we skip the check rather than returning a hard 400.
+    if (existing.isActive) {
+      return validationError('לא ניתן למחוק רשומה פעילה. יש לבטל את ההפעלה תחילה.');
+    }
+
     if (existing.updatedAt) {
       if (!updatedAt) return validationError('updatedAt נדרש');
       const conflict = checkConcurrency(updatedAt, existing.updatedAt);

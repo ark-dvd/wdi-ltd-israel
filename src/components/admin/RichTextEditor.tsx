@@ -17,6 +17,7 @@ interface PortableTextMarkDef {
   _key: string;
   _type: string;
   href?: string;
+  hex?: string;
 }
 
 interface PortableTextBlock {
@@ -25,9 +26,22 @@ interface PortableTextBlock {
   style?: string;
   listItem?: 'bullet' | 'number';
   level?: number;
+  textAlign?: 'right' | 'center' | 'left';
   children: PortableTextSpan[];
   markDefs?: PortableTextMarkDef[];
 }
+
+// Brand palette — only these colors are allowed for text formatting
+const BRAND_COLORS = [
+  { hex: '#1a365d', label: 'כחול ראשי' },
+  { hex: '#2d4a7c', label: 'כחול בהיר' },
+  { hex: '#c9a227', label: 'זהב' },
+  { hex: '#e8b923', label: 'זהב בהיר' },
+  { hex: '#343a40', label: 'אפור כהה' },
+  { hex: '#e74c3c', label: 'אדום' },
+  { hex: '#2ecc71', label: 'ירוק' },
+  { hex: '#000000', label: 'שחור' },
+] as const;
 
 interface RichTextEditorProps {
   label: string;
@@ -75,7 +89,8 @@ function ptBlocksToHtml(blocks: unknown[] | null | undefined): string {
 
     // Normal blocks
     const tag = styleToTag(block.style || 'normal');
-    result.push(`<${tag}>${renderSpans(block)}</${tag}>`);
+    const alignAttr = block.textAlign && block.textAlign !== 'right' ? ` style="text-align:${block.textAlign}"` : '';
+    result.push(`<${tag}${alignAttr}>${renderSpans(block)}</${tag}>`);
     i++;
   }
 
@@ -117,10 +132,12 @@ function renderSpans(block: PortableTextBlock): string {
             text = `<code>${text}</code>`;
             break;
           default: {
-            // Could be a markDef reference (e.g. link)
+            // Could be a markDef reference (e.g. link or color)
             const def = markDefs.find((d) => d._key === mark);
             if (def && def._type === 'link' && def.href) {
               text = `<a href="${escapeHtml(def.href)}">${text}</a>`;
+            } else if (def && def._type === 'color' && def.hex) {
+              text = `<span style="color:${escapeHtml(def.hex)}">${text}</span>`;
             }
             break;
           }
@@ -172,21 +189,36 @@ function htmlToPtBlocks(html: string): PortableTextBlock[] {
     const tag = el.tagName.toLowerCase();
 
     switch (tag) {
-      case 'p':
-        blocks.push(makeBlockFromElement(el, 'normal'));
+      case 'p': {
+        const b = makeBlockFromElement(el, 'normal');
+        applyTextAlign(el, b);
+        blocks.push(b);
         break;
-      case 'h2':
-        blocks.push(makeBlockFromElement(el, 'h2'));
+      }
+      case 'h2': {
+        const b = makeBlockFromElement(el, 'h2');
+        applyTextAlign(el, b);
+        blocks.push(b);
         break;
-      case 'h3':
-        blocks.push(makeBlockFromElement(el, 'h3'));
+      }
+      case 'h3': {
+        const b = makeBlockFromElement(el, 'h3');
+        applyTextAlign(el, b);
+        blocks.push(b);
         break;
-      case 'h4':
-        blocks.push(makeBlockFromElement(el, 'h4'));
+      }
+      case 'h4': {
+        const b = makeBlockFromElement(el, 'h4');
+        applyTextAlign(el, b);
+        blocks.push(b);
         break;
-      case 'blockquote':
-        blocks.push(makeBlockFromElement(el, 'blockquote'));
+      }
+      case 'blockquote': {
+        const b = makeBlockFromElement(el, 'blockquote');
+        applyTextAlign(el, b);
+        blocks.push(b);
         break;
+      }
       case 'ul':
         for (let j = 0; j < el.children.length; j++) {
           const li = el.children[j] as HTMLElement;
@@ -221,6 +253,13 @@ function htmlToPtBlocks(html: string): PortableTextBlock[] {
   }
 
   return blocks;
+}
+
+function applyTextAlign(el: HTMLElement, block: PortableTextBlock) {
+  const align = el.style?.textAlign;
+  if (align === 'center' || align === 'left') {
+    block.textAlign = align;
+  }
 }
 
 function makeBlock(
@@ -311,6 +350,24 @@ function walkInlineNodes(
       const linkKey = generateKey();
       markDefs.push({ _key: linkKey, _type: 'link', href });
       newMarks.push(linkKey);
+      break;
+    }
+    case 'font': {
+      const color = el.getAttribute('color');
+      if (color) {
+        const colorKey = generateKey();
+        markDefs.push({ _key: colorKey, _type: 'color', hex: color });
+        newMarks.push(colorKey);
+      }
+      break;
+    }
+    case 'span': {
+      const spanColor = el.style?.color;
+      if (spanColor) {
+        const colorKey = generateKey();
+        markDefs.push({ _key: colorKey, _type: 'color', hex: spanColor });
+        newMarks.push(colorKey);
+      }
       break;
     }
     case 'br': {
@@ -450,6 +507,22 @@ function getToolbarButtons(editorEl: HTMLDivElement | null): ToolbarButton[] {
       title: 'Normal Paragraph',
       action: () => execCmd('formatBlock', 'p'),
     },
+    // ── Alignment ──
+    {
+      label: '\u2261\u2192',
+      title: 'יישור לימין',
+      action: () => execCmd('justifyRight'),
+    },
+    {
+      label: '\u2261',
+      title: 'יישור למרכז',
+      action: () => execCmd('justifyCenter'),
+    },
+    {
+      label: '\u2190\u2261',
+      title: 'יישור לשמאל',
+      action: () => execCmd('justifyLeft'),
+    },
   ];
 }
 
@@ -467,6 +540,7 @@ export default function RichTextEditor({
   const editorRef = useRef<HTMLDivElement>(null);
   const isInternalChange = useRef(false);
   const [isEmpty, setIsEmpty] = useState(true);
+  const [showColors, setShowColors] = useState(false);
 
   // Calculate min-height from rows (approx 1.5rem line-height + padding)
   const minHeight = `${rows * 1.5}rem`;
@@ -540,10 +614,8 @@ export default function RichTextEditor({
             type="button"
             title={btn.title}
             onMouseDown={(e) => {
-              // Prevent the button click from stealing focus from the editor
               e.preventDefault();
               btn.action(editorRef.current!);
-              // Trigger an input-like update after the command
               setTimeout(() => {
                 const editor = editorRef.current;
                 if (editor) {
@@ -561,6 +633,43 @@ export default function RichTextEditor({
             {btn.label}
           </button>
         ))}
+        {/* Brand color picker */}
+        <div className="relative">
+          <button
+            type="button"
+            title="צבע טקסט"
+            onMouseDown={(e) => { e.preventDefault(); setShowColors((v) => !v); }}
+            className="flex h-7 min-w-[28px] items-center justify-center rounded px-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 hover:text-gray-900 active:bg-gray-300 transition-colors"
+          >
+            A<span className="block w-3 h-0.5 bg-wdi-primary mt-px" />
+          </button>
+          {showColors && (
+            <div className="absolute top-full left-0 z-10 mt-1 flex gap-1 rounded border border-gray-200 bg-white p-1.5 shadow-md">
+              {BRAND_COLORS.map((c) => (
+                <button
+                  key={c.hex}
+                  type="button"
+                  title={c.label}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    execCmd('foreColor', c.hex);
+                    setShowColors(false);
+                    setTimeout(() => {
+                      const editor = editorRef.current;
+                      if (editor) {
+                        setIsEmpty(!editor.textContent?.trim());
+                        isInternalChange.current = true;
+                        onChange(htmlToPtBlocks(editor.innerHTML));
+                      }
+                    }, 0);
+                  }}
+                  className="h-5 w-5 rounded-full border border-gray-300 hover:scale-110 transition-transform"
+                  style={{ background: c.hex }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Editor surface */}

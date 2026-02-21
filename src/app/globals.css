@@ -1183,15 +1183,26 @@ a { text-decoration: none; color: inherit; }
    Does NOT affect public pages.
    ═══════════════════════════════════════════════════════════ */
 
+/* ─── About page: tighter spacing ──────────────────────── */
+
+.about-content .section { padding: 48px 0; }
+.about-content .section-header { margin-bottom: 32px; }
+.about-content .section-header h2 { font-size: 2rem; }
+
+/* ═══════════════════════════════════════════════════════════
+   Admin Shell — calm, compact theme scoped under .admin-shell
+   ═══════════════════════════════════════════════════════════ */
+
 .admin-shell {
   font-size: 14px;
   line-height: 1.5;
   color: var(--gray-700);
+  background: var(--gray-50);
 }
-.admin-shell h1 { font-size: 1.5rem; font-weight: 600; color: var(--gray-900); }
-.admin-shell h2 { font-size: 1.15rem; font-weight: 600; color: var(--gray-800); }
-.admin-shell h3 { font-size: 1rem; font-weight: 600; color: var(--gray-800); }
-.admin-shell h4 { font-size: 0.9rem; font-weight: 600; color: var(--gray-700); }
+.admin-shell h1 { font-size: 1.35rem; font-weight: 600; color: var(--gray-900); }
+.admin-shell h2 { font-size: 1.1rem; font-weight: 600; color: var(--gray-800); }
+.admin-shell h3 { font-size: 0.95rem; font-weight: 600; color: var(--gray-800); }
+.admin-shell h4 { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); }
 .admin-shell p { font-size: 0.875rem; }
 .admin-shell .section { padding: 0; }
 .admin-shell .container { max-width: 100%; padding: 0; }

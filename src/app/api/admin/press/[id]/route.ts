@@ -53,11 +53,17 @@ export const PUT = withAuth(async (request: NextRequest, { params }: AuthContext
 export const DELETE = withAuth(async (request: NextRequest, { params }: AuthContext<{ id: string }>) => {
   try {
     const { id } = params;
-    const body = await request.json();
-    const { updatedAt } = body;
+
+    let body: Record<string, unknown> = {};
+    try { body = await request.json(); } catch { /* empty body is OK */ }
+    const updatedAt = typeof body.updatedAt === 'string' ? body.updatedAt : undefined;
 
     const existing = await sanityClient.fetch(`*[_type == "pressItem" && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
+
+    if (existing.isActive) {
+      return validationError('לא ניתן למחוק רשומה פעילה. יש לבטל את ההפעלה תחילה.');
+    }
 
     if (existing.updatedAt) {
       if (!updatedAt) return validationError('updatedAt נדרש');
