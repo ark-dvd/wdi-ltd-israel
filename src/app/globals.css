@@ -248,16 +248,15 @@ a { text-decoration: none; color: inherit; }
   width: auto;
   height: auto;
   object-fit: cover;
-  opacity: 0.5;
 }
 
 .hero-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(135deg,
-    rgba(26, 54, 93, 0.55) 0%,
-    rgba(15, 39, 68, 0.65) 50%,
-    rgba(10, 22, 40, 0.75) 100%
+    rgba(26, 54, 93, 0.30) 0%,
+    rgba(15, 39, 68, 0.30) 50%,
+    rgba(10, 22, 40, 0.30) 100%
   );
 }
 
