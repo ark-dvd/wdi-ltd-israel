@@ -70,7 +70,7 @@ export default async function TeamPage() {
                     <div key={member._id} className="team-card animate-on-scroll">
                       <div className="team-card-image">
                         {imgUrl && <Image src={imgUrl} alt={member.name} width={400} height={400} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                        <div className="team-card-overlay">
+                        <div className="team-card-overlay" dir="rtl">
                           <h4>{member.name}</h4>
                           <p className="team-card-position">{member.role}</p>
                           {member.bio && (

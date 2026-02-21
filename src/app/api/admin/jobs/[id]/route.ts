@@ -55,13 +55,18 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
     const { id } = params;
     const body = await request.json();
     const { updatedAt } = body;
-    if (!updatedAt) return validationError('updatedAt נדרש');
 
     const existing = await sanityClient.fetch(`*[_type == "job" && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
-    const conflict = checkConcurrency(updatedAt, existing.updatedAt);
-    if (conflict) return conflict;
+    // Concurrency check: require updatedAt only when the document has one.
+    // Legacy jobs created before the updatedAt field was added may lack it;
+    // in that case we skip the check rather than returning a hard 400.
+    if (existing.updatedAt) {
+      if (!updatedAt) return validationError('updatedAt נדרש');
+      const conflict = checkConcurrency(updatedAt, existing.updatedAt);
+      if (conflict) return conflict;
+    }
 
     if (existing.isActive) {
       return validationError('לא ניתן למחוק רשומה פעילה. יש לבטל את ההפעלה תחילה.');

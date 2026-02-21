@@ -705,7 +705,13 @@ a { text-decoration: none; color: inherit; }
   transition: opacity 0.3s ease;
   text-align: right;
   direction: rtl;
+  unicode-bidi: isolate;
   border-radius: 16px;
+}
+
+/* Force all overlay descendants to inherit RTL alignment */
+.team-card-overlay * {
+  text-align: inherit;
 }
 
 .team-card:hover .team-card-overlay { opacity: 1; }
@@ -714,6 +720,8 @@ a { text-decoration: none; color: inherit; }
 .team-card-overlay h4 { font-size: 1.4rem; margin-bottom: 8px; color: white; }
 .team-card-overlay .team-card-position { color: var(--secondary); font-weight: 600; font-size: 1rem; margin-bottom: 16px; }
 .team-card-overlay .team-card-bio { font-size: 1rem; line-height: 1.9; color: rgba(255,255,255,0.95); max-height: 120px; overflow-y: auto; }
+.team-card-overlay .team-card-bio p,
+.team-card-overlay .team-card-bio li { color: inherit; }
 .team-card-overlay .team-card-qualifications { font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-top: 8px; }
 .team-card-overlay .team-card-linkedin {
   display: inline-flex;
@@ -726,6 +734,9 @@ a { text-decoration: none; color: inherit; }
   font-size: 0.9rem;
   margin-top: auto;
   transition: background 0.2s ease;
+  /* LTR island inside RTL overlay — prevents icon/text flip */
+  direction: ltr;
+  unicode-bidi: embed;
 }
 .team-card-overlay .team-card-linkedin:hover {
   background: rgba(255,255,255,0.25);

@@ -53,8 +53,10 @@ export function JobsTab() {
   };
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id); if (!item) return;
+    // Close ConfirmDialog immediately so ErrorRenderer in SlidePanel is visible on failure
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/jobs/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('משרה נמחקה', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('משרה נמחקה', 'success'); }
   };
 
   if (showPageSettings) return (
