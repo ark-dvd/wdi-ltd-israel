@@ -5,6 +5,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { PageViewToggle } from '../../PageViewToggle';
 import { PressPageTab } from './PressPageTab';
 import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { validateDelete } from '@/lib/admin/delete-contract';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -52,9 +53,11 @@ export function PressTab() {
     if (r) { const d = (r as { data: PressItem }).data; setItems((p) => editId ? p.map((i) => i._id === editId ? d : i) : [...p, d]); setPanelOpen(false); addToast(editId ? 'כתבה עודכנה' : 'כתבה נוצרה', 'success'); }
   };
   const handleDelete = async (id: string) => {
-    const item = items.find((i) => i._id === id); if (!item) return;
+    const item = items.find((i) => i._id === id);
+    const blocked = validateDelete(item);
+    if (blocked) { addToast(blocked, 'error'); setDelConfirm(null); return; }
     setDelConfirm(null);
-    const r = await execute(() => apiDelete(`/api/admin/press/${id}`, { updatedAt: item.updatedAt }));
+    const r = await execute(() => apiDelete(`/api/admin/press/${id}`, { updatedAt: item!.updatedAt }));
     if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('כתבה נמחקה', 'success'); }
   };
 

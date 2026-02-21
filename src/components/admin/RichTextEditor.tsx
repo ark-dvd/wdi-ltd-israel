@@ -31,7 +31,7 @@ interface PortableTextBlock {
   markDefs?: PortableTextMarkDef[];
 }
 
-// Brand palette — only these colors are allowed for text formatting
+// Brand palette — only these colors are allowed for text formatting (fail-closed)
 const BRAND_COLORS = [
   { hex: '#1a365d', label: 'כחול ראשי' },
   { hex: '#2d4a7c', label: 'כחול בהיר' },
@@ -42,6 +42,32 @@ const BRAND_COLORS = [
   { hex: '#2ecc71', label: 'ירוק' },
   { hex: '#000000', label: 'שחור' },
 ] as const;
+
+const BRAND_HEX_SET: Set<string> = new Set(BRAND_COLORS.map((c) => c.hex));
+
+/** Normalize any CSS color string (rgb, hex, named) to lowercase 6-digit hex or null. */
+function normalizeToHex(color: string): string | null {
+  if (!color) return null;
+  const s = color.trim().toLowerCase();
+  // Already hex
+  if (/^#[0-9a-f]{6}$/.test(s)) return s;
+  if (/^#[0-9a-f]{3}$/.test(s)) {
+    return `#${s[1]}${s[1]}${s[2]}${s[2]}${s[3]}${s[3]}`;
+  }
+  // rgb(r, g, b)
+  const m = s.match(/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/);
+  if (m) {
+    const hex = (n: string) => parseInt(n, 10).toString(16).padStart(2, '0');
+    return `#${hex(m[1]!)}${hex(m[2]!)}${hex(m[3]!)}`;
+  }
+  return null; // unknown format → strip
+}
+
+/** Returns the hex if it's a brand color, otherwise null (fail-closed). */
+function sanitizeBrandColor(raw: string): string | null {
+  const hex = normalizeToHex(raw);
+  return hex && BRAND_HEX_SET.has(hex) ? hex : null;
+}
 
 interface RichTextEditorProps {
   label: string;
@@ -353,19 +379,22 @@ function walkInlineNodes(
       break;
     }
     case 'font': {
-      const color = el.getAttribute('color');
-      if (color) {
+      const rawColor = el.getAttribute('color');
+      const hex = rawColor ? sanitizeBrandColor(rawColor) : null;
+      if (hex) {
         const colorKey = generateKey();
-        markDefs.push({ _key: colorKey, _type: 'color', hex: color });
+        markDefs.push({ _key: colorKey, _type: 'color', hex });
         newMarks.push(colorKey);
       }
+      // Non-brand colors are silently stripped (fail-closed)
       break;
     }
     case 'span': {
-      const spanColor = el.style?.color;
-      if (spanColor) {
+      const rawSpanColor = el.style?.color;
+      const hex = rawSpanColor ? sanitizeBrandColor(rawSpanColor) : null;
+      if (hex) {
         const colorKey = generateKey();
-        markDefs.push({ _key: colorKey, _type: 'color', hex: spanColor });
+        markDefs.push({ _key: colorKey, _type: 'color', hex });
         newMarks.push(colorKey);
       }
       break;

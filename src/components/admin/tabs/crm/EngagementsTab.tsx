@@ -11,6 +11,7 @@ import {
   Plus, RefreshCw, ChevronDown, X, Tag, Clock, MessageSquare, Trash2,
 } from 'lucide-react';
 import { apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { validateDelete } from '@/lib/admin/delete-contract';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -39,6 +40,7 @@ interface Engagement {
   actualEndDate?: string;
   description?: string;
   internalNotes?: string;
+  isActive?: boolean;
   updatedAt: string;
 }
 
@@ -283,9 +285,11 @@ export function EngagementsTab() {
   };
 
   const handleDelete = async (id: string) => {
-    const item = items.find((i) => i._id === id); if (!item) return;
+    const item = items.find((i) => i._id === id);
+    const blocked = validateDelete(item);
+    if (blocked) { addToast(blocked, 'error'); setDelConfirm(null); return; }
     setDelConfirm(null);
-    const r = await execute(() => apiDelete(`/api/admin/engagements/${id}`, { updatedAt: item.updatedAt }));
+    const r = await execute(() => apiDelete(`/api/admin/engagements/${id}`, { updatedAt: item!.updatedAt }));
     if (r) {
       setItems((p) => p.filter((i) => i._id !== id));
       setPanelOpen(false);

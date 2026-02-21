@@ -5,6 +5,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { PageViewToggle } from '../../PageViewToggle';
 import { ClientsPageTab } from './ClientsPageTab';
 import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { validateDelete } from '@/lib/admin/delete-contract';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -50,9 +51,11 @@ export function ClientsContentTab() {
     if (r) { const d = (r as { data: ClientContent }).data; setItems((p) => editId ? p.map((i) => i._id === editId ? d : i) : [...p, d]); setPanelOpen(false); addToast(editId ? 'לקוח תוכן עודכן' : 'לקוח תוכן נוצר', 'success'); }
   };
   const handleDelete = async (id: string) => {
-    const item = items.find((i) => i._id === id); if (!item) return;
+    const item = items.find((i) => i._id === id);
+    const blocked = validateDelete(item);
+    if (blocked) { addToast(blocked, 'error'); setDelConfirm(null); return; }
     setDelConfirm(null);
-    const r = await execute(() => apiDelete(`/api/admin/clients-content/${id}`, { updatedAt: item.updatedAt }));
+    const r = await execute(() => apiDelete(`/api/admin/clients-content/${id}`, { updatedAt: item!.updatedAt }));
     if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('לקוח תוכן נמחק', 'success'); }
   };
 

@@ -4,6 +4,12 @@
  */
 import { PortableText as PortableTextRenderer, type PortableTextComponents } from '@portabletext/react';
 
+// Brand color allowlist — fail-closed: only these hex values render as colored text
+const BRAND_HEX_SET = new Set([
+  '#1a365d', '#2d4a7c', '#c9a227', '#e8b923',
+  '#343a40', '#e74c3c', '#2ecc71', '#000000',
+]);
+
 function blockStyle(node: any) {
   const align = node?.textAlign;
   return align ? { textAlign: align as 'right' | 'center' | 'left' } : undefined;
@@ -36,8 +42,9 @@ const components: PortableTextComponents = {
     'strike-through': ({ children }) => <s>{children}</s>,
     code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
     color: ({ value, children }) => {
-      const hex = value?.hex;
-      return hex ? <span style={{ color: hex }}>{children}</span> : <>{children}</>;
+      const hex = value?.hex?.toLowerCase();
+      // Fail-closed: only render brand-approved colors
+      return hex && BRAND_HEX_SET.has(hex) ? <span style={{ color: hex }}>{children}</span> : <>{children}</>;
     },
     link: ({ value, children }) => {
       const href = value?.href ?? '#';

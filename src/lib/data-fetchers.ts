@@ -9,17 +9,29 @@
  */
 import { sanityClient } from './sanity/client';
 
+// ─── Debug logging (enable via SANITY_DEBUG_LOG=1) ──────────
+const DEBUG = process.env.SANITY_DEBUG_LOG === '1';
+function debugLog(fetcher: string, startMs: number, resultCount?: number) {
+  if (!DEBUG) return;
+  const elapsed = Date.now() - startMs;
+  const count = resultCount !== undefined ? ` → ${resultCount} results` : '';
+  console.log(`[sanity-debug] ${fetcher} ${elapsed}ms${count} (useCdn=false, perspective=published)`);
+}
+
 // ─── Services ───────────────────────────────────────────────
 
 export async function getActiveServices() {
+  const t = Date.now();
   try {
-    return await sanityClient.fetch(
+    const r = await sanityClient.fetch(
       `*[_type == "service" && isActive != false] | order(order asc){
         _id, "name": coalesce(name, title), "slug": slug.current,
         "description": coalesce(description, shortDescription), tagline, icon,
         highlights, detailContent, image, order, ctaText, howWdiDoesIt
       }`,
     );
+    debugLog('getActiveServices', t, r?.length);
+    return r;
   } catch (err) {
     console.error('[ssr]', err);
     return [];
@@ -228,13 +240,16 @@ export async function getActiveContentLibraryItems() {
 // ─── Singletons ─────────────────────────────────────────────
 
 export async function getHeroSettings() {
+  const t = Date.now();
   try {
-    return await sanityClient.fetch(
+    const r = await sanityClient.fetch(
       `*[_type == "heroSettings"][0]{
         ...,
         "videoFileUrl": coalesce(videoFile.asset->url, videoUrl.asset->url)
       }`,
     );
+    debugLog('getHeroSettings', t);
+    return r;
   } catch (err) {
     console.error('[ssr]', err);
     return null;
@@ -259,14 +274,17 @@ export async function getSiteSettings() {
 }
 
 export async function getAboutPage() {
+  const t = Date.now();
   try {
-    return await sanityClient.fetch(
+    const r = await sanityClient.fetch(
       `*[_type == "aboutPage"][0]{
         ...,
         "pageTitle": coalesce(pageTitle, ""),
         "companyDescription": coalesce(companyDescription, storyContent),
       }`,
     );
+    debugLog('getAboutPage', t);
+    return r;
   } catch (err) {
     console.error('[ssr]', err);
     return null;

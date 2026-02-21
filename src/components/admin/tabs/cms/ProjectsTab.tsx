@@ -8,6 +8,7 @@ import { Plus, RefreshCw, Star, Trash2 } from 'lucide-react';
 import { PageViewToggle } from '../../PageViewToggle';
 import { ProjectsPageTab } from './ProjectsPageTab';
 import { apiList, apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { validateDelete } from '@/lib/admin/delete-contract';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -96,9 +97,11 @@ export function ProjectsTab() {
   };
 
   const handleDelete = async (id: string) => {
-    const item = items.find((i) => i._id === id); if (!item) return;
+    const item = items.find((i) => i._id === id);
+    const blocked = validateDelete(item);
+    if (blocked) { addToast(blocked, 'error'); setDelConfirm(null); return; }
     setDelConfirm(null);
-    const r = await execute(() => apiDelete(`/api/admin/projects/${id}`, { updatedAt: item.updatedAt }));
+    const r = await execute(() => apiDelete(`/api/admin/projects/${id}`, { updatedAt: item!.updatedAt }));
     if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('פרויקט נמחק', 'success'); }
   };
 
@@ -118,9 +121,11 @@ export function ProjectsTab() {
 
   const handleTestDelete = async (tid: string) => {
     if (!editId) return;
-    const t = testimonials.find((x) => x._id === tid); if (!t) return;
+    const t = testimonials.find((x) => x._id === tid);
+    const blocked = validateDelete(t);
+    if (blocked) { addToast(blocked, 'error'); setTestDelConfirm(null); return; }
     setTestDelConfirm(null);
-    const r = await testLifecycle.execute(() => apiDelete(`/api/admin/projects/${editId}/testimonials/${tid}`, { updatedAt: t.updatedAt }));
+    const r = await testLifecycle.execute(() => apiDelete(`/api/admin/projects/${editId}/testimonials/${tid}`, { updatedAt: t!.updatedAt }));
     if (r) { setTestimonials((p) => p.filter((x) => x._id !== tid)); addToast('המלצה נמחקה', 'success'); }
   };
 

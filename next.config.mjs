@@ -37,6 +37,15 @@ const nextConfig = {
             key: 'Pragma',
             value: 'no-cache',
           },
+          // Netlify edge CDN: never cache dynamic pages (prevents stale SSR)
+          {
+            key: 'CDN-Cache-Control',
+            value: 'no-store',
+          },
+          {
+            key: 'Netlify-CDN-Cache-Control',
+            value: 'no-store',
+          },
         ],
       },
       {

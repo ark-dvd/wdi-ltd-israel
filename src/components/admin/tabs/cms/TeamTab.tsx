@@ -5,6 +5,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { PageViewToggle } from '../../PageViewToggle';
 import { TeamPageTab } from './TeamPageTab';
 import { apiList, apiGet, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
+import { validateDelete } from '@/lib/admin/delete-contract';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
 import { SlidePanel } from '../../SlidePanel';
@@ -80,9 +81,10 @@ export function TeamTab() {
 
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id);
-    if (!item) return;
+    const blocked = validateDelete(item);
+    if (blocked) { addToast(blocked, 'error'); setDelConfirm(null); return; }
     setDelConfirm(null);
-    const r = await execute(() => apiDelete(`/api/admin/team/${id}`, { updatedAt: item.updatedAt }));
+    const r = await execute(() => apiDelete(`/api/admin/team/${id}`, { updatedAt: item!.updatedAt }));
     if (r) {
       setItems((p) => p.filter((i) => i._id !== id));
       setPanelOpen(false);
