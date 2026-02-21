@@ -5,6 +5,7 @@
  * Returns { success: true, data: { _ref, url } }
  */
 export const runtime = 'nodejs';
+export const maxDuration = 60; // allow up to 60s for large video uploads
 
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/auth/guard';

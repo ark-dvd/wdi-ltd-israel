@@ -22,6 +22,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: 'WDI | מאתגר להצלחה', template: '%s | WDI' },
   description: 'WDI - חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל. מומחים בניהול פרויקטי בנייה בטחוניים, מסחריים ותשתיות.',
+  icons: {
+    icon: [
+      { url: '/images/favicon.png', type: 'image/png' },
+      { url: '/images/favicon.svg', type: 'image/svg+xml' },
+    ],
+  },
   openGraph: {
     locale: 'he_IL',
     type: 'website',
