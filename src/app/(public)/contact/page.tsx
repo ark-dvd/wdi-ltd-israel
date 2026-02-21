@@ -9,7 +9,7 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { ContactForm } from '@/components/public/ContactForm';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Contact',

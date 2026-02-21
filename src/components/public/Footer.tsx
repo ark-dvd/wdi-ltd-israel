@@ -15,9 +15,9 @@ export async function Footer() {
     getActiveServices(),
   ]);
 
-  const logoWhiteUrl = settings?.logoWhiteUrl ?? '';
-  const daflashUrl = settings?.daflashLogoUrl ?? '';
-  const dunsUrl = settings?.duns100ImageUrl ?? '';
+  const logoWhiteUrl = settings?.logoWhiteUrl || '/images/wdi-logo-white.png';
+  const daflashUrl = settings?.daflashLogoUrl || '/images/daflash-logo.png';
+  const dunsUrl = settings?.duns100ImageUrl || '/images/duns100.svg';
   const dunsLink = settings?.duns100Url ?? '';
   const copyright = settings?.copyrightText ?? '';
   const websiteBy = settings?.websiteByText ?? '';

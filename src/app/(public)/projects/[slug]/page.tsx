@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const SECTOR_LABELS: Record<string, string> = {
   security: 'בטחוני',

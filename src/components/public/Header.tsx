@@ -20,8 +20,8 @@ export async function Header() {
   return (
     <HeaderClient
       serviceLinks={serviceLinks}
-      logoWhiteUrl={settings?.logoWhiteUrl ?? ''}
-      logoDarkUrl={settings?.logoDarkUrl ?? ''}
+      logoWhiteUrl={settings?.logoWhiteUrl || '/images/wdi-logo-white.png'}
+      logoDarkUrl={settings?.logoDarkUrl || '/images/wdi-logo.png'}
       companyName={settings?.companyName ?? ''}
       navLabels={settings?.navLabels ?? {}}
     />
