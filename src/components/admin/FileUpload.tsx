@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import { sanityBrowserClient } from '@/lib/sanity/browser-client';
 
 interface SanityFileValue {
   _type: 'file';
@@ -17,24 +18,25 @@ interface FileUploadProps {
 
 export default function FileUpload({ label, accept, description, value, onChange }: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = useCallback(async (file: File) => {
     setError('');
     setUploading(true);
+    setProgress(0);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/admin/upload?type=file', { method: 'POST', body: formData });
-      const json = await res.json();
-      if (res.ok && json.success) {
-        onChange({ _type: 'file', asset: { _type: 'reference', _ref: json.data._ref } });
-      } else {
-        setError(json.message || 'שגיאה בהעלאת הקובץ');
-      }
+      // Upload directly to Sanity from the browser — bypasses Netlify function size limit
+      const asset = await sanityBrowserClient.assets.upload('file', file, {
+        filename: file.name,
+        contentType: file.type,
+      });
+      // Simulate progress since the SDK doesn't expose it natively
+      setProgress(100);
+      onChange({ _type: 'file', asset: { _type: 'reference', _ref: asset._id } });
     } catch {
-      setError('שגיאה בהעלאת הקובץ');
+      setError('שגיאה בהעלאת הקובץ. ודא שטוקן NEXT_PUBLIC_SANITY_WRITE_TOKEN מוגדר.');
     } finally {
       setUploading(false);
     }
@@ -70,13 +72,18 @@ export default function FileUpload({ label, accept, description, value, onChange
         </div>
       ) : (
         <div
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => !uploading && fileInputRef.current?.click()}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${uploading ? 'border-blue-300 bg-blue-50' : 'border-gray-300 cursor-pointer hover:border-blue-400'}`}
         >
           {uploading ? (
-            <p className="text-sm text-gray-500">מעלה...</p>
+            <div className="space-y-2">
+              <p className="text-sm text-blue-600 font-medium">מעלה...</p>
+              <div className="w-full bg-blue-100 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
           ) : (
             <p className="text-sm text-gray-500">{description || 'גרור קובץ או לחץ לבחירה'}</p>
           )}

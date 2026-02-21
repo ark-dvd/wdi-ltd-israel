@@ -8,7 +8,7 @@
 import {
   Users, FolderOpen, Briefcase, Building, Newspaper, BriefcaseBusiness,
   Library, Play, Settings, LogOut, Info, ClipboardList, Inbox, Lightbulb,
-  FileText, Phone, type LucideIcon,
+  Phone, type LucideIcon,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -36,22 +36,12 @@ const CMS_ITEMS: NavItem[] = [
   { label: 'כתבו עלינו', icon: Newspaper, tab: 'press' },
   { label: 'משרות', icon: BriefcaseBusiness, tab: 'jobs' },
   { label: 'מאגר מידע', icon: Library, tab: 'content-library' },
+  { label: 'צור קשר', icon: Phone, tab: 'contact-page' },
   { label: 'Hero', icon: Play, tab: 'hero' },
   { label: 'עמוד אודות', icon: Info, tab: 'about-page' },
   { label: 'עמוד חדשנות', icon: Lightbulb, tab: 'innovation-page' },
   { label: 'טופס ספקים', icon: ClipboardList, tab: 'supplier-form-settings' },
   { label: 'הגדרות אתר', icon: Settings, tab: 'site-settings' },
-];
-
-const PAGE_ITEMS: NavItem[] = [
-  { label: 'עמוד שירותים', icon: Briefcase, tab: 'services-page' },
-  { label: 'עמוד פרויקטים', icon: FolderOpen, tab: 'projects-page' },
-  { label: 'עמוד צוות', icon: Users, tab: 'team-page' },
-  { label: 'עמוד לקוחות', icon: Building, tab: 'clients-page' },
-  { label: 'עמוד כתבו עלינו', icon: Newspaper, tab: 'press-page' },
-  { label: 'עמוד משרות', icon: BriefcaseBusiness, tab: 'jobs-page' },
-  { label: 'עמוד מאגר מידע', icon: FileText, tab: 'content-library-page' },
-  { label: 'עמוד צור קשר', icon: Phone, tab: 'contact-page' },
 ];
 
 function NavSection({ title, items, activeTab, onTabChange }: {
@@ -102,7 +92,6 @@ export function AdminSidebar({ activeTab, onTabChange, userEmail }: AdminSidebar
       <nav className="flex-1 overflow-y-auto py-4">
         <NavSection title="פניות נכנסות" items={INTAKE_ITEMS} activeTab={activeTab} onTabChange={onTabChange} />
         <NavSection title="ניהול תוכן" items={CMS_ITEMS} activeTab={activeTab} onTabChange={onTabChange} />
-        <NavSection title="הגדרות עמודים" items={PAGE_ITEMS} activeTab={activeTab} onTabChange={onTabChange} />
       </nav>
 
       {/* Logout */}

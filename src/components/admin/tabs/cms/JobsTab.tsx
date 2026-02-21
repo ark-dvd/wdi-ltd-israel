@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw } from 'lucide-react';
+import { PageViewToggle } from '../../PageViewToggle';
+import { JobsPageTab } from './JobsPageTab';
 import { apiList, apiPost, apiPut, apiDelete, type ErrorEnvelope } from '@/lib/api/client';
 import { useRequestLifecycle } from '@/hooks/useRequestLifecycle';
 import { useToast } from '../../Toast';
@@ -27,6 +29,7 @@ export function JobsTab() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: '', location: '', type: '', department: '', contactEmail: '', isActive: true, order: 0 });
   const [delConfirm, setDelConfirm] = useState<string | null>(null);
+  const [showPageSettings, setShowPageSettings] = useState(false);
   const { error: mutErr, isLocked, execute, reset } = useRequestLifecycle();
   const { addToast } = useToast();
 
@@ -54,12 +57,22 @@ export function JobsTab() {
     if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('משרה נמחקה', 'success'); }
   };
 
+  if (showPageSettings) return (
+    <>
+      <div className="px-6 pt-6" dir="rtl">
+        <PageViewToggle showSettings onToggle={setShowPageSettings} />
+      </div>
+      <JobsPageTab />
+    </>
+  );
+
   if (loading) return <div className="p-8 text-center text-gray-500">טוען משרות...</div>;
   if (fetchErr) return <div className="p-8"><ErrorRenderer error={fetchErr} onReload={fetchItems} /></div>;
 
   return (
     <div className="p-6" dir="rtl">
-      <div className="flex items-center justify-between mb-6">
+      <PageViewToggle showSettings={false} onToggle={setShowPageSettings} />
+      <div className="flex items-center justify-between mb-6 mt-4">
         <h1 className="text-2xl font-bold text-gray-900">משרות</h1>
         <div className="flex items-center gap-3">
           <button onClick={fetchItems} className="p-2 text-gray-400 hover:text-gray-600" type="button"><RefreshCw size={18} /></button>
