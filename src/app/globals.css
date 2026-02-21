@@ -265,7 +265,7 @@ a { text-decoration: none; color: inherit; }
 .hero-content {
   position: relative;
   z-index: 2;
-  text-align: center;
+  text-align: right;
   max-width: 800px;
   padding: 0 24px;
 }
@@ -289,7 +289,7 @@ a { text-decoration: none; color: inherit; }
 .hero-buttons {
   display: flex;
   gap: 16px;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -1178,6 +1178,24 @@ a { text-decoration: none; color: inherit; }
 .share-btn.facebook { background: #1877f2; color: white; }
 .share-btn.email { background: var(--gray-200); color: var(--gray-700); }
 
+/* ═══════════════════════════════════════════════════════════
+   Admin Shell — calm, compact theme scoped under .admin-shell
+   Does NOT affect public pages.
+   ═══════════════════════════════════════════════════════════ */
+
+.admin-shell {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-700);
+}
+.admin-shell h1 { font-size: 1.5rem; font-weight: 600; color: var(--gray-900); }
+.admin-shell h2 { font-size: 1.15rem; font-weight: 600; color: var(--gray-800); }
+.admin-shell h3 { font-size: 1rem; font-weight: 600; color: var(--gray-800); }
+.admin-shell h4 { font-size: 0.9rem; font-weight: 600; color: var(--gray-700); }
+.admin-shell p { font-size: 0.875rem; }
+.admin-shell .section { padding: 0; }
+.admin-shell .container { max-width: 100%; padding: 0; }
+
 /* ─── Responsive: Team 900px breakpoint — DOC-070 ──────── */
 
 @media (max-width: 900px) {
@@ -1209,7 +1227,7 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 480px) {
   .hero-content h1 { font-size: 2rem; }
   .hero-content p { font-size: 0.95rem; }
-  .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-buttons { flex-direction: column; align-items: stretch; }
   .section-header h2 { font-size: 1.75rem; }
 }
 

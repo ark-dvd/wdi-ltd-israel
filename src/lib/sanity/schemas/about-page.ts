@@ -22,6 +22,14 @@ export const aboutPageSchema = {
       type: 'array' as const,
       of: [{ type: 'block' as const }],
     },
+    // Vision section — displayed BEFORE values on the public about page
+    { name: 'visionTitle', title: 'כותרת החזון שלנו', type: 'string' as const },
+    {
+      name: 'visionContent',
+      title: 'תוכן החזון שלנו',
+      type: 'array' as const,
+      of: [{ type: 'block' as const }],
+    },
     // Keep old fields readable for migration via GROQ coalesce()
     { name: 'vision', title: 'חזון (ישן)', type: 'text' as const, hidden: true },
     { name: 'storyContent', title: 'הסיפור שלנו (ישן)', type: 'array' as const, of: [{ type: 'block' as const }], hidden: true },

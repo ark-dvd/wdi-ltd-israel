@@ -19,6 +19,7 @@ interface AboutPage {
   _id: string;
   pageTitle?: string; subtitle?: string;
   companyDescription?: unknown[];
+  visionTitle?: string; visionContent?: unknown[];
   vision?: string; storyContent?: unknown[];
   valuesTitle?: string; pressTitle?: string;
   ctaTitle?: string; ctaSubtitle?: string; ctaButtonText?: string; ctaButtonLink?: string;
@@ -104,6 +105,14 @@ export function AboutPageTab() {
         <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">תיאור החברה</h2>
           <RichTextEditor label="" value={form.companyDescription as unknown[] ?? form.storyContent as unknown[] ?? null} onChange={v => set('companyDescription', v)} rows={8} />
+        </div>
+
+        {/* Vision Section */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+          <h2 className="font-semibold text-gray-800">החזון שלנו</h2>
+          <div><label className="block text-sm font-medium text-gray-700 mb-1">כותרת</label>
+            <input type="text" value={form.visionTitle ?? ''} onChange={e => set('visionTitle', e.target.value)} className={inputCls} /></div>
+          <RichTextEditor label="תוכן החזון" value={form.visionContent as unknown[] ?? null} onChange={v => set('visionContent', v)} rows={5} />
         </div>
 
         {/* Section Titles */}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Assistant, Heebo } from 'next/font/google';
+import { GoogleAnalytics } from '@/components/public/GoogleAnalytics';
 import './globals.css';
 
 const assistant = Assistant({
@@ -46,6 +47,7 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={`${assistant.variable} ${heebo.variable}`}>
       <head>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -53,7 +55,10 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className="font-assistant antialiased">{children}</body>
+      <body className="font-assistant antialiased">
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }

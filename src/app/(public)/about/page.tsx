@@ -50,6 +50,20 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* Vision Section — "החזון שלנו" — before values */}
+      {about?.visionContent && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              {about.visionTitle && <h2>{about.visionTitle}</h2>}
+            </div>
+            <div className="company-story animate-on-scroll">
+              <PortableText value={about.visionContent} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Values Grid — §13.2 */}
       {about?.values && about.values.length > 0 && (
         <section className="section bg-light">

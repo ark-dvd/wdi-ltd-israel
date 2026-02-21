@@ -491,6 +491,8 @@ export const aboutPageUpdateSchema = z.object({
   pageTitle: z.string().optional(),
   subtitle: z.string().optional(),
   vision: z.string().optional(),
+  visionTitle: z.string().optional(),
+  visionContent: z.any().optional(),
   storyContent: z.any().optional(),
   companyDescription: z.any().optional(),
   valuesTitle: z.string().optional(),
