@@ -35,8 +35,8 @@
   --white: #ffffff;
   --black: #000000;
 
-  /* Typography */
-  --font-hebrew: 'Assistant', 'Rubik', sans-serif;
+  /* Typography — uses Next.js optimized font variable with raw-name fallback */
+  --font-hebrew: var(--font-assistant, 'Assistant'), 'Rubik', sans-serif;
 
   /* Layout */
   --section-padding: 100px;
