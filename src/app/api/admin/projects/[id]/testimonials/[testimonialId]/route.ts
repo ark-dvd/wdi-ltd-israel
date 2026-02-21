@@ -47,7 +47,6 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
 
     const body = await request.json();
     const { updatedAt } = body;
-    if (!updatedAt) return validationError('updatedAt נדרש');
 
     const existing = await sanityClient.fetch(
       `*[_type == "testimonial" && _id == $id && projectRef._ref == $projectId][0]`,
@@ -55,8 +54,11 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
     );
     if (!existing) return notFoundError();
 
-    const conflict = checkConcurrency(updatedAt, existing.updatedAt);
-    if (conflict) return conflict;
+    if (existing.updatedAt) {
+      if (!updatedAt) return validationError('updatedAt נדרש');
+      const conflict = checkConcurrency(updatedAt, existing.updatedAt);
+      if (conflict) return conflict;
+    }
 
     if (existing.isActive) {
       return validationError('לא ניתן למחוק רשומה פעילה. יש לבטל את ההפעלה תחילה.');

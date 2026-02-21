@@ -81,10 +81,11 @@ export function TeamTab() {
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id);
     if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/team/${id}`, { updatedAt: item.updatedAt }));
     if (r) {
       setItems((p) => p.filter((i) => i._id !== id));
-      setPanelOpen(false); setDelConfirm(null);
+      setPanelOpen(false);
       addToast('חבר צוות נמחק', 'success');
     }
   };

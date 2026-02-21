@@ -50,8 +50,9 @@ export function ContentLibraryTab() {
   };
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id); if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/content-library/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('פריט נמחק', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('פריט נמחק', 'success'); }
   };
 
   if (showPageSettings) return (

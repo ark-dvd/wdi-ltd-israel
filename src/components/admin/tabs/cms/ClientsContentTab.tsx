@@ -51,8 +51,9 @@ export function ClientsContentTab() {
   };
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id); if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/clients-content/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('לקוח תוכן נמחק', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('לקוח תוכן נמחק', 'success'); }
   };
 
   if (showPageSettings) return (

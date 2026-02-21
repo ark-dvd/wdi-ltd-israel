@@ -72,8 +72,9 @@ export function ServicesTab() {
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id);
     if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/services/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('שירות נמחק', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('שירות נמחק', 'success'); }
   };
 
   if (showPageSettings) return (

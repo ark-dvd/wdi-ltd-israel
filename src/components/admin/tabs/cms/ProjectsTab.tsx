@@ -97,8 +97,9 @@ export function ProjectsTab() {
 
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id); if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/projects/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('פרויקט נמחק', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('פרויקט נמחק', 'success'); }
   };
 
   // Testimonial CRUD — §19
@@ -118,8 +119,9 @@ export function ProjectsTab() {
   const handleTestDelete = async (tid: string) => {
     if (!editId) return;
     const t = testimonials.find((x) => x._id === tid); if (!t) return;
+    setTestDelConfirm(null);
     const r = await testLifecycle.execute(() => apiDelete(`/api/admin/projects/${editId}/testimonials/${tid}`, { updatedAt: t.updatedAt }));
-    if (r) { setTestimonials((p) => p.filter((x) => x._id !== tid)); setTestDelConfirm(null); addToast('המלצה נמחקה', 'success'); }
+    if (r) { setTestimonials((p) => p.filter((x) => x._id !== tid)); addToast('המלצה נמחקה', 'success'); }
   };
 
   if (showPageSettings) return (

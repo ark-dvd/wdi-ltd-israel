@@ -55,13 +55,15 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
     const { id } = params;
     const body = await request.json();
     const { updatedAt } = body;
-    if (!updatedAt) return validationError('updatedAt נדרש');
 
     const existing = await sanityClient.fetch(`*[_type == "teamMember" && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
-    const conflict = checkConcurrency(updatedAt, existing.updatedAt);
-    if (conflict) return conflict;
+    if (existing.updatedAt) {
+      if (!updatedAt) return validationError('updatedAt נדרש');
+      const conflict = checkConcurrency(updatedAt, existing.updatedAt);
+      if (conflict) return conflict;
+    }
 
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });

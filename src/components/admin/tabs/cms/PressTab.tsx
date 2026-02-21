@@ -53,8 +53,9 @@ export function PressTab() {
   };
   const handleDelete = async (id: string) => {
     const item = items.find((i) => i._id === id); if (!item) return;
+    setDelConfirm(null);
     const r = await execute(() => apiDelete(`/api/admin/press/${id}`, { updatedAt: item.updatedAt }));
-    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); setDelConfirm(null); addToast('כתבה נמחקה', 'success'); }
+    if (r) { setItems((p) => p.filter((i) => i._id !== id)); setPanelOpen(false); addToast('כתבה נמחקה', 'success'); }
   };
 
   if (showPageSettings) return (

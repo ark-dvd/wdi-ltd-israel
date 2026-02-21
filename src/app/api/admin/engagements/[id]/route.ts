@@ -9,7 +9,7 @@ import { withAuth, type AuthContext } from '@/lib/auth/guard';
 import { sanityClient, sanityWriteClient } from '@/lib/sanity/client';
 import { successResponse, validationError, notFoundError, serverError } from '@/lib/api/response';
 import { checkConcurrency } from '@/lib/api/concurrency';
-import { engagementUpdateSchema, engagementDeleteSchema } from '@/lib/validation/input-schemas';
+import { engagementUpdateSchema } from '@/lib/validation/input-schemas';
 import { addActivityToTransaction } from '@/lib/api/activity';
 
 export const GET = withAuth(async (_request: NextRequest, { params }: AuthContext<{ id: string }>) => {
@@ -84,14 +84,16 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
   try {
     const { id } = params;
     const body = await request.json();
-    const parsed = engagementDeleteSchema.safeParse(body);
-    if (!parsed.success) return validationError('updatedAt נדרש');
+    const { updatedAt } = body;
 
     const existing = await sanityClient.fetch(`*[_type == "engagement" && _id == $id][0]`, { id });
     if (!existing) return notFoundError();
 
-    const conflict = checkConcurrency(parsed.data.updatedAt, existing.updatedAt);
-    if (conflict) return conflict;
+    if (existing.updatedAt) {
+      if (!updatedAt) return validationError('updatedAt נדרש');
+      const conflict = checkConcurrency(updatedAt, existing.updatedAt);
+      if (conflict) return conflict;
+    }
 
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });
