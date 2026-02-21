@@ -3,11 +3,14 @@
  * Internal TypeScript functions for Next.js SSR.
  * List fetchers return [] on error. Single-entity fetchers return null.
  *
+ * ALL reads use sanityFetch() which forces cache:'no-store' —
+ * this guarantees Next.js Data Cache never serves stale Sanity content.
+ *
  * GROQ coalesce() handles field name migration:
  *   coalesce(name, title) — returns `name` if set, otherwise `title`
  *   coalesce(pageTitle, headline, formTitle) — new→old field migration
  */
-import { sanityClient } from './sanity/client';
+import { sanityFetch } from './sanity/client';
 
 // ─── Debug logging (enable via SANITY_DEBUG_LOG=1) ──────────
 const DEBUG = process.env.SANITY_DEBUG_LOG === '1';
@@ -15,7 +18,7 @@ function debugLog(fetcher: string, startMs: number, resultCount?: number) {
   if (!DEBUG) return;
   const elapsed = Date.now() - startMs;
   const count = resultCount !== undefined ? ` → ${resultCount} results` : '';
-  console.log(`[sanity-debug] ${fetcher} ${elapsed}ms${count} (useCdn=false, perspective=published)`);
+  console.log(`[sanity-debug] ${fetcher} ${elapsed}ms${count} (useCdn=false, perspective=published, cache=no-store)`);
 }
 
 // ─── Services ───────────────────────────────────────────────
@@ -23,7 +26,7 @@ function debugLog(fetcher: string, startMs: number, resultCount?: number) {
 export async function getActiveServices() {
   const t = Date.now();
   try {
-    const r = await sanityClient.fetch(
+    const r = await sanityFetch<any[]>(
       `*[_type == "service" && isActive != false] | order(order asc){
         _id, "name": coalesce(name, title), "slug": slug.current,
         "description": coalesce(description, shortDescription), tagline, icon,
@@ -40,7 +43,7 @@ export async function getActiveServices() {
 
 export async function getService(slug: string) {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "service" && slug.current == $slug && isActive != false][0]{
         ...,
         "name": coalesce(name, title),
@@ -59,7 +62,7 @@ export async function getService(slug: string) {
 
 export async function getActiveProjects() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "project" && isActive != false] | order(order asc){
         _id, title, "slug": slug.current, client,
         "sector": coalesce(sector, category), description, scope, location,
@@ -75,7 +78,7 @@ export async function getActiveProjects() {
 
 export async function getActiveProjectsBySector(sector: string) {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "project" && isActive != false && (sector == $sector || category == $sector)] | order(order asc){
         _id, title, "slug": slug.current, client,
         "sector": coalesce(sector, category), featuredImage,
@@ -91,7 +94,7 @@ export async function getActiveProjectsBySector(sector: string) {
 
 export async function getProject(slug: string) {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "project" && slug.current == $slug && isActive != false][0]{
         ...,
         "sector": coalesce(sector, category),
@@ -112,7 +115,7 @@ export async function getProject(slug: string) {
 
 export async function getTeamMembers() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "teamMember" && isActive != false] | order(
         select(
           category == "founders" => 0,
@@ -134,7 +137,7 @@ export async function getTeamMembers() {
 
 export async function getTeamMembersByCategory(category: string) {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "teamMember" && isActive != false && category == $category] | order(order asc){
         _id, name, role, category, image, bio, qualifications,
         birthYear, residence, degrees, linkedin, email, phone, order
@@ -151,7 +154,7 @@ export async function getTeamMembersByCategory(category: string) {
 
 export async function getActiveClientsContent() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "clientContent" && isActive != false] | order(order asc){
         _id, name, logo, websiteUrl, order
       }`,
@@ -166,7 +169,7 @@ export async function getActiveClientsContent() {
 
 export async function getFeaturedTestimonials() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "testimonial" && isFeatured == true && isActive != false] | order(order asc){
         _id, clientName, quote, companyName, role, image, "projectTitle": projectRef->title
       }`,
@@ -179,7 +182,7 @@ export async function getFeaturedTestimonials() {
 
 export async function getActiveTestimonials() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "testimonial" && isActive != false] | order(order asc){
         _id, clientName, quote, companyName, role, image, isFeatured, "projectTitle": projectRef->title
       }`,
@@ -194,7 +197,7 @@ export async function getActiveTestimonials() {
 
 export async function getActivePressItems() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "pressItem" && isActive != false] | order(publishDate desc){
         _id, title, source, publishDate, excerpt, externalUrl, image, order
       }`,
@@ -209,7 +212,7 @@ export async function getActivePressItems() {
 
 export async function getActiveJobs() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "job" && isActive != false] | order(order asc){
         _id, title, description, requirements, location, type, department, contactEmail, order
       }`,
@@ -224,7 +227,7 @@ export async function getActiveJobs() {
 
 export async function getActiveContentLibraryItems() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "contentLibraryItem" && isActive != false] | order(order asc){
         _id, title, description, category, icon,
         "fileDownloadUrl": file.asset->url,
@@ -242,7 +245,7 @@ export async function getActiveContentLibraryItems() {
 export async function getHeroSettings() {
   const t = Date.now();
   try {
-    const r = await sanityClient.fetch(
+    const r = await sanityFetch(
       `*[_type == "heroSettings"][0]{
         ...,
         "videoFileUrl": coalesce(videoFile.asset->url, videoUrl.asset->url)
@@ -258,7 +261,7 @@ export async function getHeroSettings() {
 
 export async function getSiteSettings() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "siteSettings"][0]{
         ...,
         "logoWhiteUrl": logoWhite.asset->url,
@@ -276,7 +279,7 @@ export async function getSiteSettings() {
 export async function getAboutPage() {
   const t = Date.now();
   try {
-    const r = await sanityClient.fetch(
+    const r = await sanityFetch(
       `*[_type == "aboutPage"][0]{
         ...,
         "pageTitle": coalesce(pageTitle, ""),
@@ -293,7 +296,7 @@ export async function getAboutPage() {
 
 export async function getSupplierFormSettings() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "supplierFormSettings"][0]{
         ...,
         "pageTitle": coalesce(pageTitle, formTitle),
@@ -308,48 +311,48 @@ export async function getSupplierFormSettings() {
 // ─── Page Singletons (per-page config) ──────────────────────
 
 export async function getServicesPage() {
-  try { return await sanityClient.fetch(`*[_type == "servicesPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "servicesPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getProjectsPage() {
-  try { return await sanityClient.fetch(`*[_type == "projectsPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "projectsPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getTeamPage() {
-  try { return await sanityClient.fetch(`*[_type == "teamPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "teamPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getClientsPage() {
-  try { return await sanityClient.fetch(`*[_type == "clientsPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "clientsPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getPressPage() {
-  try { return await sanityClient.fetch(`*[_type == "pressPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "pressPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getJobsPage() {
-  try { return await sanityClient.fetch(`*[_type == "jobsPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "jobsPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getContentLibraryPage() {
-  try { return await sanityClient.fetch(`*[_type == "contentLibraryPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "contentLibraryPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getContactPage() {
-  try { return await sanityClient.fetch(`*[_type == "contactPage"][0]`); }
+  try { return await sanityFetch(`*[_type == "contactPage"][0]`); }
   catch (err) { console.error('[ssr]', err); return null; }
 }
 
 export async function getInnovationPage() {
   try {
-    return await sanityClient.fetch(
+    return await sanityFetch(
       `*[_type == "innovationPage"][0]{
         ...,
         "pageTitle": coalesce(pageTitle, headline),

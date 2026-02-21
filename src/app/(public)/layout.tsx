@@ -8,6 +8,9 @@ import { ScrollAnimations } from '@/components/public/ScrollAnimations';
 import { OrganizationJsonLd } from '@/components/public/JsonLd';
 import { getSiteSettings } from '@/lib/data-fetchers';
 
+/** Force Next.js to NEVER cache any fetch() in the public route tree */
+export const fetchCache = 'force-no-store';
+
 export default async function PublicLayout({
   children,
 }: {
