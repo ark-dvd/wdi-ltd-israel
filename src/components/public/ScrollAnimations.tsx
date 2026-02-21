@@ -21,7 +21,10 @@ export function ScrollAnimations() {
     );
 
     const elements = document.querySelectorAll('.animate-on-scroll');
-    elements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => {
+      el.classList.add('scroll-ready');
+      observer.observe(el);
+    });
 
     return () => observer.disconnect();
   }, []);

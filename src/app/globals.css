@@ -1093,9 +1093,14 @@ a { text-decoration: none; color: inherit; }
 /* ─── Scroll Animations ─────────────────────────────────── */
 
 .animate-on-scroll {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.scroll-ready {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .animate-on-scroll.visible {
