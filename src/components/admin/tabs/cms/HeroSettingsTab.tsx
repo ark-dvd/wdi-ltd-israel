@@ -19,7 +19,7 @@ interface HeroSettings {
   _id: string; headline?: string; subheadline?: string;
   ctaText?: string; ctaLink?: string; cta2Text?: string; cta2Link?: string;
   backgroundImage?: SanityImage | null;
-  videoUrl?: SanityFile | null; updatedAt: string;
+  videoFile?: SanityFile | null; updatedAt: string;
 }
 
 export function HeroSettingsTab() {
@@ -83,7 +83,7 @@ export function HeroSettingsTab() {
           <input type="text" value={form.cta2Text ?? ''} onChange={(e) => set('cta2Text', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" /></div>
         <div><label className="block text-sm font-medium text-gray-700 mb-1">קישור כפתור שני</label>
           <input type="url" value={form.cta2Link ?? ''} onChange={(e) => set('cta2Link', e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-wdi-primary focus:ring-1 focus:ring-wdi-primary" dir="ltr" /></div>
-        <FileUpload label="וידאו רקע" accept="video/mp4,video/webm" description="גרור קובץ וידאו או לחץ לבחירה. MP4 מומלץ, עד 40MB." value={form.videoUrl ?? null} onChange={(v) => { setForm((p) => ({ ...p, videoUrl: v })); setDirty(true); }} />
+        <FileUpload label="וידאו רקע" accept="video/mp4,video/webm" description="גרור קובץ וידאו או לחץ לבחירה. MP4 מומלץ, עד 40MB." value={form.videoFile ?? null} onChange={(v) => { setForm((p) => ({ ...p, videoFile: v })); setDirty(true); }} />
         <ImageUpload label="תמונת רקע (גיבוי)" value={form.backgroundImage ?? null} onChange={(v) => { setForm((p) => ({ ...p, backgroundImage: v })); setDirty(true); }} />
       </div>
     </div>

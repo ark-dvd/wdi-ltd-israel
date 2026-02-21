@@ -272,7 +272,7 @@ export const heroSettingsUpdateSchema = z.object({
   cta2Text: z.string().optional(),
   cta2Link: z.string().optional(),
   backgroundImage: z.any().optional(),
-  videoUrl: z.any().optional(),
+  videoFile: z.any().optional(),
 });
 
 // ─── Site Settings (singleton) ──────────────────────────────

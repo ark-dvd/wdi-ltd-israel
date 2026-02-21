@@ -305,7 +305,7 @@ export const heroSettingsSchema = z.object({
   subheadline: z.string().optional(),
   ctaText: z.string().optional(),
   ctaLink: z.string().optional(),
-  videoUrl: z.unknown().optional(),
+  videoFile: z.unknown().optional(),
   backgroundImage: z.unknown().optional(),
   ...timestamps,
 });

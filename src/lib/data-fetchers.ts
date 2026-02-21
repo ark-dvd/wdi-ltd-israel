@@ -232,7 +232,7 @@ export async function getHeroSettings() {
     return await sanityClient.fetch(
       `*[_type == "heroSettings"][0]{
         ...,
-        "videoFileUrl": videoUrl.asset->url
+        "videoFileUrl": coalesce(videoFile.asset->url, videoUrl.asset->url)
       }`,
     );
   } catch (err) {
