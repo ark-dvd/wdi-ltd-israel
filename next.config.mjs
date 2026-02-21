@@ -18,6 +18,20 @@ const nextConfig = {
   // ── Security headers — DOC-060 §7 (H-01) ──────────────────
   async headers() {
     return [
+      // Cache-busting for all pages — force revalidation
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [

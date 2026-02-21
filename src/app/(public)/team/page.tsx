@@ -63,7 +63,7 @@ export default async function TeamPage() {
               <div className="team-grid">
                 {group.map((member: {
                   _id: string; name: string; role?: string; image?: { asset?: { _ref?: string } };
-                  bio?: any; linkedin?: string;
+                  bio?: any; qualifications?: string; linkedin?: string;
                 }) => {
                   const imgUrl = member.image ? sanityImageUrl(member.image) : '';
                   return (
@@ -80,6 +80,9 @@ export default async function TeamPage() {
                                 : <PortableText value={member.bio} />
                               }
                             </div>
+                          )}
+                          {member.qualifications && (
+                            <p className="team-card-qualifications">{member.qualifications}</p>
                           )}
                           {member.linkedin && (
                             <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="team-card-linkedin">

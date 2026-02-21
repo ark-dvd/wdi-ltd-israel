@@ -66,7 +66,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </a>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 40, alignItems: 'start' }}>
+          <div className="service-detail-grid">
             {/* Main content */}
             <div>
               {imgUrl && (
@@ -94,11 +94,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* Sidebar — other services */}
-            <aside style={{ position: 'sticky', top: 100 }}>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
+            <aside style={{ position: 'sticky', top: 100, background: 'var(--gray-50)', borderRadius: 16, padding: 24 }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary)', marginBottom: 16 }}>שירותים נוספים</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {otherServices.map((s: { _id: string; name: string; slug: string }) => (
-                  <li key={s._id} style={{ marginBottom: 8 }}>
-                    <Link href={`/services/${s.slug}`} style={{ color: 'var(--gray-600)', fontSize: '0.9rem', display: 'block', padding: '8px 12px', borderRadius: 8, transition: 'background 0.2s' }}>
+                  <li key={s._id} style={{ marginBottom: 4 }}>
+                    <Link href={`/services/${s.slug}`} style={{ color: 'var(--gray-700)', fontSize: '0.9rem', display: 'block', padding: '10px 12px', borderRadius: 8, transition: 'all 0.2s', borderRight: '3px solid transparent' }}>
                       {s.name}
                     </Link>
                   </li>

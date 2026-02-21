@@ -545,6 +545,20 @@ a { text-decoration: none; color: inherit; }
   background: linear-gradient(145deg, #0a1628 0%, var(--primary-dark) 50%, #1a3a5c 100%);
 }
 
+/* ─── Service Detail Layout ────────────────────────────── */
+
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .service-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Project Cards ─────────────────────────────────────── */
 
 .projects-grid {
@@ -690,6 +704,7 @@ a { text-decoration: none; color: inherit; }
   opacity: 0;
   transition: opacity 0.3s ease;
   text-align: right;
+  direction: rtl;
   border-radius: 16px;
 }
 
@@ -698,7 +713,8 @@ a { text-decoration: none; color: inherit; }
 
 .team-card-overlay h4 { font-size: 1.4rem; margin-bottom: 8px; color: white; }
 .team-card-overlay .team-card-position { color: var(--secondary); font-weight: 600; font-size: 1rem; margin-bottom: 16px; }
-.team-card-overlay .team-card-bio { font-size: 1rem; line-height: 1.9; color: rgba(255,255,255,0.95); max-height: 150px; overflow-y: auto; }
+.team-card-overlay .team-card-bio { font-size: 1rem; line-height: 1.9; color: rgba(255,255,255,0.95); max-height: 120px; overflow-y: auto; }
+.team-card-overlay .team-card-qualifications { font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-top: 8px; }
 .team-card-overlay .team-card-linkedin {
   display: inline-flex;
   align-items: center;
@@ -717,6 +733,11 @@ a { text-decoration: none; color: inherit; }
 
 .team-card-name { margin-top: 16px; font-size: 1.15rem; color: var(--gray-900); font-weight: 600; }
 .team-card-role { color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
+
+/* Team page: tighter spacing between category groups */
+.section[id^="team-"] { padding: 20px 0; }
+.section[id^="team-"]:first-of-type { padding-top: var(--section-padding); }
+.section[id^="team-"] .section-header { margin-bottom: 30px; }
 
 /* ─── Testimonials ──────────────────────────────────────── */
 
