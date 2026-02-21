@@ -15,7 +15,7 @@ import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { TEAM_CATEGORY } from '@/lib/sanity/schemas/team-member';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Team',

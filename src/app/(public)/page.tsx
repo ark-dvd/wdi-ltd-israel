@@ -11,7 +11,7 @@ import { getHeroSettings, getSiteSettings } from '@/lib/data-fetchers';
 import { HeroVideo } from '@/components/public/HeroVideo';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();

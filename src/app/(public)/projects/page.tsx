@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { ProjectsFilter } from './ProjectsFilter';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Projects',

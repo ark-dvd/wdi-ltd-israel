@@ -13,7 +13,7 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams() {
   const services = await getActiveServices();

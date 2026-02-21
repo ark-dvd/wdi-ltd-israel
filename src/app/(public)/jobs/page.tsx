@@ -10,7 +10,7 @@ import { getActiveJobs, getSiteSettings, getJobsPage } from '@/lib/data-fetchers
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Jobs',

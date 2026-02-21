@@ -4,6 +4,8 @@
  */
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'מדיניות פרטיות',
   description: 'מדיניות הפרטיות של WDI',

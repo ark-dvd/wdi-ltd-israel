@@ -6,6 +6,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { JobApplicationForm } from '@/components/public/JobApplicationForm';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'הגשת מועמדות | WDI',
   description:

@@ -4,6 +4,8 @@
  */
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'תנאי שימוש',
   description: 'תנאי שימוש באתר WDI',

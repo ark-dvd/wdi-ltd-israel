@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { getActiveServices, getSiteSettings, getServicesPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Services',

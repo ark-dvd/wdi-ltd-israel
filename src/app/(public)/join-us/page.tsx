@@ -9,7 +9,7 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { SupplierForm } from '@/components/public/SupplierForm';
 import { PortableText } from '@/components/public/PortableText';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Supplier Registration',

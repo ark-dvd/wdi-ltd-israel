@@ -10,7 +10,7 @@ import { getActiveContentLibraryItems, getContentLibraryPage } from '@/lib/data-
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Content Library',
