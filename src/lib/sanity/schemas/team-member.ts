@@ -7,7 +7,7 @@
 
 export const TEAM_CATEGORY = {
   founders: 'מייסדים',
-  management: 'הנהלה',
+  management: 'הנהלה ואדמיניסטרציה',
   'department-heads': 'ראשי תחומים',
   'project-managers': 'מנהלי פרויקטים',
 } as const;

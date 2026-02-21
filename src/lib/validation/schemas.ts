@@ -195,7 +195,7 @@ export const projectSchema = z.object({
 
 // ─── Content: TeamMember (§3.8) ─────────────────────────────
 export const teamCategoryEnum = z.enum([
-  'founders', 'management', 'department-heads', 'project-managers', 'administration',
+  'founders', 'management', 'department-heads', 'project-managers',
 ]);
 
 const degreeSchema = z.object({

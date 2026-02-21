@@ -63,10 +63,6 @@ export const DELETE = withAuth(async (request: NextRequest, { params }: AuthCont
     const conflict = checkConcurrency(updatedAt, existing.updatedAt);
     if (conflict) return conflict;
 
-    if (existing.isActive) {
-      return validationError('לא ניתן למחוק רשומה פעילה. יש לבטל את ההפעלה תחילה.');
-    }
-
     await sanityWriteClient.delete(id);
     return successResponse({ deleted: true });
   } catch (err) {

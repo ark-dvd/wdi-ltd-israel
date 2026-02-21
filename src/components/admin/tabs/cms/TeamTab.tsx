@@ -21,11 +21,10 @@ interface TeamMember {
 }
 
 const CATS: Record<string, string> = {
-  founders: 'מייסדים', management: 'הנהלה',
+  founders: 'מייסדים', management: 'הנהלה ואדמיניסטרציה',
   'department-heads': 'ראשי תחומים', 'project-managers': 'מנהלי פרויקטים',
-  administration: 'אדמיניסטרציה',
 };
-const CAT_ORDER = ['founders', 'management', 'department-heads', 'project-managers', 'administration'];
+const CAT_ORDER = ['founders', 'management', 'department-heads', 'project-managers'];
 type Filter = 'all' | 'active' | 'hidden';
 
 const empty = (): Partial<TeamMember> => ({
