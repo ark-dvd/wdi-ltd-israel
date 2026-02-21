@@ -4,7 +4,7 @@
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
 import type { Metadata } from 'next';
-import { getSiteSettings } from '@/lib/data-fetchers';
+import { getSiteSettings, getContactPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { ContactForm } from '@/components/public/ContactForm';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
@@ -17,13 +17,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const settings = await getSiteSettings();
-  const ps = settings?.pageStrings?.contact;
+  const [settings, page] = await Promise.all([
+    getSiteSettings(),
+    getContactPage(),
+  ]);
 
   return (
     <>
       <LocalBusinessJsonLd settings={settings} />
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -35,7 +37,7 @@ export default async function ContactPage() {
 
             {/* Contact Info */}
             <div className="animate-on-scroll">
-              {ps?.infoTitle && <h3 style={{ marginBottom: 24 }}>{ps.infoTitle}</h3>}
+              {page?.infoTitle && <h3 style={{ marginBottom: 24 }}>{page.infoTitle}</h3>}
               {settings?.phone && (
                 <p style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                   <i className="fas fa-phone" style={{ color: 'var(--secondary)', width: 20, textAlign: 'center' }} />

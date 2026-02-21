@@ -5,7 +5,7 @@
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getActiveServices, getSiteSettings } from '@/lib/data-fetchers';
+import { getActiveServices, getSiteSettings, getServicesPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 
 export const revalidate = 60;
@@ -16,16 +16,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
-  const [services, settings] = await Promise.all([
+  const [services, settings, page] = await Promise.all([
     getActiveServices(),
     getSiteSettings(),
+    getServicesPage(),
   ]);
-
-  const ps = settings?.pageStrings?.services;
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -40,7 +39,7 @@ export default async function ServicesPage() {
                 <h3>{s.name}</h3>
                 {s.description && <p>{s.description}</p>}
                 <span className="service-card-link">
-                  {ps?.readMoreText ?? ''} <i className="fas fa-arrow-left" />
+                  {page?.readMoreText ?? ''} <i className="fas fa-arrow-left" />
                 </span>
               </Link>
             ))}
@@ -49,13 +48,13 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      {(ps?.ctaTitle || settings?.defaultCtaButtonText) && (
+      {(page?.ctaTitle || page?.ctaButtonText || settings?.defaultCtaButtonText) && (
         <section className="cta-section">
           <div className="container">
-            {(ps?.ctaTitle || settings?.defaultCtaTitle) && <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle}</h2>}
-            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
-            <Link href={settings?.defaultCtaButtonLink ?? '/contact'} className="btn btn-primary">
-              {settings?.defaultCtaButtonText ?? ''}
+            {(page?.ctaTitle || settings?.defaultCtaTitle) && <h2>{page?.ctaTitle ?? settings?.defaultCtaTitle}</h2>}
+            {(page?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{page?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <Link href={page?.ctaButtonLink ?? settings?.defaultCtaButtonLink ?? '/contact'} className="btn btn-primary">
+              {page?.ctaButtonText ?? settings?.defaultCtaButtonText ?? ''}
             </Link>
           </div>
         </section>

@@ -6,7 +6,7 @@
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActiveClientsContent, getFeaturedTestimonials, getSiteSettings } from '@/lib/data-fetchers';
+import { getActiveClientsContent, getFeaturedTestimonials, getClientsPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
@@ -18,17 +18,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ClientsPage() {
-  const [clients, testimonials, settings] = await Promise.all([
+  const [clients, testimonials, page] = await Promise.all([
     getActiveClientsContent(),
     getFeaturedTestimonials(),
-    getSiteSettings(),
+    getClientsPage(),
   ]);
-
-  const ps = settings?.pageStrings?.clients;
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       {/* Client Logos Grid — §10.2 */}
       <section className="section">
@@ -58,7 +56,7 @@ export default async function ClientsPage() {
         <section className="section bg-light">
           <div className="container">
             <div className="section-header">
-              {ps?.testimonialsTitle && <h2>{ps.testimonialsTitle}</h2>}
+              {page?.testimonialsTitle && <h2>{page.testimonialsTitle}</h2>}
             </div>
             <div className="testimonials-grid">
               {testimonials.map((t: { _id: string; clientName: string; quote: string; companyName?: string; role?: string; projectTitle?: string }) => (

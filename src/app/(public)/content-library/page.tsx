@@ -6,7 +6,7 @@
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActiveContentLibraryItems, getSiteSettings } from '@/lib/data-fetchers';
+import { getActiveContentLibraryItems, getContentLibraryPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
@@ -18,16 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default async function ContentLibraryPage() {
-  const [items, settings] = await Promise.all([
+  const [items, page] = await Promise.all([
     getActiveContentLibraryItems(),
-    getSiteSettings(),
+    getContentLibraryPage(),
   ]);
-
-  const ps = settings?.pageStrings?.contentLibrary;
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">
@@ -73,9 +71,9 @@ export default async function ContentLibraryPage() {
               })}
             </div>
           ) : (
-            ps?.emptyText ? (
+            page?.emptyText ? (
               <p style={{ textAlign: 'center', color: 'var(--gray-500)', padding: '40px 0' }}>
-                {ps.emptyText}
+                {page.emptyText}
               </p>
             ) : null
           )}

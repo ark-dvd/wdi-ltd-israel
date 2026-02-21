@@ -26,6 +26,14 @@ import { SiteSettingsTab } from './tabs/cms/SiteSettingsTab';
 import { AboutPageTab } from './tabs/cms/AboutPageTab';
 import { InnovationPageTab } from './tabs/cms/InnovationPageTab';
 import { SupplierFormSettingsTab } from './tabs/cms/SupplierFormSettingsTab';
+import { ServicesPageTab } from './tabs/cms/ServicesPageTab';
+import { ProjectsPageTab } from './tabs/cms/ProjectsPageTab';
+import { TeamPageTab } from './tabs/cms/TeamPageTab';
+import { ClientsPageTab } from './tabs/cms/ClientsPageTab';
+import { PressPageTab } from './tabs/cms/PressPageTab';
+import { JobsPageTab } from './tabs/cms/JobsPageTab';
+import { ContentLibraryPageTab } from './tabs/cms/ContentLibraryPageTab';
+import { ContactPageTab } from './tabs/cms/ContactPageTab';
 
 // Intake tab (AMENDMENT-001)
 import { IntakeTab } from './tabs/cms/IntakeTab';
@@ -48,6 +56,14 @@ const TAB_MAP: Record<string, React.ComponentType> = {
   'about-page': AboutPageTab,
   'innovation-page': InnovationPageTab,
   'supplier-form-settings': SupplierFormSettingsTab,
+  'services-page': ServicesPageTab,
+  'projects-page': ProjectsPageTab,
+  'team-page': TeamPageTab,
+  'clients-page': ClientsPageTab,
+  'press-page': PressPageTab,
+  'jobs-page': JobsPageTab,
+  'content-library-page': ContentLibraryPageTab,
+  'contact-page': ContactPageTab,
 };
 
 function AdminContent({ userEmail }: { userEmail: string }) {

@@ -2,11 +2,11 @@
  * Jobs / Careers — DOC-070 §3.14
  * PageHeader, job listings with tags, descriptions, apply buttons.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
- * Job type labels from siteSettings.jobTypeLabels.
+ * Job type labels from jobsPage singleton.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getActiveJobs, getSiteSettings } from '@/lib/data-fetchers';
+import { getActiveJobs, getSiteSettings, getJobsPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 
@@ -18,24 +18,23 @@ export const metadata: Metadata = {
 };
 
 export default async function JobsPage() {
-  const [jobs, settings] = await Promise.all([
+  const [jobs, settings, page] = await Promise.all([
     getActiveJobs(),
     getSiteSettings(),
+    getJobsPage(),
   ]);
 
-  const ps = settings?.pageStrings?.jobs;
-
-  // Build type labels from CMS
+  // Build type labels from page singleton
   const typeLabels: Record<string, string> = {};
-  if (settings?.jobTypeLabels) {
-    for (const item of settings.jobTypeLabels) {
+  if (page?.typeLabels) {
+    for (const item of page.typeLabels) {
       if (item.value && item.label) typeLabels[item.value] = item.label;
     }
   }
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container" style={{ maxWidth: 800 }}>
@@ -97,14 +96,14 @@ export default async function JobsPage() {
 
                   {/* Apply + Share */}
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    {ps?.applyButtonText && (
+                    {page?.applyButtonText && (
                       <Link href="/job-application" className="btn btn-primary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
-                        {ps.applyButtonText}
+                        {page.applyButtonText}
                       </Link>
                     )}
-                    {job.contactEmail && ps?.sendCvText && (
+                    {job.contactEmail && page?.sendCvText && (
                       <a href={`mailto:${job.contactEmail}?subject=${job.title}`} className="btn btn-secondary" style={{ fontSize: '0.9rem', padding: '10px 24px' }}>
-                        <i className="fas fa-envelope" /> {ps.sendCvText}
+                        <i className="fas fa-envelope" /> {page.sendCvText}
                       </a>
                     )}
                     {/* Share buttons */}
@@ -123,21 +122,21 @@ export default async function JobsPage() {
           ) : (
             <div style={{ textAlign: 'center', padding: '60px 0' }}>
               <i className="fas fa-briefcase" style={{ fontSize: '3rem', color: 'var(--gray-300)', marginBottom: 16, display: 'block' }} />
-              {ps?.noJobsTitle && <h3 style={{ color: 'var(--gray-500)', fontWeight: 500 }}>{ps.noJobsTitle}</h3>}
-              {ps?.noJobsSubtitle && <p style={{ color: 'var(--gray-400)' }}>{ps.noJobsSubtitle}</p>}
+              {page?.noJobsTitle && <h3 style={{ color: 'var(--gray-500)', fontWeight: 500 }}>{page.noJobsTitle}</h3>}
+              {page?.noJobsSubtitle && <p style={{ color: 'var(--gray-400)' }}>{page.noJobsSubtitle}</p>}
             </div>
           )}
         </div>
       </section>
 
       {/* CTA */}
-      {(ps?.ctaTitle || settings?.defaultCtaTitle) && (
+      {(page?.ctaTitle || page?.ctaButtonText || settings?.defaultCtaTitle) && (
         <section className="cta-section">
           <div className="container">
-            <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
-            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <h2>{page?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
+            {(page?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{page?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
             <Link href="/contact" className="btn btn-primary">
-              {settings?.defaultCtaButtonText ?? ''}
+              {page?.ctaButtonText ?? settings?.defaultCtaButtonText ?? ''}
             </Link>
           </div>
         </section>

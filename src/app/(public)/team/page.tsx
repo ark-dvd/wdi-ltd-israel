@@ -4,12 +4,12 @@
  * founders -> management -> department-heads -> project-managers
  * Square cards with hover overlay (navy 92% opacity).
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
- * Category labels from TEAM_CATEGORY (schema-defined).
+ * Category labels from teamPage singleton or TEAM_CATEGORY fallback.
  */
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getTeamMembers, getSiteSettings } from '@/lib/data-fetchers';
+import { getTeamMembers, getSiteSettings, getTeamPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
@@ -25,12 +25,19 @@ export const metadata: Metadata = {
 const CATEGORY_ORDER = ['founders', 'management', 'department-heads', 'project-managers'] as const;
 
 export default async function TeamPage() {
-  const [members, settings] = await Promise.all([
+  const [members, settings, page] = await Promise.all([
     getTeamMembers(),
     getSiteSettings(),
+    getTeamPage(),
   ]);
 
-  const ps = settings?.pageStrings?.team;
+  // Build category labels from page singleton, fallback to schema constants
+  const categoryLabels: Record<string, string> = { ...TEAM_CATEGORY };
+  if (page?.categoryLabels) {
+    for (const item of page.categoryLabels) {
+      if (item.value && item.label) categoryLabels[item.value] = item.label;
+    }
+  }
 
   // Group by category
   const grouped: Record<string, typeof members> = {};
@@ -42,7 +49,7 @@ export default async function TeamPage() {
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       {CATEGORY_ORDER.map((cat) => {
         const group = grouped[cat];
@@ -51,7 +58,7 @@ export default async function TeamPage() {
           <section key={cat} className="section" id={`team-${cat}`}>
             <div className="container">
               <div className="section-header">
-                <h2>{TEAM_CATEGORY[cat] ?? cat}</h2>
+                <h2>{categoryLabels[cat] ?? cat}</h2>
               </div>
               <div className="team-grid">
                 {group.map((member: {
@@ -93,13 +100,13 @@ export default async function TeamPage() {
       })}
 
       {/* CTA */}
-      {(ps?.ctaTitle || settings?.defaultCtaTitle) && (
+      {(page?.ctaTitle || page?.ctaButtonText || settings?.defaultCtaTitle) && (
         <section className="cta-section">
           <div className="container">
-            <h2>{ps?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
-            {(ps?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{ps?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
+            <h2>{page?.ctaTitle ?? settings?.defaultCtaTitle ?? ''}</h2>
+            {(page?.ctaSubtitle || settings?.defaultCtaSubtitle) && <p>{page?.ctaSubtitle ?? settings?.defaultCtaSubtitle}</p>}
             <Link href="/jobs" className="btn btn-primary">
-              {ps?.ctaButtonText ?? settings?.defaultCtaButtonText ?? ''}
+              {page?.ctaButtonText ?? settings?.defaultCtaButtonText ?? ''}
             </Link>
           </div>
         </section>

@@ -5,7 +5,7 @@
  */
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActivePressItems, getSiteSettings } from '@/lib/data-fetchers';
+import { getActivePressItems, getPressPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 
@@ -17,16 +17,14 @@ export const metadata: Metadata = {
 };
 
 export default async function PressPage() {
-  const [press, settings] = await Promise.all([
+  const [press, page] = await Promise.all([
     getActivePressItems(),
-    getSiteSettings(),
+    getPressPage(),
   ]);
-
-  const ps = settings?.pageStrings?.press;
 
   return (
     <>
-      <PageHeader title={ps?.pageTitle ?? ''} subtitle={ps?.subtitle ?? ''} />
+      <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">
         <div className="container">

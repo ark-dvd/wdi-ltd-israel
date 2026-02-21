@@ -33,6 +33,16 @@ import { aboutPageSchema } from './about-page';
 import { innovationPageSchema } from './innovation-page';
 import { supplierFormSettingsSchema } from './supplier-form-settings';
 
+// Page Singletons
+import { servicesPageSchema } from './services-page';
+import { projectsPageSchema } from './projects-page';
+import { teamPageSchema } from './team-page';
+import { clientsPageSchema } from './clients-page';
+import { pressPageSchema } from './press-page';
+import { jobsPageSchema } from './jobs-page';
+import { contentLibraryPageSchema } from './content-library-page';
+import { contactPageSchema } from './contact-page';
+
 // Re-export everything
 export { leadSchema, LEAD_STATUS, LEAD_PRIORITY, LEAD_TRANSITIONS } from './lead';
 export type { LeadStatus, LeadPriority } from './lead';
@@ -71,6 +81,16 @@ export { aboutPageSchema, ABOUT_PAGE_ID } from './about-page';
 export { innovationPageSchema, INNOVATION_PAGE_ID } from './innovation-page';
 export { supplierFormSettingsSchema, SUPPLIER_FORM_SETTINGS_ID } from './supplier-form-settings';
 
+// Page Singletons
+export { servicesPageSchema, SERVICES_PAGE_ID } from './services-page';
+export { projectsPageSchema, PROJECTS_PAGE_ID } from './projects-page';
+export { teamPageSchema, TEAM_PAGE_ID } from './team-page';
+export { clientsPageSchema, CLIENTS_PAGE_ID } from './clients-page';
+export { pressPageSchema, PRESS_PAGE_ID } from './press-page';
+export { jobsPageSchema, JOBS_PAGE_ID } from './jobs-page';
+export { contentLibraryPageSchema, CONTENT_LIBRARY_PAGE_ID } from './content-library-page';
+export { contactPageSchema, CONTACT_PAGE_ID } from './contact-page';
+
 export {
   intakeSubmissionSchema,
   SUBMISSION_TYPE, CONTACT_STATUS, RELEVANCE,
@@ -101,4 +121,12 @@ export const allSchemas = [
   aboutPageSchema,
   innovationPageSchema,
   supplierFormSettingsSchema,
+  servicesPageSchema,
+  projectsPageSchema,
+  teamPageSchema,
+  clientsPageSchema,
+  pressPageSchema,
+  jobsPageSchema,
+  contentLibraryPageSchema,
+  contactPageSchema,
 ];

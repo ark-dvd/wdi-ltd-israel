@@ -310,11 +310,8 @@ export const siteSettingsUpdateSchema = z.object({
   defaultCtaSubtitle: z.string().optional(),
   defaultCtaButtonText: z.string().optional(),
   defaultCtaButtonLink: z.string().optional(),
-  pageStrings: z.any().optional(),
   navLabels: z.any().optional(),
   footerNavLabels: z.any().optional(),
-  sectorLabels: z.any().optional(),
-  jobTypeLabels: z.any().optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoKeywords: z.string().optional(),
@@ -553,6 +550,66 @@ export const supplierFormSettingsUpdateSchema = z.object({
   formTitle: z.string().optional(),
   specialtyOptions: z.array(z.string().min(1)).optional(),
   regionOptions: z.array(z.string().min(1)).optional(),
+});
+
+// ─── Page Singletons ────────────────────────────────────────
+
+const labelPairInput = z.object({ _key: z.string().optional(), value: z.string(), label: z.string() });
+
+export const servicesPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(), readMoreText: z.string().optional(),
+  ctaTitle: z.string().optional(), ctaSubtitle: z.string().optional(),
+  ctaButtonText: z.string().optional(), ctaButtonLink: z.string().optional(),
+});
+
+export const projectsPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  ctaTitle: z.string().optional(), ctaSubtitle: z.string().optional(),
+  ctaButtonText: z.string().optional(), ctaButtonLink: z.string().optional(),
+  sectorLabels: z.array(labelPairInput).optional(),
+});
+
+export const teamPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  ctaTitle: z.string().optional(), ctaSubtitle: z.string().optional(),
+  ctaButtonText: z.string().optional(), ctaButtonLink: z.string().optional(),
+  categoryLabels: z.array(labelPairInput).optional(),
+});
+
+export const clientsPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  testimonialsTitle: z.string().optional(),
+});
+
+export const pressPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+});
+
+export const jobsPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  noJobsTitle: z.string().optional(), noJobsSubtitle: z.string().optional(),
+  ctaTitle: z.string().optional(), ctaSubtitle: z.string().optional(),
+  ctaButtonText: z.string().optional(), ctaButtonLink: z.string().optional(),
+  applyButtonText: z.string().optional(), sendCvText: z.string().optional(),
+  typeLabels: z.array(labelPairInput).optional(),
+});
+
+export const contentLibraryPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  emptyText: z.string().optional(),
+});
+
+export const contactPageUpdateSchema = z.object({
+  updatedAt: z.string().min(1),
+  pageTitle: z.string().optional(), subtitle: z.string().optional(),
+  infoTitle: z.string().optional(),
 });
 
 // ─── CRM Search ─────────────────────────────────────────────

@@ -287,6 +287,48 @@ export async function getSupplierFormSettings() {
   }
 }
 
+// ─── Page Singletons (per-page config) ──────────────────────
+
+export async function getServicesPage() {
+  try { return await sanityClient.fetch(`*[_type == "servicesPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getProjectsPage() {
+  try { return await sanityClient.fetch(`*[_type == "projectsPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getTeamPage() {
+  try { return await sanityClient.fetch(`*[_type == "teamPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getClientsPage() {
+  try { return await sanityClient.fetch(`*[_type == "clientsPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getPressPage() {
+  try { return await sanityClient.fetch(`*[_type == "pressPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getJobsPage() {
+  try { return await sanityClient.fetch(`*[_type == "jobsPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getContentLibraryPage() {
+  try { return await sanityClient.fetch(`*[_type == "contentLibraryPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
+export async function getContactPage() {
+  try { return await sanityClient.fetch(`*[_type == "contactPage"][0]`); }
+  catch (err) { console.error('[ssr]', err); return null; }
+}
+
 export async function getInnovationPage() {
   try {
     return await sanityClient.fetch(
