@@ -33,6 +33,7 @@
   --danger: #e74c3c;
   --info: #3498db;
   --white: #ffffff;
+  --black: #000000;
 
   /* Typography */
   --font-hebrew: 'Assistant', 'Rubik', sans-serif;
@@ -248,15 +249,16 @@ a { text-decoration: none; color: inherit; }
   width: auto;
   height: auto;
   object-fit: cover;
+  opacity: 0.5;
 }
 
 .hero-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(135deg,
-    rgba(26, 54, 93, 0.30) 0%,
-    rgba(15, 39, 68, 0.30) 50%,
-    rgba(10, 22, 40, 0.30) 100%
+    rgba(26, 54, 93, 0.55) 0%,
+    rgba(15, 39, 68, 0.65) 50%,
+    rgba(10, 22, 40, 0.75) 100%
   );
 }
 
@@ -600,6 +602,7 @@ a { text-decoration: none; color: inherit; }
   padding: 4px 12px;
   border-radius: 20px;
   margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .project-card-overlay h3 {
