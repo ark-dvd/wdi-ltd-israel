@@ -2,18 +2,21 @@
  * Privacy Policy page — /privacy
  * Fetches legalPage content from Sanity CMS.
  */
-import type { Metadata } from 'next';
 import { getLegalPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'מדיניות פרטיות',
-  description: 'מדיניות הפרטיות של WDI',
-  alternates: { canonical: '/privacy' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'מדיניות פרטיות',
+    description: 'מדיניות הפרטיות של WDI הנדסה — כיצד אנו אוספים, משתמשים ומגנים על המידע שלכם.',
+    path: '/privacy',
+    noIndex: true,
+  });
+}
 
 export default async function PrivacyPage() {
   const page = await getLegalPage('privacy');

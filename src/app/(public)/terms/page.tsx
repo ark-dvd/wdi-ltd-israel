@@ -2,18 +2,21 @@
  * Terms of Use page — /terms
  * Fetches legalPage content from Sanity CMS.
  */
-import type { Metadata } from 'next';
 import { getLegalPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'תנאי שימוש',
-  description: 'תנאי שימוש באתר WDI',
-  alternates: { canonical: '/terms' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'תנאי שימוש',
+    description: 'תנאי השימוש באתר WDI הנדסה.',
+    path: '/terms',
+    noIndex: true,
+  });
+}
 
 export default async function TermsPage() {
   const page = await getLegalPage('terms');

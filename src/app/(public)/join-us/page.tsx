@@ -3,19 +3,21 @@
  * PageHeader, two-column: supplier form + info sidebar.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import { getSupplierFormSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { SupplierForm } from '@/components/public/SupplierForm';
 import { PortableText } from '@/components/public/PortableText';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'הרשמת ספקים',
-  description: 'הרשמת ספקים וקבלני משנה למאגר הספקים של WDI — הצטרפו לרשת השותפים שלנו.',
-  alternates: { canonical: '/join-us' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'הצטרפות למאגר ספקים',
+    description: 'הצטרפו למאגר הספקים והקבלנים של WDI הנדסה.',
+    path: '/join-us',
+  });
+}
 
 export default async function JoinUsPage() {
   const supplierSettings = await getSupplierFormSettings();

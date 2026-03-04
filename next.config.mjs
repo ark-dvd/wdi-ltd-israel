@@ -37,6 +37,17 @@ const nextConfig = {
       // WordPress-style patterns
       { source: '/services/:slug.html', destination: '/services/:slug', permanent: true },
       { source: '/projects/:slug.html', destination: '/projects/:slug', permanent: true },
+      // Hebrew-encoded WordPress URLs
+      { source: '/he', destination: '/', permanent: true },
+      { source: '/he/', destination: '/', permanent: true },
+      { source: '/%D7%90%D7%95%D7%93%D7%95%D7%AA', destination: '/about', permanent: true },
+      { source: '/%D7%90%D7%95%D7%93%D7%95%D7%AA/', destination: '/about', permanent: true },
+      // WordPress category/blog patterns
+      { source: '/projects-category/:slug*', destination: '/projects', permanent: true },
+      { source: '/clients/:slug', destination: '/clients', permanent: true },
+      { source: '/team/:slug', destination: '/team', permanent: true },
+      { source: '/blog', destination: '/', permanent: true },
+      { source: '/blog/:slug*', destination: '/', permanent: true },
     ];
   },
 

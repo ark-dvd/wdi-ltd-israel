@@ -177,6 +177,24 @@ export function FAQPageJsonLd({ questions }: { questions: { question: string; an
   );
 }
 
+/** BreadcrumbList — detail pages */
+export function BreadcrumbListJsonLd({ items }: { items: { name: string; url: string }[] }) {
+  return (
+    <JsonLdScript
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: items.map((item, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: item.name,
+          item: item.url,
+        })),
+      }}
+    />
+  );
+}
+
 /** Review — testimonials */
 export function ReviewJsonLd({ testimonial, itemReviewed }: { testimonial: any; itemReviewed?: string }) {
   return (

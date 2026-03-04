@@ -2,18 +2,19 @@
  * Job application page — /job-application
  * Server component that renders the client-side JobApplicationForm.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { JobApplicationForm } from '@/components/public/JobApplicationForm';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'הגשת מועמדות | WDI',
-  description:
-    'הגישו מועמדות למשרה ב-WDI — חברת בוטיק מובילה לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל.',
-  alternates: { canonical: '/job-application' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'הגשת מועמדות',
+    description: 'הגשת מועמדות למשרה ב-WDI הנדסה.',
+    path: '/job-application',
+  });
+}
 
 export default function JobApplicationPage() {
   return (

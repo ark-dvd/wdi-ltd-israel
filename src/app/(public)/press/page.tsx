@@ -3,19 +3,21 @@
  * PageHeader, press items list with images, source, date, excerpt.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getActivePressItems, getPressPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'בתקשורת',
-  description: 'WDI בתקשורת — כתבות, ראיונות ופרסומים על פרויקטים והישגים של החברה.',
-  alternates: { canonical: '/press' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'כתבו עלינו',
+    description: 'כתבו עלינו — סיקורים וכתבות על WDI הנדסה בתקשורת.',
+    path: '/press',
+  });
+}
 
 export default async function PressPage() {
   const [press, page] = await Promise.all([

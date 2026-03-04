@@ -4,7 +4,6 @@
  * Share buttons (WhatsApp, Facebook, email).
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,7 +11,8 @@ import { getService, getActiveServices, getSiteSettings } from '@/lib/data-fetch
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
-import { ServiceJsonLd } from '@/components/public/JsonLd';
+import { ServiceJsonLd, BreadcrumbListJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,14 +21,16 @@ export async function generateStaticParams() {
   return services.map((s: { slug: string }) => ({ slug: s.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const service = await getService(slug);
-  return {
-    title: service?.name ?? '',
+  const imgUrl = service?.image ? sanityImageUrl(service.image) : undefined;
+  return buildMetadata({
+    title: service?.name ?? 'שירות',
     description: service?.tagline ?? service?.description ?? '',
-    alternates: { canonical: `/services/${slug}` },
-  };
+    path: `/services/${slug}`,
+    ogImage: imgUrl || undefined,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -47,6 +49,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   return (
     <>
       <ServiceJsonLd service={service} companyName={settings?.companyNameEn ?? settings?.companyName} />
+      <BreadcrumbListJsonLd items={[
+        { name: 'ראשי', url: 'https://wdi.co.il' },
+        { name: 'שירותים', url: 'https://wdi.co.il/services' },
+        { name: service.name, url: `https://wdi.co.il/services/${slug}` },
+      ]} />
       <PageHeader
         title={service.name}
         subtitle={service.tagline}

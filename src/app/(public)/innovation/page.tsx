@@ -3,21 +3,23 @@
  * PageHeader, CMS content (innovationPage singleton), sections.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getInnovationPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'חדשנות',
-  description: 'חדשנות ב-WDI — טכנולוגיות מתקדמות, שיטות עבודה חדשניות ופתרונות יצירתיים בניהול פרויקטי בנייה.',
-  alternates: { canonical: '/innovation' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'חדשנות וטכנולוגיה',
+    description: 'חדשנות וטכנולוגיה ב-WDI הנדסה — שילוב כלים מתקדמים ו-AI בניהול פרויקטים.',
+    path: '/innovation',
+  });
+}
 
 export default async function InnovationPage() {
   const page = await getInnovationPage();

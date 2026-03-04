@@ -4,20 +4,22 @@
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  * Sector labels come from projectsPage singleton.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getActiveProjects, getSiteSettings, getProjectsPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { ProjectsFilter } from './ProjectsFilter';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'פרויקטים',
-  description: 'פרויקטים נבחרים של WDI — ניהול פרויקטי בנייה בטחוניים, מסחריים, תשתיות ותעשייה בישראל.',
-  alternates: { canonical: '/projects' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'פרויקטים',
+    description: 'פרויקטים נבחרים של WDI הנדסה — בטחוני, מסחרי, תעשייה, תשתיות, מגורים וציבורי.',
+    path: '/projects',
+  });
+}
 
 export default async function ProjectsPage() {
   const [projects, settings, page] = await Promise.all([

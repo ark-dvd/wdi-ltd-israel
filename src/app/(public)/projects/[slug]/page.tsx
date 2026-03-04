@@ -2,7 +2,6 @@
  * Project detail — ORIGINAL_DESIGN_SPEC §8, DOC-070 §3.8
  * PageHeader, project info bar, description, image gallery, linked testimonials.
  */
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,7 +9,8 @@ import { getProject, getActiveProjects, getSiteSettings } from '@/lib/data-fetch
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
-import { ProjectJsonLd } from '@/components/public/JsonLd';
+import { ProjectJsonLd, BreadcrumbListJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,14 +28,16 @@ export async function generateStaticParams() {
   return projects.map((p: { slug: string }) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = await getProject(slug);
-  return {
+  const imgUrl = project?.featuredImage ? sanityImageUrl(project.featuredImage) : undefined;
+  return buildMetadata({
     title: project?.title ?? 'פרויקט',
     description: project?.client ? `${project.title} — ${project.client}` : project?.title ?? '',
-    alternates: { canonical: `/projects/${slug}` },
-  };
+    path: `/projects/${slug}`,
+    ogImage: imgUrl || undefined,
+  });
 }
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -52,6 +54,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   return (
     <>
       <ProjectJsonLd project={project} companyName={settings?.companyNameEn ?? settings?.companyName} />
+      <BreadcrumbListJsonLd items={[
+        { name: 'ראשי', url: 'https://wdi.co.il' },
+        { name: 'פרויקטים', url: 'https://wdi.co.il/projects' },
+        { name: project.title, url: `https://wdi.co.il/projects/${slug}` },
+      ]} />
       <PageHeader title={project.title} subtitle={project.client} breadcrumb={project.title} />
 
       <section className="section">

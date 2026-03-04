@@ -5,21 +5,20 @@
  * All content from heroSettings singleton in Sanity.
  * INV-P01: NO hardcoded Hebrew. INV-P02: NO local media fallback.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getHeroSettings, getSiteSettings } from '@/lib/data-fetchers';
 import { HeroVideo } from '@/components/public/HeroVideo';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  return {
-    title: settings?.seoTitle ?? 'WDI',
-    description: settings?.seoDescription ?? '',
-    alternates: { canonical: '/' },
-  };
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'דף הבית',
+    description: 'WDI הנדסה — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. מובילים פרויקטים מורכבים בישראל ובעולם מאז 2013.',
+    path: '/',
+  });
 }
 
 export default async function HomePage() {

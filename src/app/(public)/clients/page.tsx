@@ -4,29 +4,38 @@
  * featured testimonials (isFeatured=true) below.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getActiveClientsContent, getFeaturedTestimonials, getClientsPage } from '@/lib/data-fetchers';
+import { getActiveClientsContent, getFeaturedTestimonials, getClientsPage, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { buildMetadata } from '@/lib/seo';
+import { ReviewJsonLd } from '@/components/public/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'לקוחות',
-  description: 'לקוחות WDI — גופים בטחוניים, מסחריים וציבוריים שבחרו בנו לניהול פרויקטי הבנייה שלהם.',
-  alternates: { canonical: '/clients' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'לקוחות',
+    description: 'הלקוחות של WDI הנדסה — ארגונים מובילים בישראל שבחרו בנו לנהל את הפרויקטים שלהם.',
+    path: '/clients',
+  });
+}
 
 export default async function ClientsPage() {
-  const [clients, testimonials, page] = await Promise.all([
+  const [clients, testimonials, page, settings] = await Promise.all([
     getActiveClientsContent(),
     getFeaturedTestimonials(),
     getClientsPage(),
+    getSiteSettings(),
   ]);
+
+  const companyName = settings?.companyNameEn ?? settings?.companyName ?? 'WDI';
 
   return (
     <>
+      {testimonials.map((t: any) => (
+        <ReviewJsonLd key={t._id} testimonial={t} itemReviewed={companyName} />
+      ))}
       <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       {/* Client Logos Grid — §10.2 */}

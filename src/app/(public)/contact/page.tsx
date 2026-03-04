@@ -3,19 +3,21 @@
  * PageHeader, two-column: contact form + info sidebar with map.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import { getSiteSettings, getContactPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { ContactForm } from '@/components/public/ContactForm';
 import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'צור קשר',
-  description: 'צרו קשר עם WDI — טלפון, מייל, כתובת וטופס יצירת קשר לייעוץ ראשוני ללא עלות.',
-  alternates: { canonical: '/contact' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'צור קשר',
+    description: 'צרו קשר עם WDI הנדסה — נשמח לשמוע על הפרויקט שלכם.',
+    path: '/contact',
+  });
+}
 
 export default async function ContactPage() {
   const [settings, page] = await Promise.all([

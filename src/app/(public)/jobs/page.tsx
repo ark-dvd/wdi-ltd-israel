@@ -4,20 +4,22 @@
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  * Job type labels from jobsPage singleton.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getActiveJobs, getSiteSettings, getJobsPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { JobPostingJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'דרושים',
-  description: 'משרות פנויות ב-WDI — הצטרפו לצוות מוביל בניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל.',
-  alternates: { canonical: '/jobs' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'משרות',
+    description: 'משרות פתוחות ב-WDI הנדסה — הצטרפו לצוות מקצועי בניהול פרויקטים והנדסה.',
+    path: '/jobs',
+  });
+}
 
 export default async function JobsPage() {
   const [jobs, settings, page] = await Promise.all([

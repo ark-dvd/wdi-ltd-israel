@@ -34,8 +34,19 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'WDI',
     url: SITE_URL,
+    images: [
+      {
+        url: '/images/wdi-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'WDI — ניהול פרויקטים, פיקוח וייעוץ הנדסי',
+      },
+    ],
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/images/wdi-logo.png'],
+  },
   alternates: { canonical: '/' },
 };
 

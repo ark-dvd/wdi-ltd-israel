@@ -6,7 +6,6 @@
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  * Category labels from teamPage singleton or TEAM_CATEGORY fallback.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTeamMembers, getSiteSettings, getTeamPage } from '@/lib/data-fetchers';
@@ -15,14 +14,17 @@ import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { TEAM_CATEGORY } from '@/lib/sanity/schemas/team-member';
 import { PersonJsonLd } from '@/components/public/JsonLd';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'הצוות',
-  description: 'צוות WDI — מהנדסים, מנהלי פרויקטים ומומחים מובילים בתחום הבנייה והתשתיות בישראל.',
-  alternates: { canonical: '/team' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'הצוות',
+    description: 'הצוות המקצועי של WDI הנדסה — מייסדים, הנהלה, ראשי תחומים ומנהלי פרויקטים.',
+    path: '/team',
+  });
+}
 
 const CATEGORY_ORDER = ['founders', 'management', 'department-heads', 'project-managers'] as const;
 

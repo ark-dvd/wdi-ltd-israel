@@ -4,19 +4,21 @@
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  * INV-P02: file download from CMS file upload, not URL.
  */
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getActiveContentLibraryItems, getContentLibraryPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'ספריית תוכן',
-  description: 'ספריית תוכן מקצועית של WDI — מאמרים, מדריכים ומשאבים בתחום ניהול פרויקטים ובנייה.',
-  alternates: { canonical: '/content-library' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'מאגר מידע',
+    description: 'מאגר מידע מקצועי — מאמרים, מדריכים ופרסומים בתחום ניהול פרויקטים והנדסה.',
+    path: '/content-library',
+  });
+}
 
 export default async function ContentLibraryPage() {
   const [items, page] = await Promise.all([

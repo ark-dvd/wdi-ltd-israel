@@ -3,21 +3,23 @@
  * PageHeader, company description (rich text), values grid, press items, CTA.
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAboutPage, getActivePressItems } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'אודות',
-  description: 'הכירו את WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. חזון, ערכים וסיפור החברה.',
-  alternates: { canonical: '/about' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'אודות',
+    description: 'אודות WDI הנדסה — הכירו את החברה, הערכים שלנו והחזון שמוביל אותנו בניהול פרויקטים מורכבים.',
+    path: '/about',
+  });
+}
 
 export default async function AboutPage() {
   const [about, press] = await Promise.all([

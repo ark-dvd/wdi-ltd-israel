@@ -2,18 +2,20 @@
  * Accessibility Statement page — /accessibility
  * Fetches legalPage content from Sanity CMS.
  */
-import type { Metadata } from 'next';
 import { getLegalPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'הצהרת נגישות',
-  description: 'הצהרת נגישות אתר WDI',
-  alternates: { canonical: '/accessibility' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'הצהרת נגישות',
+    description: 'הצהרת נגישות — המחויבות שלנו להנגשת האתר לאנשים עם מוגבלויות.',
+    path: '/accessibility',
+  });
+}
 
 export default async function AccessibilityPage() {
   const page = await getLegalPage('accessibility');

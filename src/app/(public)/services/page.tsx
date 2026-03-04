@@ -3,18 +3,20 @@
  * PageHeader, grid of service cards (icon, name, description, "read more" link).
  * INV-P01: ALL text from CMS — no hardcoded Hebrew.
  */
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getActiveServices, getSiteSettings, getServicesPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
+import { buildMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'שירותים',
-  description: 'שירותי WDI — ניהול פרויקטים, פיקוח בנייה, ייעוץ הנדסי, תכנון ובקרת איכות.',
-  alternates: { canonical: '/services' },
-};
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'שירותים',
+    description: 'שירותי ניהול פרויקטים, פיקוח וייעוץ הנדסי מקצועי — ניהול תכנון, ביצוע, PMO, הבטחת איכות ועוד.',
+    path: '/services',
+  });
+}
 
 export default async function ServicesPage() {
   const [services, settings, page] = await Promise.all([
