@@ -46,7 +46,7 @@ export async function buildMetadata(options: BuildMetadataOptions): Promise<Meta
   const pageDescription =
     description || settings?.seoDescription || 'WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל.';
   const canonicalUrl = `${BASE_URL}${path}`;
-  const ogImageUrl = ogImage || settings?.ogImageUrl;
+  const ogImageUrl = ogImage || settings?.ogImageUrl || `${BASE_URL}/images/wdi-logo.png`;
   const siteName = settings?.companyNameEn || settings?.companyName || 'WDI';
 
   return {
