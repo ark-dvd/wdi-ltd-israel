@@ -5,7 +5,7 @@
 import type { MetadataRoute } from 'next';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi.co.il';
 
 export default function robots(): MetadataRoute.Robots {
   return {

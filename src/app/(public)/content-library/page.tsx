@@ -13,7 +13,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Content Library',
+  title: 'ספריית תוכן',
+  description: 'ספריית תוכן מקצועית של WDI — מאמרים, מדריכים ומשאבים בתחום ניהול פרויקטים ובנייה.',
   alternates: { canonical: '/content-library' },
 };
 

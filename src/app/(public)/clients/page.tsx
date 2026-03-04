@@ -13,7 +13,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Clients',
+  title: 'לקוחות',
+  description: 'לקוחות WDI — גופים בטחוניים, מסחריים וציבוריים שבחרו בנו לניהול פרויקטי הבנייה שלהם.',
   alternates: { canonical: '/clients' },
 };
 

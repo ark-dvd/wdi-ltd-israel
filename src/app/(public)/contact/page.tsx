@@ -12,7 +12,8 @@ import { LocalBusinessJsonLd } from '@/components/public/JsonLd';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Contact',
+  title: 'צור קשר',
+  description: 'צרו קשר עם WDI — טלפון, מייל, כתובת וטופס יצירת קשר לייעוץ ראשוני ללא עלות.',
   alternates: { canonical: '/contact' },
 };
 

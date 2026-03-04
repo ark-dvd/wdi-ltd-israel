@@ -9,11 +9,13 @@ import Link from 'next/link';
 import { getActiveJobs, getSiteSettings, getJobsPage } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
+import { JobPostingJsonLd } from '@/components/public/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Jobs',
+  title: 'דרושים',
+  description: 'משרות פנויות ב-WDI — הצטרפו לצוות מוביל בניהול פרויקטים, פיקוח וייעוץ הנדסי בישראל.',
   alternates: { canonical: '/jobs' },
 };
 
@@ -34,6 +36,9 @@ export default async function JobsPage() {
 
   return (
     <>
+      {jobs.map((job: any) => (
+        <JobPostingJsonLd key={job._id} job={job} companyName={settings?.companyNameEn ?? settings?.companyName} />
+      ))}
       <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       <section className="section">

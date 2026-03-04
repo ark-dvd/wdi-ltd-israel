@@ -32,6 +32,7 @@ import { siteSettingsSchema } from './site-settings';
 import { aboutPageSchema } from './about-page';
 import { innovationPageSchema } from './innovation-page';
 import { supplierFormSettingsSchema } from './supplier-form-settings';
+import { legalPageSchema } from './legal-page';
 
 // Page Singletons
 import { servicesPageSchema } from './services-page';
@@ -80,6 +81,8 @@ export { siteSettingsSchema, SITE_SETTINGS_ID } from './site-settings';
 export { aboutPageSchema, ABOUT_PAGE_ID } from './about-page';
 export { innovationPageSchema, INNOVATION_PAGE_ID } from './innovation-page';
 export { supplierFormSettingsSchema, SUPPLIER_FORM_SETTINGS_ID } from './supplier-form-settings';
+export { legalPageSchema, LEGAL_PAGE_TYPES } from './legal-page';
+export type { LegalPageType } from './legal-page';
 
 // Page Singletons
 export { servicesPageSchema, SERVICES_PAGE_ID } from './services-page';
@@ -129,4 +132,5 @@ export const allSchemas = [
   jobsPageSchema,
   contentLibraryPageSchema,
   contactPageSchema,
+  legalPageSchema,
 ];

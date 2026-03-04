@@ -17,7 +17,7 @@ const heebo = Heebo({
   variable: '--font-heebo',
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi.co.il';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

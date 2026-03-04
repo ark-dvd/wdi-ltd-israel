@@ -14,11 +14,13 @@ import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
 import { TEAM_CATEGORY } from '@/lib/sanity/schemas/team-member';
+import { PersonJsonLd } from '@/components/public/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Team',
+  title: 'הצוות',
+  description: 'צוות WDI — מהנדסים, מנהלי פרויקטים ומומחים מובילים בתחום הבנייה והתשתיות בישראל.',
   alternates: { canonical: '/team' },
 };
 
@@ -49,6 +51,9 @@ export default async function TeamPage() {
 
   return (
     <>
+      {members.map((m: any) => (
+        <PersonJsonLd key={m._id} person={m} companyName={settings?.companyNameEn ?? settings?.companyName} />
+      ))}
       <PageHeader title={page?.pageTitle ?? ''} subtitle={page?.subtitle ?? ''} />
 
       {CATEGORY_ORDER.map((cat) => {

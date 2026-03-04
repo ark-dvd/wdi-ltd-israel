@@ -11,7 +11,8 @@ import { PageHeader } from '@/components/public/PageHeader';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'שירותים',
+  description: 'שירותי WDI — ניהול פרויקטים, פיקוח בנייה, ייעוץ הנדסי, תכנון ובקרת איכות.',
   alternates: { canonical: '/services' },
 };
 

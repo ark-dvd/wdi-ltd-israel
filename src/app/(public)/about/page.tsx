@@ -14,7 +14,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'אודות',
+  description: 'הכירו את WDI — חברת בוטיק לניהול פרויקטים, פיקוח וייעוץ הנדסי. חזון, ערכים וסיפור החברה.',
   alternates: { canonical: '/about' },
 };
 

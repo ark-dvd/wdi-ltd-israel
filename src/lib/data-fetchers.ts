@@ -240,6 +240,24 @@ export async function getActiveContentLibraryItems() {
   }
 }
 
+// ─── Legal Pages ────────────────────────────────────────────
+
+export async function getLegalPage(pageType: string) {
+  try {
+    return await sanityFetch(
+      `*[_type == "legalPage" && pageType == $pageType][0]{
+        title,
+        lastUpdated,
+        content
+      }`,
+      { pageType },
+    );
+  } catch (err) {
+    console.error('[ssr]', err);
+    return null;
+  }
+}
+
 // ─── Singletons ─────────────────────────────────────────────
 
 export async function getHeroSettings() {

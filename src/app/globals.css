@@ -1023,7 +1023,9 @@ a { text-decoration: none; color: inherit; }
 }
 
 .footer-logo {
-  height: 45px;
+  max-width: 150px;
+  height: auto;
+  object-fit: contain;
   margin-bottom: 16px;
 }
 
@@ -1106,6 +1108,27 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.footer-legal-links a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-legal-links a:hover {
+  color: var(--secondary);
+}
+
+.footer-legal-sep {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .footer-badges {

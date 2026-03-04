@@ -6,10 +6,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProject, getActiveProjects } from '@/lib/data-fetchers';
+import { getProject, getActiveProjects, getSiteSettings } from '@/lib/data-fetchers';
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { ProjectJsonLd } from '@/components/public/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const [project, settings] = await Promise.all([
+    getProject(slug),
+    getSiteSettings(),
+  ]);
   if (!project) notFound();
 
   const sectorLabel = project.sector ? SECTOR_LABELS[project.sector] : null;
@@ -47,6 +51,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
+      <ProjectJsonLd project={project} companyName={settings?.companyNameEn ?? settings?.companyName} />
       <PageHeader title={project.title} subtitle={project.client} breadcrumb={project.title} />
 
       <section className="section">

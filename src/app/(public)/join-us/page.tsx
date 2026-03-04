@@ -12,7 +12,8 @@ import { PortableText } from '@/components/public/PortableText';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Supplier Registration',
+  title: 'הרשמת ספקים',
+  description: 'הרשמת ספקים וקבלני משנה למאגר הספקים של WDI — הצטרפו לרשת השותפים שלנו.',
   alternates: { canonical: '/join-us' },
 };
 

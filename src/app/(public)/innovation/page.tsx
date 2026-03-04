@@ -14,7 +14,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Innovation',
+  title: 'חדשנות',
+  description: 'חדשנות ב-WDI — טכנולוגיות מתקדמות, שיטות עבודה חדשניות ופתרונות יצירתיים בניהול פרויקטי בנייה.',
   alternates: { canonical: '/innovation' },
 };
 

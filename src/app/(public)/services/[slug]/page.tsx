@@ -12,6 +12,7 @@ import { getService, getActiveServices, getSiteSettings } from '@/lib/data-fetch
 import { PageHeader } from '@/components/public/PageHeader';
 import { PortableText } from '@/components/public/PortableText';
 import { sanityImageUrl } from '@/lib/sanity/image';
+import { ServiceJsonLd } from '@/components/public/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +46,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
+      <ServiceJsonLd service={service} companyName={settings?.companyNameEn ?? settings?.companyName} />
       <PageHeader
         title={service.name}
         subtitle={service.tagline}

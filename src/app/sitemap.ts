@@ -6,7 +6,7 @@ import type { MetadataRoute } from 'next';
 import { getActiveServices, getActiveProjects } from '@/lib/data-fetchers';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi.co.il';
 
 function resolveSlug(
   slug: string | { current: string } | undefined | null,

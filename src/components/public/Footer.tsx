@@ -33,9 +33,10 @@ export async function Footer() {
               <Image
                 src={logoWhiteUrl}
                 alt={settings?.companyName ?? ''}
-                width={160}
-                height={45}
+                width={150}
+                height={42}
                 className="footer-logo"
+                style={{ maxWidth: '150px', height: 'auto', objectFit: 'contain' }}
               />
             )}
             {settings?.footerText && <p>{settings.footerText}</p>}
@@ -122,6 +123,13 @@ export async function Footer() {
         {/* Footer bottom */}
         <div className="footer-bottom">
           {copyright && <p>{copyright}</p>}
+          <div className="footer-legal-links">
+            <Link href="/terms">תנאי שימוש</Link>
+            <span className="footer-legal-sep">|</span>
+            <Link href="/privacy">מדיניות פרטיות</Link>
+            <span className="footer-legal-sep">|</span>
+            <Link href="/accessibility">הצהרת נגישות</Link>
+          </div>
           <div className="footer-badges">
             {websiteBy && <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>{websiteBy}</span>}
             {daflashUrl && (
@@ -130,7 +138,7 @@ export async function Footer() {
                 alt="daflash"
                 width={80}
                 height={24}
-                style={{ opacity: 0.7 }}
+                style={{ width: '80px', height: 'auto', objectFit: 'contain', opacity: 0.7 }}
               />
             )}
             {dunsUrl && (

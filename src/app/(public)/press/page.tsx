@@ -12,7 +12,8 @@ import { sanityImageUrl } from '@/lib/sanity/image';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Press',
+  title: 'בתקשורת',
+  description: 'WDI בתקשורת — כתבות, ראיונות ופרסומים על פרויקטים והישגים של החברה.',
   alternates: { canonical: '/press' },
 };
 

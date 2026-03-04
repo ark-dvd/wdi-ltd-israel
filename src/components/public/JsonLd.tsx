@@ -4,7 +4,7 @@
  * INV-P01: org name + description from CMS siteSettings.
  */
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi-israel.co.il';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wdi.co.il';
 
 function JsonLdScript({ data }: { data: Record<string, any> }) {
   return (

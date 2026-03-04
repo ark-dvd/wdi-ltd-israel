@@ -14,7 +14,8 @@ import { ProjectsFilter } from './ProjectsFilter';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Projects',
+  title: 'פרויקטים',
+  description: 'פרויקטים נבחרים של WDI — ניהול פרויקטי בנייה בטחוניים, מסחריים, תשתיות ותעשייה בישראל.',
   alternates: { canonical: '/projects' },
 };
 

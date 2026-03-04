@@ -15,6 +15,31 @@ const nextConfig = {
     ],
   },
 
+  // ── 301 redirects — old WordPress .html URLs ────────────────
+  async redirects() {
+    return [
+      // Static page .html → clean URLs
+      { source: '/about.html', destination: '/about', permanent: true },
+      { source: '/services.html', destination: '/services', permanent: true },
+      { source: '/projects.html', destination: '/projects', permanent: true },
+      { source: '/team.html', destination: '/team', permanent: true },
+      { source: '/clients.html', destination: '/clients', permanent: true },
+      { source: '/contact.html', destination: '/contact', permanent: true },
+      { source: '/jobs.html', destination: '/jobs', permanent: true },
+      { source: '/press.html', destination: '/press', permanent: true },
+      { source: '/innovation.html', destination: '/innovation', permanent: true },
+      { source: '/join-us.html', destination: '/join-us', permanent: true },
+      { source: '/content-library.html', destination: '/content-library', permanent: true },
+      { source: '/terms.html', destination: '/terms', permanent: true },
+      { source: '/privacy.html', destination: '/privacy', permanent: true },
+      { source: '/accessibility.html', destination: '/accessibility', permanent: true },
+      { source: '/index.html', destination: '/', permanent: true },
+      // WordPress-style patterns
+      { source: '/services/:slug.html', destination: '/services/:slug', permanent: true },
+      { source: '/projects/:slug.html', destination: '/projects/:slug', permanent: true },
+    ];
+  },
+
   // ── Security headers — DOC-060 §7 (H-01) ──────────────────
   async headers() {
     return [
