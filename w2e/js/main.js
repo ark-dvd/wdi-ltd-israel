@@ -1,30 +1,26 @@
 /* ═══════════════════════════════════════
-   WDI Neot Hovav W2E — Main JS
+   WDI W2E — Main JS
    ═══════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initDropdowns();
   initActiveNav();
-  initFadeUp();
+  initScrollReveal();
   initMobileMenu();
 });
 
-/* ─── Navbar scroll effect ─── */
+/* ─── Navbar scroll ─── */
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
 
-  function checkScroll() {
-    if (window.scrollY > 40) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  }
+  const check = () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  };
 
-  window.addEventListener('scroll', checkScroll, { passive: true });
-  checkScroll();
+  window.addEventListener('scroll', check, { passive: true });
+  check();
 }
 
 /* ─── Dropdown menus ─── */
@@ -37,72 +33,47 @@ function initDropdowns() {
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = dd.classList.contains('open');
-
-      // Close all dropdowns
+      const wasOpen = dd.classList.contains('open');
       dropdowns.forEach(d => d.classList.remove('open'));
-
-      // Toggle clicked one
-      if (!isOpen) {
-        dd.classList.add('open');
-      }
+      if (!wasOpen) dd.classList.add('open');
     });
   });
 
-  // Close on outside click
   document.addEventListener('click', () => {
     dropdowns.forEach(d => d.classList.remove('open'));
   });
-
-  // Prevent menu click from closing
-  document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
-    menu.addEventListener('click', (e) => {
-      // Let links navigate normally
-    });
-  });
 }
 
-/* ─── Active nav highlight ─── */
+/* ─── Active nav item ─── */
 function initActiveNav() {
   const path = window.location.pathname;
-  const links = document.querySelectorAll('.nav-dropdown-menu a');
+  const page = path.split('/').pop() || 'index.html';
 
-  links.forEach(link => {
+  document.querySelectorAll('.nav-dropdown-menu a').forEach(link => {
     const href = link.getAttribute('href');
     if (!href) return;
-
-    // Normalize paths for comparison
-    const linkPath = new URL(href, window.location.origin).pathname;
-    const currentPath = path.endsWith('/') ? path + 'index.html' : path;
-    const normalizedLink = linkPath.endsWith('/') ? linkPath + 'index.html' : linkPath;
-
-    if (currentPath === normalizedLink ||
-        path === linkPath ||
-        (path.endsWith('/') && linkPath === path + 'index.html') ||
-        (linkPath.endsWith('/') && path === linkPath + 'index.html')) {
+    const linkPage = href.split('#')[0] || 'index.html';
+    if (page === linkPage || (page === '' && linkPage === 'index.html')) {
       link.classList.add('active');
     }
   });
 }
 
-/* ─── Fade-up on scroll ─── */
-function initFadeUp() {
-  const elements = document.querySelectorAll('.fade-up');
-  if (!elements.length) return;
+/* ─── Scroll reveal via IntersectionObserver ─── */
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        entry.target.classList.add('revealed');
         observer.unobserve(entry.target);
       }
     });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
-  });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-  elements.forEach(el => observer.observe(el));
+  els.forEach(el => observer.observe(el));
 }
 
 /* ─── Mobile menu ─── */
@@ -113,6 +84,12 @@ function initMobileMenu() {
 
   toggle.addEventListener('click', () => {
     menu.classList.toggle('mobile-open');
-    toggle.classList.toggle('active');
+  });
+
+  // Close mobile menu when a link is clicked
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('mobile-open');
+    });
   });
 }
