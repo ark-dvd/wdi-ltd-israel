@@ -74,21 +74,13 @@ body.is-hero .navbar.scrolled,
 }
 
 .nav-logo {
-  font-family: 'Noto Sans Hebrew', Arial, sans-serif;
-  font-size: 1.75rem;
-  font-weight: 900;
-  color: #ffffff;
-  text-decoration: none;
-  letter-spacing: 3px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
 }
-
-.hero-wdi-logo {
-  font-family: 'Noto Sans Hebrew', Arial, sans-serif;
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: #ffffff;
-  letter-spacing: 3px;
+.nav-logo img {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 
 .nav-menu {
