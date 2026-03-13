@@ -73,7 +73,23 @@ body.is-hero .navbar.scrolled,
   box-shadow: 0 2px 32px rgba(0, 0, 0, 0.3);
 }
 
-.nav-logo svg { display: block; }
+.nav-logo {
+  font-family: 'Noto Sans Hebrew', Arial, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.hero-wdi-logo {
+  font-family: 'Noto Sans Hebrew', Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 3px;
+}
 
 .nav-menu {
   display: flex;
