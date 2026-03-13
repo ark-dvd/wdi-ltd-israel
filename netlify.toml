@@ -26,11 +26,12 @@
 
 # ── W2E branch: static pitch site (no build) ──────────────
 [context.w2e]
-  command = "echo 'static site — no build needed'"
+  command = "echo 'static'"
   publish = "w2e"
 
 [context.w2e.environment]
   NODE_VERSION = "20"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # ── Redirects: old static HTML → Next.js routes ─────────────
 [[redirects]]
