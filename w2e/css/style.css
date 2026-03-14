@@ -953,12 +953,14 @@ body.is-hero .navbar.scrolled,
 /* ═══════════════════════════════════════
    ORG CHART
    ═══════════════════════════════════════ */
+.team-intro { white-space: nowrap; font-size: 0.9rem; }
+
 .org-container {
   overflow-x: auto;
   padding: 20px 0 40px;
   margin: 40px 0;
 }
-.org-container svg { display: block; margin: 0 auto; }
+.org-container svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
 .org-legend {
   display: flex;
