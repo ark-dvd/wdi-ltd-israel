@@ -634,6 +634,8 @@ body.is-hero .navbar.scrolled,
   background: var(--gold);
 }
 
+.comparison-intro { font-size: 0.9rem; }
+
 /* ═══════════════════════════════════════
    COMPARISON TABLE
    ═══════════════════════════════════════ */
