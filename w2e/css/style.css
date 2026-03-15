@@ -960,17 +960,7 @@ body.is-hero .navbar.scrolled,
   padding: 10px 0 20px;
   margin: 20px 0;
 }
-.org-container svg { display: block; margin: 0 auto; max-width: 85%; height: auto; }
-
-.org-legend {
-  display: flex;
-  gap: 28px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  padding-top: 12px;
-  border-top: 1px solid var(--gray-200);
-}
+.org-container svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 .org-legend-item {
   display: flex;
   align-items: center;
