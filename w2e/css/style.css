@@ -957,18 +957,18 @@ body.is-hero .navbar.scrolled,
 
 .org-container {
   overflow-x: auto;
-  padding: 20px 0 40px;
-  margin: 40px 0;
+  padding: 10px 0 20px;
+  margin: 20px 0;
 }
-.org-container svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.org-container svg { display: block; margin: 0 auto; max-width: 85%; height: auto; }
 
 .org-legend {
   display: flex;
   gap: 28px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 28px;
-  padding-top: 24px;
+  margin-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--gray-200);
 }
 .org-legend-item {
